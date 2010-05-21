@@ -17,7 +17,10 @@
  */
 class Tx_AoeDbsequenzer_TYPO3Service {
 	
-	private $table='sequenzer';
+	/**
+	 * 
+	 * @var Tx_AoeDbsequenzer_Sequenzer
+	 */
 	private $sequenzer;
 	
 	/**
@@ -40,11 +43,12 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	}
 	
 	/**
+	 * Modify a TYPO3 insert array (key -> value) , and adds the uid that should be forced during INSERT
 	 * 
 	 * @param string $tableName
 	 * @param array $fields_values
 	 */
-	public function modifyFields($tableName, array $fields_values) {
+	public function modifyInsertFields($tableName, array $fields_values) {
 		if ($this->needsSequenzer($tableName)) {
 			if (isset($fields_values['uid'])) {
 				//warning
@@ -56,7 +60,12 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	}
 	
 
-	
+	/**
+	 * If a table is configured to use the sequenzer 
+	 * 
+	 * @param string $tableName
+	 * @return boolean
+	 */
 	public function needsSequenzer($tableName) {
 		if ($tableName=='tt_content' || $tableName=='pages') {
 			return true;

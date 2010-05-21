@@ -27,7 +27,7 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 	 * @return	pointer		MySQL result pointer / DBAL object
 	 */
 	function INSERTquery($table, $fields_values, $no_quote_fields = FALSE) {
-		$fields_values = $this->TYPO3Service->modifyFields($table, $fields_values);				
+		$fields_values = $this->TYPO3Service->modifyInsertFields($table, $fields_values);				
 		return parent::INSERTquery($table, $fields_values, $no_quote_fields);
 	}
 	
@@ -44,7 +44,7 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 	 */
 	public function INSERTmultipleRows($table, array $fields, array $rows, $no_quote_fields = FALSE) {
 			foreach ($rows as $row) {
-				$row = $this->TYPO3Service->modifyFields($table, $row);				
+				$row = $this->TYPO3Service->modifyInsertFields($table, $row);				
 			}		
 			return parent::INSERTmultipleRows($table, $fields, $rows, $no_quote_fields);	
 	}
