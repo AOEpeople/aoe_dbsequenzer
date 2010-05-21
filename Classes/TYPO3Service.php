@@ -25,18 +25,38 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	
 	/**
 	 * 
+	 * @var array
+	 */
+	private $conf;
+	
+	/**
+	 * array of configured tables that should call the sequenzer
+	 * 
+	 * @var array
+	 */
+	private $supportedTables;
+	
+	/**
+	 * 
 	 * @param Tx_AoeDbsequenzer_Sequenzer $sequenzer
 	 */
-	public function __construct(Tx_AoeDbsequenzer_Sequenzer $sequenzer) {
+	public function __construct(Tx_AoeDbsequenzer_Sequenzer $sequenzer, $conf = NULL) {
 		$this->sequenzer = $sequenzer;
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
-		$this->sequenzer->setDefaultOffset(intval($conf['offset']));
-		$this->sequenzer->setDefaultStart(intval($conf['system']));
+		if (is_null($conf)) {
+			$this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
+		}
+		else {
+			$this->conf = $conf;
+		}
+		$this->sequenzer->setDefaultOffset(intval($this->conf['offset']));
+		$this->sequenzer->setDefaultStart(intval($this->conf['system']));
+		$this->supportedTables = t3lib_div::trimExplode(',',$this->conf['tables']);
 	}
 	
 	/**
 	 * sets the db link
-	 * @param unknown_type $link
+	 * 
+	 * @param resource $link
 	 */
 	public function setDbLink($link) {
 		$this->sequenzer->setDbLink($link);
@@ -67,7 +87,7 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	 * @return boolean
 	 */
 	public function needsSequenzer($tableName) {
-		if ($tableName=='tt_content' || $tableName=='pages') {
+		if (in_array($tableName,$this->supportedTables)) {
 			return true;
 		}
 		return false;
