@@ -2,7 +2,7 @@
 tables = tt_content,pages,page_language_overlay
 
 # cat=basic; type=input; label= Table Offset (=number of systems)
-offset = tt_content,pages,page_language_overlay
+offset = 10
 
 # cat=basic; type=input; label= System Number (1 to offset)
 system = 1
