@@ -1,3 +1,7 @@
-2010-05-20   <>
+2010-06-14  Oliver Hader  <oliver@typo3.org>
+
+	* Fixed bug: Incomplete XCLASS definitions
+
+2010-05-20  AOE media <dev@aoemedia.de>
 
 	* initial code generated with kickstarter
