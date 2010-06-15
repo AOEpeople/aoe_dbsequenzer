@@ -2,6 +2,7 @@
 
 	* Fixed bug: Missing call to parent constructor
 	* Fixed bug: Write warning to devLog instead of throwing an exception
+	* Added feature: Add possibility to enable/disable the sequencer on demand
 
 2010-06-14  Oliver Hader  <oliver@typo3.org>
 

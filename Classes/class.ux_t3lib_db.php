@@ -6,7 +6,11 @@
  *
  */
 class ux_t3lib_db extends t3lib_db {
-	
+	/**
+	 * @var boolean
+	 */
+	private $isEnabled = TRUE;
+
 	private $TYPO3Service;
 	
 	/**
@@ -16,7 +20,25 @@ class ux_t3lib_db extends t3lib_db {
 		parent::__construct();
 		$this->TYPO3Service = new Tx_AoeDbsequenzer_TYPO3Service(new Tx_AoeDbsequenzer_Sequenzer());
 	}
-	
+
+	/**
+	 * Enables the sequencer.
+	 *
+	 * @return void
+	 */
+	public function enable() {
+		$this->isEnabled = TRUE;
+	}
+
+	/**
+	 * Disables the sequencer.
+	 *
+	 * @return void
+	 */
+	public function disable() {
+		$this->isEnabled = FALSE;
+	}
+
 	/**
 	 * Creates and executes an INSERT SQL-statement for $table from the array with field/value pairs $fields_values.
 	 * Using this function specifically allows us to handle BLOB and CLOB fields depending on DB
@@ -28,7 +50,9 @@ class ux_t3lib_db extends t3lib_db {
 	 * @return	pointer		MySQL result pointer / DBAL object
 	 */
 	function INSERTquery($table, $fields_values, $no_quote_fields = FALSE) {
-		$fields_values = $this->TYPO3Service->modifyInsertFields($table, $fields_values);				
+		if ($this->isEnabled) {
+			$fields_values = $this->TYPO3Service->modifyInsertFields($table, $fields_values);
+		}
 		return parent::INSERTquery($table, $fields_values, $no_quote_fields);
 	}
 	
@@ -44,10 +68,12 @@ class ux_t3lib_db extends t3lib_db {
 	 * @return	string		Full SQL query for INSERT (unless $rows does not contain any elements in which case it will be false)
 	 */
 	public function INSERTmultipleRows($table, array $fields, array $rows, $no_quote_fields = FALSE) {
+		if ($this->isEnabled) {
 			foreach ($rows as $row) {
-				$row = $this->TYPO3Service->modifyInsertFields($table, $row);				
-			}		
-			return parent::INSERTmultipleRows($table, $fields, $rows, $no_quote_fields);	
+				$row = $this->TYPO3Service->modifyInsertFields($table, $row);
+			}
+		}
+		return parent::INSERTmultipleRows($table, $fields, $rows, $no_quote_fields);	
 	}
 	
 	/**
@@ -99,6 +125,4 @@ class ux_t3lib_db extends t3lib_db {
 		$this->TYPO3Service->setDbLink($this->link);
 		return $this->link;
 	}
-	
-	
 }
