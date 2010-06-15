@@ -1,3 +1,7 @@
+2010-06-15  Oliver Hader  <oliver@typo3.org>
+
+	* Fixed bug: Missing call to parent constructor
+
 2010-06-14  Oliver Hader  <oliver@typo3.org>
 
 	* Fixed bug: Incomplete XCLASS definitions

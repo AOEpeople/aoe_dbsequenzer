@@ -13,6 +13,7 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 	 * 
 	 */
 	public function __construct() {
+		parent::__construct();
 		$this->TYPO3Service = new Tx_AoeDbsequenzer_TYPO3Service(new Tx_AoeDbsequenzer_Sequenzer());
 	}
 	
