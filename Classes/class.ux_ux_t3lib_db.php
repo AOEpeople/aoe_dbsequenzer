@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * @author danielpotzinger
  *
  */
@@ -12,9 +12,9 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 	private $isEnabled = TRUE;
 
 	private $TYPO3Service;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -55,9 +55,9 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 		}
 		return parent::INSERTquery($table, $fields_values, $no_quote_fields);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Creates an INSERT SQL-statement for $table with multiple rows.
 	 *
@@ -73,9 +73,9 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 				$row = $this->TYPO3Service->modifyInsertFields($table, $row);
 			}
 		}
-		return parent::INSERTmultipleRows($table, $fields, $rows, $no_quote_fields);	
+		return parent::INSERTmultipleRows($table, $fields, $rows, $no_quote_fields);
 	}
-	
+
 	/**
 	 * Creates an UPDATE SQL-statement for $table where $where-clause (typ. 'uid=...') from the array with field/value pairs $fields_values.
 	 * Usage count/core: 6
@@ -90,11 +90,11 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 		if (isset($fields_values['uid'])) {
 			throw new InvalidArgumentException('no uid allowed in update statement!');
 		}
-		return parent::UPDATEquery($table, $where, $fields_values, $no_quote_fields);		
+		return parent::UPDATEquery($table, $where, $fields_values, $no_quote_fields);
 	}
-	
-	
-	
+
+
+
 	 /**
 	 * Creates and executes a DELETE SQL-statement for $table where $where-clause
 	 * Usage count/core: 40
@@ -107,9 +107,9 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 		//TODO: log deletes
 		return parent::exec_DELETEquery($table, $where);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Open a (persistent) connection to a MySQL server
 	 * mysql_pconnect() wrapper function

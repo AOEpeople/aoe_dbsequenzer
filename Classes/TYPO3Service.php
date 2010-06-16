@@ -11,33 +11,33 @@
 
 /**
  * Sequenzer is used to generate system wide independet IDs
- * 
+ *
  * @author danielpotzinger
  *
  */
 class Tx_AoeDbsequenzer_TYPO3Service {
-	
+
 	/**
-	 * 
+	 *
 	 * @var Tx_AoeDbsequenzer_Sequenzer
 	 */
 	private $sequenzer;
-	
+
 	/**
-	 * 
+	 *
 	 * @var array
 	 */
 	private $conf;
-	
+
 	/**
 	 * array of configured tables that should call the sequenzer
-	 * 
+	 *
 	 * @var array
 	 */
 	private $supportedTables;
-	
+
 	/**
-	 * 
+	 *
 	 * @param Tx_AoeDbsequenzer_Sequenzer $sequenzer
 	 */
 	public function __construct(Tx_AoeDbsequenzer_Sequenzer $sequenzer, $conf = NULL) {
@@ -52,19 +52,19 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 		$this->sequenzer->setDefaultStart(intval($this->conf['system']));
 		$this->supportedTables = t3lib_div::trimExplode(',',$this->conf['tables']);
 	}
-	
+
 	/**
 	 * sets the db link
-	 * 
+	 *
 	 * @param resource $link
 	 */
 	public function setDbLink($link) {
 		$this->sequenzer->setDbLink($link);
 	}
-	
+
 	/**
 	 * Modify a TYPO3 insert array (key -> value) , and adds the uid that should be forced during INSERT
-	 * 
+	 *
 	 * @param string $tableName
 	 * @param array $fields_values
 	 */
@@ -78,11 +78,11 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 		}
 		return $fields_values;
 	}
-	
+
 
 	/**
-	 * If a table is configured to use the sequenzer 
-	 * 
+	 * If a table is configured to use the sequenzer
+	 *
 	 * @param string $tableName
 	 * @return boolean
 	 */
@@ -92,6 +92,6 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 		}
 		return false;
 	}
-	
-	
+
+
 }
