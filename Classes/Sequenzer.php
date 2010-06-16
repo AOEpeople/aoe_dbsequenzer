@@ -70,7 +70,10 @@ class Tx_AoeDbsequenzer_Sequenzer {
 			return $this->getNextIdForTable ( $table, ++ $depth );
 			//throw new Exception('The sequenzer cannot return IDs for this table -'.$table.'- its not configured!');
 		} elseif ($row['timestamp'] + $this->checkInterval < $GLOBALS['EXEC_TIME']) {
-			$row['current'] = $this->getDefaultStartValue($table);
+			$defaultStartValue = $this->getDefaultStartValue($table);
+			if ($row['current'] < $defaultStartValue) {
+				$row['current'] = $defaultStartValue;
+			}
 		}
 
 		$new = $row ['current'] + $row ['offset'];
