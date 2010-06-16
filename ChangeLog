@@ -1,3 +1,7 @@
+2010-06-16  Oliver Hader  <oliver@typo3.org>
+
+	* Added feature: Added interval for valid max values
+
 2010-06-15  Oliver Hader  <oliver@typo3.org>
 
 	* Fixed bug: Missing call to parent constructor
