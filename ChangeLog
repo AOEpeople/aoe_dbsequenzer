@@ -2,6 +2,7 @@
 
 	* Added feature: Added interval for valid max values
 	* Fixed bug: Only use recalculated maximum value if required
+	* Fixed bug: Start value shall be recalculated if extension settings were changed
 
 2010-06-15  Oliver Hader  <oliver@typo3.org>
 
