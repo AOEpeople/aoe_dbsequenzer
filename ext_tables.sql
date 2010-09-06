@@ -8,4 +8,4 @@ CREATE TABLE tx_aoedbsequenzer_sequenz (
 	timestamp int(30) DEFAULT '0' NOT NULL,
 	changed int(11) DEFAULT '0' NOT NULL,
 	UNIQUE KEY tablename (tablename)
-);
+) ENGINE=InnoDB;
