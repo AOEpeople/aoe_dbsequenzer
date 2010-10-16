@@ -11,11 +11,11 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => '',
-	'description' => '',
-	'category' => '',
-	'author' => '',
-	'author_email' => '',
+	'title' => 'AOE Database Sequenzer',
+	'description' => 'With this extension you can ensure diffrent unique keys for the configured tables',
+	'category' => 'misc',
+	'author' => 'Dev-Team AOE media',
+	'author_email' => 'dev@aoemedia.de',
 	'shy' => '',
 	'dependencies' => '',
 	'conflicts' => '',
