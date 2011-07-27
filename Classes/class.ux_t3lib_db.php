@@ -86,7 +86,7 @@ class ux_t3lib_db extends t3lib_db {
 	 * @return	string		Full SQL query for UPDATE (unless $fields_values does not contain any elements in which case it will be false)
 	 */
 	public function UPDATEquery($table, $where, $fields_values, $no_quote_fields = FALSE) {
-		if (isset($fields_values['uid'])) {
+		if ($this->TYPO3Service->needsSequenzer($table) && isset($fields_values['uid'])) {
 			throw new InvalidArgumentException('no uid allowed in update statement!');
 		}
 		return parent::UPDATEquery($table, $where, $fields_values, $no_quote_fields);
