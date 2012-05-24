@@ -17,7 +17,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'author' => 'Dev-Team AOE media',
 	'author_email' => 'dev@aoemedia.de',
 	'shy' => '',
-	'dependencies' => '',
+	'dependencies' => 'extbase',
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
@@ -27,18 +27,17 @@ $EM_CONF[$_EXTKEY] = array(
 	'createDirs' => '',
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
-	'lockType' => '',
+	'lockType' => 'AOE media GmbH',
 	'author_company' => '',
 	'version' => '0.1.dev',
 	'constraints' => array(
 		'depends' => array(
+			'extbase' => '1.3.0',
 		),
 		'conflicts' => array(
 		),
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:5:{s:9:"ChangeLog";s:4:"a5c7";s:10:"README.txt";s:4:"ee2d";s:12:"ext_icon.gif";s:4:"1bdc";s:19:"doc/wizard_form.dat";s:4:"73be";s:20:"doc/wizard_form.html";s:4:"8e60";}',
+	'_md5_values_when_last_written' => '',
 );
-
-?>
