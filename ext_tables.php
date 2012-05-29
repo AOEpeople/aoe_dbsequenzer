@@ -8,41 +8,41 @@ if (TYPO3_MODE == 'BE') {
 	if (isset ( $config ['tables'] )) {
 		$tables = explode ( ',', $config ['tables'] );
 	}
-	$column = array ();
-	$column ['tx_aoe_dbsquenzer_protectoverwrite_till'] = array ();
-	$column ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['label'] = 'LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protectoverwrite_till';
-	$column ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] = array ();
-	$column ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] ['type'] = 'user';
-	$column ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] ['userFunc'] = 'Tx_AoeDbsequenzer_OverwriteProtectionService->renderInput';
-	$column ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] ['eval'] = 'datetime';
+	$columnConfig = array ();
+	$columnConfig ['tx_aoe_dbsquenzer_protectoverwrite_till'] = array ();
+	$columnConfig ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['label'] = 'LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protectoverwrite_till';
+	$columnConfig ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] = array ();
+	$columnConfig ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] ['type'] = 'user';
+	$columnConfig ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] ['userFunc'] = 'Tx_AoeDbsequenzer_OverwriteProtectionService->renderInput';
+	$columnConfig ['tx_aoe_dbsquenzer_protectoverwrite_till'] ['config'] ['eval'] = 'datetime';
 
-	$columnsConfig = 'tx_aoe_dbsquenzer_protectoverwrite,tx_aoe_dbsquenzer_protectoverwrite_till';
+	$columnName = 'tx_aoe_dbsquenzer_protectoverwrite_till';
 	global $TCA;
 
 	foreach ( $tables as $table ) {
 		// add columnsConfig at END of TCA-configuration
 		t3lib_div::loadTCA( $table );
-		t3lib_extMgm::addTCAcolumns ( $table, $column, 1 );
-		t3lib_extMgm::addToAllTCAtypes ( $table, $columnsConfig );
+		t3lib_extMgm::addTCAcolumns ( $table, $columnConfig, 1 );
+		t3lib_extMgm::addToAllTCAtypes ( $table, $columnName );
 
 		// move columnsConfig from END of TCA-configuration to BEGIN of TCA-configuration
 		if(is_array($TCA[$table]['types'])) {
 			foreach($TCA[$table]['types'] as &$tableTypeConfig) {
-				if(array_key_exists('showitem', $tableTypeConfig) && stristr($tableTypeConfig['showitem'], $columnsConfig)) {
+				if(array_key_exists('showitem', $tableTypeConfig) && stristr($tableTypeConfig['showitem'], $columnName)) {
 					$showItems = &$tableTypeConfig['showitem'];
 
 					// 1. delete columnsConfig at END of TCA-configuration
-					$showItems = preg_replace('/,\s?'.$columnsConfig.'/i', '', $showItems);
+					$showItems = preg_replace('/,\s?'.$columnName.'/i', '', $showItems);
 
 					// 2. add columnsConfig at BEGIN of TCA-configuration
 					if(preg_match('/^--div--/i', $showItems)) {
 						// first entry is an tab
 						$firstColumnEntry = substr($showItems, 0, stripos($showItems, ',') + 1);
 						$showItems = str_replace($firstColumnEntry, '', $showItems);
-						$showItems = $firstColumnEntry . $columnsConfig . ',' . $showItems;
+						$showItems = $firstColumnEntry . $columnName . ',' . $showItems;
 					} else {
 						// first entry is no tab
-						$showItems = $columnsConfig . ',' . $showItems;
+						$showItems = $columnName . ',' . $showItems;
 					}
 				}
 			}
