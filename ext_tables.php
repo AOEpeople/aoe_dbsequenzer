@@ -32,7 +32,7 @@ if (TYPO3_MODE == 'BE') {
 					$showItems = &$tableTypeConfig['showitem'];
 
 					// 1. delete columnsConfig at END of TCA-configuration
-					$showItems = str_replace(','.$columnsConfig, '', $showItems);
+					$showItems = preg_replace('/,\s?'.$columnsConfig.'/i', '', $showItems);
 
 					// 2. add columnsConfig at BEGIN of TCA-configuration
 					if(preg_match('/^--div--/i', $showItems)) {
