@@ -194,11 +194,9 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 */
 	private function removeOverwriteprotection($id, $table) {
 		$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-		if (count ( $result ) > 0) {
-			foreach ( $result as $overwriteprotection ) {
-				$this->getOverwriteprotectionRepository ()->remove ( $overwriteprotection );
-			}
-			$this->persistAll();
+		foreach ( $result as $overwriteprotection ) {
+			$this->getOverwriteprotectionRepository ()->remove ( $overwriteprotection );
 		}
+		$this->persistAll();
 	}
 }
