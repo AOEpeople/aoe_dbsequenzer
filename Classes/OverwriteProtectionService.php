@@ -47,6 +47,31 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		$this->objectManager = t3lib_div::makeInstance ( 'Tx_Extbase_Object_ObjectManager' );
 	}
 	/**
+	 * @return Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository
+	 */
+	public function getOverwriteprotectionRepository() {
+		if (! isset ( $this->overwriteprotectionRepository )) {
+			$this->overwriteprotectionRepository = $this->objectManager->get ( 'Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository' );
+		}
+		return $this->overwriteprotectionRepository;
+	}
+
+	/**
+	 * Hook for deletes in Typo3 Backend. It also delete all overwrite protection
+	 * @param string $command
+	 * @param string $table
+	 * @param integer $id
+	 */
+	public function processCmdmap_postProcess($command, $table, $id) {
+		if (FALSE === $this->needsOverWriteProtection ( $table )) {
+			return;
+		}
+		if ($command !== 'delete') {
+			return;
+		}
+		$this->removeOverwriteprotection( $id, $table );
+	}
+	/**
 	 * Hook for updates in Typo3 backend
 	 * @param array $incomingFieldArray
 	 * @param string $table
@@ -57,21 +82,16 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		if (FALSE === $this->needsOverWriteProtection ( $table )) {
 			return;
 		}
-		/* @var $persistenceManager Tx_Extbase_Persistence_Manager */
-		$persistenceManager = $this->objectManager->get ( 'Tx_Extbase_Persistence_Manager' );
-		$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-		$protection = strtotime ( $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL] );
-		$mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
-		/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
+
 		if (FALSE === $this->hasOverWriteProtection ( $incomingFieldArray )) {
-			if (count ( $result ) > 0) {
-				foreach ( $result as $overwriteprotection ) {
-					$this->getOverwriteprotectionRepository ()->remove ( $overwriteprotection );
-				}
-			}
-		
+			$this->removeOverwriteprotection( $id, $table );
 		} else {
+			$protection = strtotime ( $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL] );
+			$mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
+
+			$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
 			if (count ( $result ) === 0) {
+				/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
 				$overwriteprotection = $this->objectManager->create ( 'Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection' );
 				$overwriteprotection->setProtectedMode ( $mode );
 				$overwriteprotection->setPid ( $tcemain->getPID ( $table, $id ) );
@@ -86,32 +106,12 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 					$overwriteprotection->setProtectedTime ( $protection );
 				}
 			}
+			$this->persistAll();
 		}
 		unset ( $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL] );
 		unset ( $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE] );
-		$persistenceManager->persistAll ();
 	}
-	/**
-	 * Hook for deletes in Typo3 Backend. It also delete all overwrite protection
-	 * @param string $command
-	 * @param string $table
-	 * @param integer $id
-	 */
-	public function processCmdmap_postProcess($command, $table, $id) {
-		if (FALSE === $this->needsOverWriteProtection ( $table )) {
-			return;
-		}
-		if ($command !== 'delete') {
-			return;
-		}
-		/* @var $persistenceManager Tx_Extbase_Persistence_Manager */
-		$persistenceManager = $this->objectManager->get ( 'Tx_Extbase_Persistence_Manager' );
-		$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-		foreach ( $result as $overwriteprotection ) {
-			$this->getOverwriteprotectionRepository ()->remove ( $overwriteprotection );
-		}
-		$persistenceManager->persistAll ();
-	}
+
 	/**
 	 * Render Form Field in typo3 backend
 	 * @param array $PA
@@ -126,7 +126,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		$value = '';
 		$overwriteMode = '';
 		$conflictMode = '';
-		
+
 		foreach ( $result as $overwriteprotection ) {
 			/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
 			$value = $overwriteprotection->getProtectedTime ();
@@ -145,6 +145,14 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		$content = str_replace ( '###LABEL_MODE_OVERWIRTE###', $fob->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_overwrite'), $content );
 		return $content;
 	}
+
+	/**
+	 * @param Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository
+	 */
+	public function setOverwriteprotectionRepository(Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository) {
+		$this->overwriteprotectionRepository = $overwriteprotectionRepository;
+	}
+
 	/**
 	 * @param array $fields_values
 	 * @return boolean
@@ -171,20 +179,26 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		return false;
 	}
 	/**
-	 * @return Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository
+	 * persist all changes
 	 */
-	public function getOverwriteprotectionRepository() {
-		if (! isset ( $this->overwriteprotectionRepository )) {
-			$this->overwriteprotectionRepository = $this->objectManager->get ( 'Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository' );
-		}
-		return $this->overwriteprotectionRepository;
+	private function persistAll() {
+		/* @var $persistenceManager Tx_Extbase_Persistence_Manager */
+		$persistenceManager = $this->objectManager->get ( 'Tx_Extbase_Persistence_Manager' );
+		$persistenceManager->persistAll ();
 	}
-	
 	/**
-	 * @param Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository
+	 * remove overwriteprotection
+	 * 
+	 * @param integer $id
+	 * @param string $table
 	 */
-	public function setOverwriteprotectionRepository(Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository) {
-		$this->overwriteprotectionRepository = $overwriteprotectionRepository;
+	private function removeOverwriteprotection($id, $table) {
+		$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
+		if (count ( $result ) > 0) {
+			foreach ( $result as $overwriteprotection ) {
+				$this->getOverwriteprotectionRepository ()->remove ( $overwriteprotection );
+			}
+			$this->persistAll();
+		}
 	}
-
 }
