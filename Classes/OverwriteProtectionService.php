@@ -130,7 +130,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		foreach ( $result as $overwriteprotection ) {
 			/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
 			$value = $overwriteprotection->getProtectedTime ();
-			$value = date ( 'h:i d-m-Y', $value );
+			$value = date ( 'H:i d-m-Y', $value );
 			if ($overwriteprotection->getProtectedMode () === 0) {
 				$conflictMode = 'selected="selected"';
 			} else {
