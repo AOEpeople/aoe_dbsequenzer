@@ -28,7 +28,7 @@ if (TYPO3_MODE == 'BE') {
 		// move columnsConfig from END of TCA-configuration to BEGIN of TCA-configuration
 		if(is_array($TCA[$table]['types'])) {
 			foreach($TCA[$table]['types'] as &$tableTypeConfig) {
-				if(array_key_exists('showitem', $tableTypeConfig) && stristr($tableTypeConfig['showitem'], $columnName)) {
+				if(array_key_exists('showitem', $tableTypeConfig) && preg_match('/'.$columnName.'$/i', $tableTypeConfig['showitem'])) {
 					$showItems = &$tableTypeConfig['showitem'];
 
 					// 1. delete columnsConfig at END of TCA-configuration
