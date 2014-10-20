@@ -83,6 +83,14 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 			return;
 		}
 
+        // check, if overwrite-protection-fields are set:
+        // If they are NOT set, it means, that any other extension maybe called the process_datamap!
+        if(false === array_key_exists(self::OVERWRITE_PROTECTION_TILL, $incomingFieldArray) ||
+           false === array_key_exists(self::OVERWRITE_PROTECTION_MODE, $incomingFieldArray)
+        ) {
+            return;
+        }
+
 		if (FALSE === $this->hasOverWriteProtection ( $incomingFieldArray )) {
 			$this->removeOverwriteprotection( $id, $table );
 		} else {
@@ -90,7 +98,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 			$mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
 
 			$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-			if (count ( $result ) === 0) {
+			if ($result->count() === 0) {
 				/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
 				$overwriteprotection = $this->objectManager->create ( 'Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection' );
 				$overwriteprotection->setProtectedMode ( $mode );
