@@ -112,8 +112,6 @@ class ux_ux_t3lib_db extends ux_t3lib_db {
 
 	/**
 	 * Open a (persistent) connection to a MySQL server
-	 * mysql_pconnect() wrapper function
-	 * Usage count/core: 12
 	 *
 	 * @param	string		Database host IP/domain
 	 * @param	string		Username to connect with.
