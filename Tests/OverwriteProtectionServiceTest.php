@@ -2,15 +2,13 @@
 /***************************************************************
  * Copyright notice
  *
- * (c) 2009 AOE media GmbH <dev@aoemedia.de>
+ * (c) 2009 AOE GmbH <dev@aoe.com>
  * All rights reserved
  *
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-require_once dirname ( __FILE__ ) . '/BaseTest.php';
-require_once dirname ( __FILE__ ) . '/../Classes/OverwriteProtectionService.php';
-require_once dirname ( __FILE__ ) . '/../Classes/Domain/Repository/OverwriteprotectionRepository.php';
+
 /**
  * test case for Tx_AoeDbsequenzer_OverwriteProtection
  * @package aoe_dbsequenzer

@@ -2,7 +2,6 @@
 if (! defined ( 'TYPO3_MODE' ))
 	die ( 'Access denied.' );
 if (TYPO3_MODE == 'BE') {
-	require_once t3lib_extMgm::extPath($_EXTKEY).'Classes/OverwriteProtectionService.php';
 	$config = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer'] );
 	$tables = array ();
 	if (isset ( $config ['tables'] )) {
