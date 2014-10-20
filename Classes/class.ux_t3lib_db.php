@@ -41,7 +41,6 @@ class ux_t3lib_db extends t3lib_db {
 	/**
 	 * Creates and executes an INSERT SQL-statement for $table from the array with field/value pairs $fields_values.
 	 * Using this function specifically allows us to handle BLOB and CLOB fields depending on DB
-	 * Usage count/core: 47
 	 *
 	 * @param	string		Table name
 	 * @param	array		Field values as key=>value pairs. Values will be escaped internally. Typically you would fill an array like "$insertFields" with 'fieldname'=>'value' and pass it to this function as argument.
@@ -77,7 +76,6 @@ class ux_t3lib_db extends t3lib_db {
 
 	/**
 	 * Creates an UPDATE SQL-statement for $table where $where-clause (typ. 'uid=...') from the array with field/value pairs $fields_values.
-	 * Usage count/core: 6
 	 *
 	 * @param	string		See exec_UPDATEquery()
 	 * @param	string		See exec_UPDATEquery()
@@ -96,7 +94,6 @@ class ux_t3lib_db extends t3lib_db {
 
 	 /**
 	 * Creates and executes a DELETE SQL-statement for $table where $where-clause
-	 * Usage count/core: 40
 	 *
 	 * @param	string		Database tablename
 	 * @param	string		WHERE clause, eg. "uid=1". NOTICE: You must escape values in this argument with $this->fullQuoteStr() yourself!
@@ -111,8 +108,6 @@ class ux_t3lib_db extends t3lib_db {
 
 	/**
 	 * Open a (persistent) connection to a MySQL server
-	 * mysql_pconnect() wrapper function
-	 * Usage count/core: 12
 	 *
 	 * @param	string		Database host IP/domain
 	 * @param	string		Username to connect with.

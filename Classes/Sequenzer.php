@@ -77,7 +77,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 		
 		$result = $this->query ( 'SELECT * FROM ' . $this->getTable () . ' WHERE tablename=\'' . $this->escapeString ( $table ) . '\'' );
 		//echo 'SELECT * FROM '.$this->getTable().' WHERE tablename=\''.$this->escapeString($table).'\'';
-		$row = mysql_fetch_assoc ( $result );
+		$row = mysqli_fetch_assoc ( $result );
 		
 		if (! isset ( $row ['current'] )) {
 			$this->initSequenzerForTable ( $table );
@@ -96,7 +96,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 		$new = $row ['current'] + $row ['offset'];
 		$updateTimeStamp = $GLOBALS ['EXEC_TIME'];
 		$res2 = $this->query ( 'UPDATE ' . $this->getTable () . ' SET current=' . $new . ', timestamp=' . $updateTimeStamp . ' WHERE timestamp=' . $row ['timestamp'] . ' AND tablename=\'' . $this->escapeString ( $table ) . '\'' );
-		if ($res2 && mysql_affected_rows ( $this->dbLink ) > 0) {
+		if ($res2 && mysqli_affected_rows ( $this->dbLink ) > 0) {
 			return $new;
 		} else {
 			return $this->getNextIdForTable ( $table, ++ $depth );
@@ -111,7 +111,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	 */
 	private function getDefaultStartValue($table) {
 		$result = $this->query ( 'SELECT max(uid) as max FROM ' . $table );
-		$row = mysql_fetch_assoc ( $result );
+		$row = mysqli_fetch_assoc ( $result );
 		$currentMax = $row ['max'] + 1;
 		$start = $this->defaultStart + ($this->defaultOffset * ceil ( $currentMax / $this->defaultOffset ));
 		
@@ -142,7 +142,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	 * @param string $string
 	 */
 	private function escapeString($string) {
-		return mysql_escape_string ( $string );
+		return mysqli_escape_string ( $string );
 	}
 	/**
 	 * @param string $sql
@@ -150,9 +150,9 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	 * @throws Exception
 	 */
 	private function query($sql) {
-		$result = mysql_query ( $sql, $this->dbLink );
-		if (mysql_error ( $this->dbLink )) {
-			throw new Exception ( mysql_error ( $this->dbLink ), mysql_errno ( $this->dbLink ) );
+		$result = mysqli_query ( $sql, $this->dbLink );
+		if (mysqli_error ( $this->dbLink )) {
+			throw new Exception ( mysqli_error ( $this->dbLink ), mysqli_errno ( $this->dbLink ) );
 		}
 		return $result;
 	}
