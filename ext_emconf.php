@@ -27,11 +27,12 @@ $EM_CONF[$_EXTKEY] = array(
 	'createDirs' => '',
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
-	'lockType' => 'AOE GmbH',
-	'author_company' => '',
-	'version' => '0.1.dev',
+	'lockType' => '',
+	'author_company' => 'AOE GmbH',
+	'version' => '0.1.13',
 	'constraints' => array(
 		'depends' => array(
+		    't3p_scalable' => '1.5.0',
 			'extbase' => '1.3.0',
             'php' => '5.3.0',
 		),
