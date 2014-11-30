@@ -116,7 +116,7 @@ class ux_t3lib_db extends t3lib_db {
 	 */
 	function sql_pconnect($TYPO3_db_host, $TYPO3_db_username, $TYPO3_db_password)	{
 		parent::sql_pconnect($TYPO3_db_host, $TYPO3_db_username, $TYPO3_db_password);
-		$this->TYPO3Service->setDbLink($this->link);
+		$this->TYPO3Service->setDbLink($this->getDatabaseHandle());
 		return $this->link;
 	}
 }

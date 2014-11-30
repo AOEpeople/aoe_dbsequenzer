@@ -58,7 +58,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	 */
 	public function setDbLink($dbLink = NULL) {
 		if (is_null ( $dbLink )) {
-			$this->dbLink = $GLOBALS ['TYPO3_DB']->link;
+			$this->dbLink = $GLOBALS ['TYPO3_DB']->getDatabaseHandle();
 		} else {
 			$this->dbLink = $dbLink;
 		}
