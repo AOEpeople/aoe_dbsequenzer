@@ -13,6 +13,16 @@
  * @package aoe_dbsequenzer
  */
 class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends Tx_Extbase_Persistence_Repository {
+
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $objectManager = t3lib_div::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        parent::__construct($objectManager);
+    }
+
 	/**
 	 * remove storage page
 	 */

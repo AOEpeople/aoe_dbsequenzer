@@ -5,7 +5,7 @@
  * @author danielpotzinger
  *
  */
-class ux_t3lib_db extends t3lib_db {
+class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_DatabaseConnection {
 	/**
 	 * @var boolean
 	 */
@@ -17,6 +17,7 @@ class ux_t3lib_db extends t3lib_db {
 	 *
 	 */
 	public function __construct() {
+	    parent::__construct();
 		$this->TYPO3Service = new Tx_AoeDbsequenzer_TYPO3Service(new Tx_AoeDbsequenzer_Sequenzer());
 	}
 
@@ -114,9 +115,9 @@ class ux_t3lib_db extends t3lib_db {
 	 * @param	string		Password to connect with.
 	 * @return	pointer		Returns a positive MySQL persistent link identifier on success, or FALSE on error.
 	 */
-	function sql_pconnect($TYPO3_db_host, $TYPO3_db_username, $TYPO3_db_password)	{
-		parent::sql_pconnect($TYPO3_db_host, $TYPO3_db_username, $TYPO3_db_password);
+	function sql_pconnect($TYPO3_db_host = NULL, $TYPO3_db_username = NULL, $TYPO3_db_password = NULL)	{
+		parent::sql_pconnect();
 		$this->TYPO3Service->setDbLink($this->getDatabaseHandle());
-		return $this->link;
+		return $this->getDatabaseHandle();
 	}
 }

@@ -19,6 +19,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 * @var Tx_AoeDbsequenzer_OverwriteProtectionService
 	 */
 	private $overwriteProtection;
+
 	/**
 	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::setUp()
@@ -83,7 +84,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 		$this->assertNotNull($result);
 		$this->assertNotContains('###UID###', $result);
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::tearDown()
