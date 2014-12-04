@@ -68,7 +68,7 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	 */
 	public function INSERTmultipleRows($table, array $fields, array $rows, $no_quote_fields = FALSE) {
 		if ($this->isEnabled) {
-			foreach ($rows as $row) {
+			foreach ($rows as &$row) {
 				$row = $this->TYPO3Service->modifyInsertFields($table, $row);
 			}
 		}
