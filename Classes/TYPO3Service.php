@@ -66,7 +66,7 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	public function modifyInsertFields($tableName, array $fields_values) {
 		if ($this->needsSequenzer ( $tableName )) {
 			if (isset ( $fields_values ['uid'] )) {
-				t3lib_div::devLog ( 'UID is already set for table "' . $tableName . '"', 'aoe_dbsequenzer', 2, $fields );
+				t3lib_div::devLog ( 'UID is already set for table "' . $tableName . '"', 'aoe_dbsequenzer', 2, $fields_values );
 			} else {
 				$fields_values ['uid'] = $this->sequenzer->getNextIdForTable ( $tableName );
 			}
