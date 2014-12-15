@@ -10,16 +10,10 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	 * @var boolean
 	 */
 	private $isEnabled = TRUE;
-
-	private $TYPO3Service;
-
-	/**
-	 *
-	 */
-	public function __construct() {
-	    parent::__construct();
-		$this->TYPO3Service = new Tx_AoeDbsequenzer_TYPO3Service(new Tx_AoeDbsequenzer_Sequenzer());
-	}
+    /**
+     * @var Tx_AoeDbsequenzer_TYPO3Service
+     */
+    private $TYPO3Service;
 
 	/**
 	 * Enables the sequencer.
@@ -50,12 +44,10 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	 */
 	function INSERTquery($table, $fields_values, $no_quote_fields = FALSE) {
 		if ($this->isEnabled) {
-			$fields_values = $this->TYPO3Service->modifyInsertFields($table, $fields_values);
+			$fields_values = $this->getTYPO3Service()->modifyInsertFields($table, $fields_values);
 		}
 		return parent::INSERTquery($table, $fields_values, $no_quote_fields);
 	}
-
-
 
 	/**
 	 * Creates an INSERT SQL-statement for $table with multiple rows.
@@ -69,7 +61,7 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	public function INSERTmultipleRows($table, array $fields, array $rows, $no_quote_fields = FALSE) {
 		if ($this->isEnabled) {
 			foreach ($rows as &$row) {
-				$row = $this->TYPO3Service->modifyInsertFields($table, $row);
+				$row = $this->getTYPO3Service()->modifyInsertFields($table, $row);
 			}
 		}
 		return parent::INSERTmultipleRows($table, $fields, $rows, $no_quote_fields);
@@ -85,13 +77,11 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	 * @return	string		Full SQL query for UPDATE (unless $fields_values does not contain any elements in which case it will be false)
 	 */
 	public function UPDATEquery($table, $where, $fields_values, $no_quote_fields = FALSE) {
-		if ($this->TYPO3Service->needsSequenzer($table) && isset($fields_values['uid'])) {
+		if ($this->getTYPO3Service()->needsSequenzer($table) && isset($fields_values['uid'])) {
 			throw new InvalidArgumentException('no uid allowed in update statement!');
 		}
 		return parent::UPDATEquery($table, $where, $fields_values, $no_quote_fields);
 	}
-
-
 
 	 /**
 	 * Creates and executes a DELETE SQL-statement for $table where $where-clause
@@ -105,8 +95,6 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 		return parent::exec_DELETEquery($table, $where);
 	}
 
-
-
 	/**
 	 * Open a (persistent) connection to a MySQL server
 	 *
@@ -117,7 +105,23 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	 */
 	function sql_pconnect($TYPO3_db_host = NULL, $TYPO3_db_username = NULL, $TYPO3_db_password = NULL)	{
 		parent::sql_pconnect();
-		$this->TYPO3Service->setDbLink($this->getDatabaseHandle());
+		$this->getTYPO3Service()->setDbLink($this->getDatabaseHandle());
 		return $this->getDatabaseHandle();
 	}
+
+    /**
+     * create instance of Tx_AoeDbsequenzer_TYPO3Service by lazy-loading
+     *
+     * Why we do this?
+     * Because some unittests backup the variable $GLOBALS (and so, also the variable $GLOBALS['TYPO3_DB']), which means, that this
+     * object/class will be serialized/unserialized, so the instance of Tx_AoeDbsequenzer_TYPO3Service will be null after unserialization!
+     *
+     * @return Tx_AoeDbsequenzer_TYPO3Service
+     */
+    protected function getTYPO3Service() {
+        if (false === isset($this->TYPO3Service)) {
+            $this->TYPO3Service = new Tx_AoeDbsequenzer_TYPO3Service(new Tx_AoeDbsequenzer_Sequenzer());
+        }
+        return $this->TYPO3Service;
+    }
 }
