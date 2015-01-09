@@ -21,7 +21,7 @@ if (TYPO3_MODE == 'BE') {
 	foreach ( $tables as $table ) {
 		// add columnsConfig at END of TCA-configuration
 		t3lib_div::loadTCA( $table );
-		t3lib_extMgm::addTCAcolumns ( $table, $columnConfig, 1 );
+		t3lib_extMgm::addTCAcolumns ( $table, $columnConfig);
 		t3lib_extMgm::addToAllTCAtypes ( $table, $columnName );
 
 		// move columnsConfig from END of TCA-configuration to BEGIN of TCA-configuration
@@ -47,7 +47,7 @@ if (TYPO3_MODE == 'BE') {
 			}
 		}
 	}
-	
+
 	$GLOBALS ['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:aoe_dbsequenzer/Classes/OverwriteProtectionService.php:Tx_AoeDbsequenzer_OverwriteProtectionService';
 	$GLOBALS ['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:aoe_dbsequenzer/Classes/OverwriteProtectionService.php:Tx_AoeDbsequenzer_OverwriteProtectionService';
 	t3lib_extMgm::allowTableOnStandardPages('tx_aoedbsequenzer_domain_model_overwriteprotection');
