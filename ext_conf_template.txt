@@ -1,0 +1,8 @@
+# cat=basic; type=input; label= Sequenzer Tables
+tables = tt_content,pages,page_language_overlay
+
+# cat=basic; type=input; label= Table Offset (=number of systems)
+offset = 10
+
+# cat=basic; type=input; label= System Number (defines numer range / sequenz - 1 to offset)
+system = 1

@@ -1,0 +1,20 @@
+2010-06-16  Oliver Hader  <oliver@typo3.org>
+
+	* Added feature: Added interval for valid max values
+	* Fixed bug: Only use recalculated maximum value if required
+	* Fixed bug: Start value shall be recalculated if extension settings were changed
+
+2010-06-15  Oliver Hader  <oliver@typo3.org>
+
+	* Fixed bug: Missing call to parent constructor
+	* Fixed bug: Write warning to devLog instead of throwing an exception
+	* Added feature: Add possibility to enable/disable the sequencer on demand
+	* Fixed bug: Already set UIDs are modified by the sequencer
+
+2010-06-14  Oliver Hader  <oliver@typo3.org>
+
+	* Fixed bug: Incomplete XCLASS definitions
+
+2010-05-20  AOE media <dev@aoemedia.de>
+
+	* initial code generated with kickstarter
