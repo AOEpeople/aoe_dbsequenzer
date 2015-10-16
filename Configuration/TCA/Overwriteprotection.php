@@ -1,7 +1,7 @@
 <?php
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
-$GLOBALS['TCA']['tx_aoedbsequenzer_domain_model_overwriteprotection'] = array(
-	'ctrl' => $GLOBALS['TCA']['tx_aoedbsequenzer_domain_model_overwriteprotection']['ctrl'],
+$TCA['tx_aoedbsequenzer_domain_model_overwriteprotection'] = array(
+	'ctrl' => $TCA['tx_aoedbsequenzer_domain_model_overwriteprotection']['ctrl'],
 	'interface' => array(
 		'showRecordFieldList' => 'protected_uid,protected_tablename,protected_time,protected_mode'
 	),

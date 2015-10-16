@@ -1,27 +1,16 @@
 <?php
 /***************************************************************
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
- *  All rights reserved
+ * (c) 2009 AOE media GmbH <dev@aoemedia.de>
+ * All rights reserved
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+require_once dirname ( __FILE__ ) . '/BaseTest.php';
+require_once dirname ( __FILE__ ) . '/../Classes/OverwriteProtectionService.php';
+require_once dirname ( __FILE__ ) . '/../Classes/Domain/Repository/OverwriteprotectionRepository.php';
 /**
  * test case for Tx_AoeDbsequenzer_OverwriteProtection
  * @package aoe_dbsequenzer
@@ -32,7 +21,6 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 * @var Tx_AoeDbsequenzer_OverwriteProtectionService
 	 */
 	private $overwriteProtection;
-
 	/**
 	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::setUp()
@@ -47,7 +35,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArray() {
 		$test = array ('field1' => 'a' );
-		$this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' ) );
+		$this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $this->getMock ( 't3lib_TCEmain' ) );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}
 	/**
@@ -55,7 +43,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArrayWithProtection() {
 		$test = array ('field1' => 'a', Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323' );
-		$test = $this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' ) );
+		$test = $this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $this->getMock ( 't3lib_TCEmain' ) );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}
 	/**
@@ -93,11 +81,11 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 		$overwriteprotectionRepository->expects ( $this->once () )->method ( 'findByProtectedUidAndTableName' )->will($this->returnValue(array()));
 		$this->overwriteProtection->setOverwriteprotectionRepository($overwriteprotectionRepository);
 		$PA = array();
-		$result = $this->overwriteProtection->renderInput ( $PA, $this->getMock('TYPO3\\CMS\\Backend\\Form\\FormEngine') );
+		$result = $this->overwriteProtection->renderInput ( $PA, $this->getMock('t3lib_TCEforms') );
 		$this->assertNotNull($result);
 		$this->assertNotContains('###UID###', $result);
 	}
-
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::tearDown()

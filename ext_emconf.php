@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'AOE Database Sequenzer',
-	'description' => 'With this extension you can ensure different unique keys for the configured tables',
+	'description' => 'With this extension you can ensure diffrent unique keys for the configured tables',
 	'category' => 'misc',
-	'author' => 'Dev-Team AOE',
-	'author_email' => 'dev@aoe.com',
+	'author' => 'Dev-Team AOE media',
+	'author_email' => 'dev@aoemedia.de',
 	'shy' => '',
 	'dependencies' => 'extbase',
 	'conflicts' => '',
@@ -27,15 +27,12 @@ $EM_CONF[$_EXTKEY] = array(
 	'createDirs' => '',
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
-	'lockType' => '',
-	'author_company' => 'AOE GmbH',
-	'version' => '0.3.1',
+	'lockType' => 'AOE media GmbH',
+	'author_company' => '',
+	'version' => '0.1.10',
 	'constraints' => array(
 		'depends' => array(
-		    't3p_scalable' => '1.5.0',
 			'extbase' => '1.3.0',
-            'php' => '5.3.0',
-            'typo3' => '6.2.0-6.2.99',
 		),
 		'conflicts' => array(
 		),

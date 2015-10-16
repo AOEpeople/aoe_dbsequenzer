@@ -1,29 +1,13 @@
 <?php
 /***************************************************************
- *  Copyright notice
+ * Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
- *  All rights reserved
+ * (c) 2009 AOE media GmbH <dev@aoemedia.de>
+ * All rights reserved
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * @package aoe_dbsequenzer
  */
@@ -47,10 +31,10 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 */
 	private $overwriteprotectionRepository;
 	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+	 * @var Tx_Extbase_Object_ObjectManager
 	 */
 	private $objectManager;
-
+	
 	/**
 	 * @param array $conf
 	 */
@@ -60,9 +44,8 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		}
 		$explodedValues = explode ( ',', $conf ['tables'] );
 		$this->supportedTables = array_map ( 'trim', $explodedValues );
-		$this->objectManager = GeneralUtility::makeInstance ( 'TYPO3\\CMS\\Extbase\\Object\\ObjectManager' );
+		$this->objectManager = t3lib_div::makeInstance ( 'Tx_Extbase_Object_ObjectManager' );
 	}
-
 	/**
 	 * @return Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository
 	 */
@@ -93,20 +76,12 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 * @param array $incomingFieldArray
 	 * @param string $table
 	 * @param integer $id
-	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tcemain
+	 * @param t3lib_tcemain $tcemain
 	 */
-	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, \TYPO3\CMS\Core\DataHandling\DataHandler &$tcemain) {
+	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, t3lib_TCEmain &$tcemain) {
 		if (FALSE === $this->needsOverWriteProtection ( $table )) {
 			return;
 		}
-
-        // check, if overwrite-protection-fields are set:
-        // If they are NOT set, it means, that any other extension maybe called the process_datamap!
-        if(false === array_key_exists(self::OVERWRITE_PROTECTION_TILL, $incomingFieldArray) ||
-           false === array_key_exists(self::OVERWRITE_PROTECTION_MODE, $incomingFieldArray)
-        ) {
-            return;
-        }
 
 		if (FALSE === $this->hasOverWriteProtection ( $incomingFieldArray )) {
 			$this->removeOverwriteprotection( $id, $table );
@@ -115,9 +90,9 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 			$mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
 
 			$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-			if ($result->count() === 0) {
+			if (count ( $result ) === 0) {
 				/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
-				$overwriteprotection = $this->objectManager->get ( 'Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection' );
+				$overwriteprotection = $this->objectManager->create ( 'Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection' );
 				$overwriteprotection->setProtectedMode ( $mode );
 				$overwriteprotection->setPid ( $tcemain->getPID ( $table, $id ) );
 				$overwriteprotection->setProtectedTablename ( $table );
@@ -140,9 +115,9 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	/**
 	 * Render Form Field in typo3 backend
 	 * @param array $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fob
+	 * @param t3lib_TCEforms $fob
 	 */
-	public function renderInput(array $PA, \TYPO3\CMS\Backend\Form\FormEngine $fob) {
+	public function renderInput(array $PA, t3lib_TCEforms $fob) {
 		$content = file_get_contents ( dirname ( __FILE__ ) . '/../Resources/Private/Templates/formField.php' );
 		$content = str_replace ( '###UID###', $PA ['row'] ['uid'], $content );
 		$content = str_replace ( '###TABLE###', $PA ['table'], $content );
@@ -213,7 +188,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	}
 	/**
 	 * remove overwriteprotection
-	 *
+	 * 
 	 * @param integer $id
 	 * @param string $table
 	 */
