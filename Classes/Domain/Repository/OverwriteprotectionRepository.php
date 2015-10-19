@@ -28,7 +28,8 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
  * Overwriteprotection Repository
  * @package aoe_dbsequenzer
  */
-class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+{
 
     /**
      *
@@ -39,22 +40,32 @@ class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends 
         parent::__construct($objectManager);
     }
 
-	/**
-	 * remove storage page
-	 */
-	public function initializeObject() {
-		$querySettings = $this->objectManager->get ( 'Tx_Extbase_Persistence_Typo3QuerySettings' );
-		$querySettings->setRespectStoragePage ( FALSE );
-		$this->setDefaultQuerySettings ( $querySettings );
-	}
-	/**
-	 * @param integer $protectedUid
-	 * @param string $tableName
-	 * @return Tx_Extbase_Persistence_QueryResultInterface
-	 */
-	public function findByProtectedUidAndTableName($protectedUid,$tableName){
-		$query = $this->createQuery();
-		$query->matching ( $query->logicalAnd ( $query->equals ( 'protected_uid', intval($protectedUid) ), $query->equals ( 'protected_tablename', $tableName)) );
-		return $query->execute ();
-	}
+    /**
+     * remove storage page
+     */
+    public function initializeObject()
+    {
+        $querySettings = $this->objectManager->get('Tx_Extbase_Persistence_Typo3QuerySettings');
+        $querySettings->setRespectStoragePage(false);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * @param integer $protectedUid
+     * @param string $tableName
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
+     */
+    public function findByProtectedUidAndTableName($protectedUid, $tableName)
+    {
+        $query = $this->createQuery();
+        $query->matching(
+            $query->logicalAnd(
+                array(
+                    $query->equals('protected_uid', intval($protectedUid)),
+                    $query->equals('protected_tablename', $tableName)
+                )
+            )
+        );
+        return $query->execute();
+    }
 }

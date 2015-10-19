@@ -21,11 +21,12 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 /**
  * Overwriteprotection
  * @package aoe_survey
  */
-class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends Tx_Extbase_DomainObject_AbstractEntity {
+class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var integer
 	 */
