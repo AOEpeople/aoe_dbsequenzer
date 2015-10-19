@@ -40,7 +40,7 @@ class Tx_AoeDbsequenzer_TYPO3ServiceTest extends Tx_AoeDbsequenzer_BaseTest {
 	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::setUp()
 	 */
-	protected function setUp() {
+	public function setUp() {
 		$conf = array ();
 		$conf ['offset'] = '1';
 		$conf ['system'] = 'testa';

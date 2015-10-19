@@ -37,10 +37,20 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 * (non-PHPdoc)
 	 * @see PHPUnit_Framework_TestCase::setUp()
 	 */
-	protected function setUp() {
+	public function setUp() {
 		$conf = array ();
 		$conf ['tables'] = 'table1,table2';
+
+		$GLOBALS['BE_USER'] = $this->getMock('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication', array(), array(), '', FALSE);
+		$GLOBALS['BE_USER']->user = array('uid' => uniqid());
+		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection', array(), array(), '', FALSE);
+		$GLOBALS['LANG'] = $this->getMock('TYPO3\\CMS\\Lang\\LanguageService', array(), array(), '', FALSE);
+
+		$objectManagerMock = $this->getMockBuilder('TYPO3\CMS\Extbase\Object\ObjectManager')
+				->getMock();
+		$objectManagerMock->method('get')->willReturn($this->getMock('Tx_Extbase_Persistence_Manager', array('persistAll')));
 		$this->overwriteProtection = new Tx_AoeDbsequenzer_OverwriteProtectionService ( $conf );
+		$this->overwriteProtection->injectObjectManager($objectManagerMock);
 	}
 	/**
 	 * @test
@@ -92,8 +102,10 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 		$overwriteprotectionRepository = $this->getMock('Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository');
 		$overwriteprotectionRepository->expects ( $this->once () )->method ( 'findByProtectedUidAndTableName' )->will($this->returnValue(array()));
 		$this->overwriteProtection->setOverwriteprotectionRepository($overwriteprotectionRepository);
+
 		$PA = array();
-		$result = $this->overwriteProtection->renderInput ( $PA, $this->getMock('TYPO3\\CMS\\Backend\\Form\\FormEngine') );
+		$formEngineMock = $this->getMock('\TYPO3\CMS\Backend\Form\FormEngine');
+		$result = $this->overwriteProtection->renderInput ( $PA, $formEngineMock );
 		$this->assertNotNull($result);
 		$this->assertNotContains('###UID###', $result);
 	}
