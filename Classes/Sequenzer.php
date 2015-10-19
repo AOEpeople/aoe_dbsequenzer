@@ -67,7 +67,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	/**
 	 * sets mysql dblink with DB connection
 	 *
-	 * @param \mysqli $dbLink optional
+	 * @param recource $dbLink optional
 	 */
 	public function setDbLink($dbLink = NULL) {
 		if (is_null ( $dbLink )) {
@@ -79,9 +79,10 @@ class Tx_AoeDbsequenzer_Sequenzer {
 
 	/**
 	 * returns next free id in the sequenz of the table
-	 *
-	 * @param string $table
-	 * @param integer $depth
+	 * @param $table
+	 * @param int $depth
+	 * @return int
+	 * @throws Exception
 	 */
 	public function getNextIdForTable($table, $depth = 0) {
 		if ($depth > 99) {
@@ -118,9 +119,9 @@ class Tx_AoeDbsequenzer_Sequenzer {
 
 	/**
 	 * Gets the default start value for a given table.
-	 *
-	 * @param string $table
-	 * @param integer
+	 * @param $table
+	 * @return int
+	 * @throws Exception
 	 */
 	private function getDefaultStartValue($table) {
 		$result = $this->query ( 'SELECT max(uid) as max FROM ' . $table );
@@ -143,7 +144,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	}
 
 	/**
-	 * get sheduler tablename
+	 * get scheduler table name
 	 * @return string
 	 */
 	private function getTable() {
@@ -151,17 +152,18 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	}
 
 	/**
-	 *
-	 * @param string $string
+	 * @param $string
+	 * @return string
 	 */
 	private function escapeString($string) {
 		return mysqli_escape_string($this->dbLink, $string);
 	}
-	/**
-	 * @param string $sql
-	 * @return recource
-	 * @throws Exception
-	 */
+
+    /**
+     * @param $sql
+     * @return bool|mysqli_result
+     * @throws Exception
+     */
 	private function query($sql) {
 		$result = mysqli_query ($this->dbLink, $sql);
 		if (mysqli_error ( $this->dbLink )) {
