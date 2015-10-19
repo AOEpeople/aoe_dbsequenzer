@@ -47,7 +47,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 */
 	private $overwriteprotectionRepository;
 	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
 	 */
 	private $objectManager;
 

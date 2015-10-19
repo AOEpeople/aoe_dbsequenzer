@@ -64,11 +64,10 @@ class Tx_AoeDbsequenzer_Sequenzer {
 		$this->defaultOffset = $defaultOffset;
 	}
 
-	/**
-	 * sets mysql dblink with DB connection
-	 *
-	 * @param recource $dbLink optional
-	 */
+    /**
+     * sets mysql dblink with DB connection
+     * @param null $dbLink
+     */
 	public function setDbLink($dbLink = NULL) {
 		if (is_null ( $dbLink )) {
 			$this->dbLink = $GLOBALS['TYPO3_DB']->getDatabaseHandle();
