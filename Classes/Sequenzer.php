@@ -67,11 +67,11 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	/**
 	 * sets mysql dblink with DB connection
 	 *
-	 * @param resource $dbLink optional
+	 * @param \mysqli $dbLink optional
 	 */
 	public function setDbLink($dbLink = NULL) {
 		if (is_null ( $dbLink )) {
-			$this->dbLink = $GLOBALS ['TYPO3_DB']->getDatabaseHandle();
+			$this->dbLink = $GLOBALS['TYPO3_DB']->getDatabaseHandle();
 		} else {
 			$this->dbLink = $dbLink;
 		}
@@ -80,8 +80,8 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	/**
 	 * returns next free id in the sequenz of the table
 	 *
-	 * @param unknown_type $table
-	 * @param unknown_type $depth
+	 * @param string $table
+	 * @param integer $depth
 	 */
 	public function getNextIdForTable($table, $depth = 0) {
 		if ($depth > 99) {

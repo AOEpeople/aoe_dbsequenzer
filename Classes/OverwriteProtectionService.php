@@ -63,8 +63,8 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	}
 
 	/**
-	 * Injects GeneralUtility instance
-	 * @param GeneralUtility $generalUtility
+	 * Injects ObjectManager instance
+	 * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
 	 */
 	public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
 	{
