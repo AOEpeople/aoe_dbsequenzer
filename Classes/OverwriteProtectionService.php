@@ -60,6 +60,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		}
 		$explodedValues = explode ( ',', $conf ['tables'] );
 		$this->supportedTables = array_map ( 'trim', $explodedValues );
+		$this->objectManager = GeneralUtility::makeInstance ('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 	}
 
 	/**
