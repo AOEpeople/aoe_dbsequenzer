@@ -23,6 +23,7 @@
  ***************************************************************/
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * @package aoe_dbsequenzer
@@ -216,8 +217,8 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 * persist all changes
 	 */
 	private function persistAll() {
-		/* @var $persistenceManager Tx_Extbase_Persistence_Manager */
-		$persistenceManager = $this->objectManager->get ( 'Tx_Extbase_Persistence_Manager' );
+		/* @var $persistenceManager PersistenceManager */
+		$persistenceManager = $this->objectManager->get ( 'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager' );
 		$persistenceManager->persistAll ();
 	}
 	/**

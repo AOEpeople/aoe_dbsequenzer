@@ -46,9 +46,8 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection', array(), array(), '', FALSE);
 		$GLOBALS['LANG'] = $this->getMock('TYPO3\\CMS\\Lang\\LanguageService', array(), array(), '', FALSE);
 
-		$objectManagerMock = $this->getMockBuilder('TYPO3\CMS\Extbase\Object\ObjectManager')
-				->getMock();
-		$objectManagerMock->method('get')->willReturn($this->getMock('Tx_Extbase_Persistence_Manager', array('persistAll')));
+		$objectManagerMock = $this->getMockBuilder('TYPO3\CMS\Extbase\Object\ObjectManager')->getMock();
+		$objectManagerMock->method('get')->willReturn($this->getMock('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager', array('persistAll')));
 		$this->overwriteProtection = new Tx_AoeDbsequenzer_OverwriteProtectionService ( $conf );
 		$this->overwriteProtection->injectObjectManager($objectManagerMock);
 	}
@@ -57,7 +56,8 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArray() {
 		$test = array ('field1' => 'a' );
-		$this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' ) );
+		$dataHandlerMock = $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' );
+		$this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $dataHandlerMock );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}
 	/**
@@ -65,7 +65,8 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArrayWithProtection() {
 		$test = array ('field1' => 'a', Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323' );
-		$test = $this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' ) );
+		$dataHandlerMock = $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' );
+		$test = $this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $dataHandlerMock );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}
 	/**

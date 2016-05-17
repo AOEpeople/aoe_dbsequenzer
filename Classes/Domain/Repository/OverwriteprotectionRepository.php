@@ -23,6 +23,7 @@
  ***************************************************************/
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
  * Overwriteprotection Repository
@@ -45,7 +46,8 @@ class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends 
      */
     public function initializeObject()
     {
-        $querySettings = $this->objectManager->get('Tx_Extbase_Persistence_Typo3QuerySettings');
+        /* @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
         $querySettings->setRespectStoragePage(false);
         $this->setDefaultQuerySettings($querySettings);
     }
