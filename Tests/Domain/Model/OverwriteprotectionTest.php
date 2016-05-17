@@ -3,7 +3,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015 AOE media GmbH <dev@aoemedia.de>
+ *  (c) 2015 AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *
