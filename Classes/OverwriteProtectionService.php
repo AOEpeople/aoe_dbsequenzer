@@ -139,6 +139,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 					/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
 					$overwriteprotection->setProtectedMode ( $mode );
 					$overwriteprotection->setProtectedTime ( $protection );
+					$this->getOverwriteprotectionRepository ()->update($overwriteprotection);
 				}
 			}
 			$this->persistAll();
