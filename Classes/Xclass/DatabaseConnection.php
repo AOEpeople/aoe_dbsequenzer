@@ -27,7 +27,7 @@
  * @author danielpotzinger
  *
  */
-class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_DatabaseConnection {
+class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends \Aoe\T3p_scalable\Xclass\DatabaseConnection {
 	/**
 	 * @var boolean
 	 */
@@ -74,11 +74,11 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	/**
 	 * Creates an INSERT SQL-statement for $table with multiple rows.
 	 *
-	 * @param	string		$table Table name
-	 * @param	array		$fields Field names
-	 * @param	array		$rows Table rows. Each row should be an array with field values mapping to $fields
-	 * @param	string/array $no_quote_fields		See fullQuoteArray()
-	 * @return	string		Full SQL query for INSERT (unless $rows does not contain any elements in which case it will be false)
+	 * @param	string		      $table Table name
+	 * @param	array		      $fields Field names
+	 * @param	array		      $rows Table rows. Each row should be an array with field values mapping to $fields
+	 * @param	bool|array|string $no_quote_fields See fullQuoteArray()
+	 * @return	string		      Full SQL query for INSERT (unless $rows does not contain any elements in which case it will be false)
 	 */
 	public function INSERTmultipleRows($table, array $fields, array $rows, $no_quote_fields = FALSE) {
 		if ($this->isEnabled) {
@@ -120,9 +120,12 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends Tx_T3pScalable_Xclass_
 	/**
 	 * Open a (persistent) connection to a MySQL server
 	 *
+     * @param string $host Deprecated since 6.1, will be removed in two versions. Database host IP/domain[:port]
+     * @param string $username Deprecated since 6.1, will be removed in two versions. Username to connect with.
+     * @param string $password Deprecated since 6.1, will be removed in two versions. Password to connect with.
 	 * @return \mysqli|NULL	Returns current database handle
 	 */
-	function sql_pconnect()	{
+	function sql_pconnect($host = null, $username = null, $password = null)	{
 		parent::sql_pconnect();
 		$this->getTYPO3Service()->setDbLink($this->getDatabaseHandle());
 		return $this->getDatabaseHandle();
