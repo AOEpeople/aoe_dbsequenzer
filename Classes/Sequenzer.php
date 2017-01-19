@@ -23,7 +23,7 @@
  ***************************************************************/
 
 /**
- * Sequenzer is used to generate system wide independet IDs
+ * Sequenzer is used to generate system wide independent IDs
  *
  * @author danielpotzinger
  *
@@ -34,7 +34,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	 */
 	private $table = 'tx_aoedbsequenzer_sequenz';
 	/**
-	 * @var recource
+	 * @var mysqli
 	 */
 	private $dbLink;
 	/**
@@ -51,14 +51,14 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	private $checkInterval = 120;
 
 	/**
-	 * @param $defaultStart the $defaultStart to set
+	 * @param integer $defaultStart to set
 	 */
 	public function setDefaultStart($defaultStart) {
 		$this->defaultStart = $defaultStart;
 	}
 
 	/**
-	 * @param $defaultOffset the $defaultOffset to set
+	 * @param integer $defaultOffset to set
 	 */
 	public function setDefaultOffset($defaultOffset) {
 		$this->defaultOffset = $defaultOffset;

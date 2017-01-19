@@ -66,7 +66,7 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	/**
 	 * sets the db link
 	 *
-	 * @param resource $link
+	 * @param \mysqli|NULL $link
 	 */
 	public function setDbLink($link) {
 		$this->sequenzer->setDbLink ( $link );
@@ -77,6 +77,7 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	 *
 	 * @param string $tableName
 	 * @param array $fields_values
+     * @return array
 	 */
 	public function modifyInsertFields($tableName, array $fields_values) {
 		if ($this->needsSequenzer ($tableName)) {
