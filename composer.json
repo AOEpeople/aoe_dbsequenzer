@@ -1,5 +1,5 @@
 {
-  "name": "aoe/dbsequenzer",
+  "name": "aoe/aoe-dbsequenzer",
   "description": "With this extension you can ensure different unique keys for the configured tables.",
   "type": "typo3-cms-extension",
   "authors": [
