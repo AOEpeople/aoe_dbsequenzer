@@ -23,6 +23,7 @@
  ***************************************************************/
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \TYPO3\CMS\Lang\LanguageService;
 use \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -151,9 +152,8 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	/**
 	 * Render Form Field in typo3 backend
 	 * @param array $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $fob
 	 */
-	public function renderInput(array $PA, \TYPO3\CMS\Backend\Form\FormEngine $fob) {
+	public function renderInput(array $PA) {
 		$content = file_get_contents ( dirname ( __FILE__ ) . '/../Resources/Private/Templates/formField.php' );
 		$content = str_replace ( '###UID###', $PA ['row'] ['uid'], $content );
 		$content = str_replace ( '###TABLE###', $PA ['table'], $content );
@@ -176,9 +176,9 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		$content = str_replace ( '###VALUE###', $value, $content );
 		$content = str_replace ( '###OVERWIRTE_MODE###', $overwriteMode, $content );
 		$content = str_replace ( '###CONFLICT_MODE###', $conflictMode, $content );
-		$content = str_replace ( '###LABEL_MODE###', $fob->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protected_mode'), $content );
-		$content = str_replace ( '###LABEL_MODE_CONFLICT###', $fob->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_conflict'), $content );
-		$content = str_replace ( '###LABEL_MODE_OVERWIRTE###', $fob->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_overwrite'), $content );
+		$content = str_replace ( '###LABEL_MODE###', $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protected_mode'), $content );
+		$content = str_replace ( '###LABEL_MODE_CONFLICT###', $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_conflict'), $content );
+		$content = str_replace ( '###LABEL_MODE_OVERWIRTE###', $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_overwrite'), $content );
 		return $content;
 	}
 
@@ -187,6 +187,13 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 */
 	public function setOverwriteprotectionRepository(Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository) {
 		$this->overwriteprotectionRepository = $overwriteprotectionRepository;
+	}
+
+	/**
+	 * @return LanguageService
+	 */
+	private function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 
 	/**

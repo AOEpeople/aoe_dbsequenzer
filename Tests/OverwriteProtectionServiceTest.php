@@ -105,8 +105,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 		$this->overwriteProtection->setOverwriteprotectionRepository($overwriteprotectionRepository);
 
 		$PA = array();
-		$formEngineMock = $this->getMock('\TYPO3\CMS\Backend\Form\FormEngine');
-		$result = $this->overwriteProtection->renderInput ( $PA, $formEngineMock );
+		$result = $this->overwriteProtection->renderInput ( $PA );
 		$this->assertNotNull($result);
 		$this->assertNotContains('###UID###', $result);
 	}
