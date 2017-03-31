@@ -1,4 +1,4 @@
 <?php
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Tx_T3pScalable_Xclass_DatabaseConnection'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['\\Aoe\\T3p_scalable\\Xclass\\DatabaseConnection'] = array(
     'className' => 'Tx_AoeDbsequenzer_Xclass_DatabaseConnection',
 );
