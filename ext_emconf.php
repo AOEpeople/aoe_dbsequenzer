@@ -22,10 +22,9 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
-	'version' => '1.1.4',
+	'version' => '2.0.0',
 	'constraints' => array(
 		'depends' => array(
-		    't3p_scalable' => '2.0.1-0.0.0',
 			'extbase' => '1.3.0',
             'typo3' => '6.2.0-7.6.99',
 		),

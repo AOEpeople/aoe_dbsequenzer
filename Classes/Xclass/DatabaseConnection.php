@@ -27,7 +27,7 @@
  * @author danielpotzinger
  *
  */
-class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends \Aoe\T3p_scalable\Xclass\DatabaseConnection {
+class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection {
 	/**
 	 * @var boolean
 	 */
