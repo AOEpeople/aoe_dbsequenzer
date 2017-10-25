@@ -9,8 +9,7 @@ return array(
         'label_alt_force'=> true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('aoe_dbsequenzer').
-            'Resources/Public/Icons/tx_aoedbsequenzer_overwriteprotection.gif'
+        'iconfile' => 'EXT:aoe_dbsequenzer/Resources/Public/Icons/tx_aoedbsequenzer_overwriteprotection.gif'
     ),
     'interface' => array(
         'showRecordFieldList' => 'protected_uid,protected_tablename,protected_time,protected_mode'
