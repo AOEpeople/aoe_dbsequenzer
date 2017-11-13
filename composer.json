@@ -19,7 +19,7 @@
   },
   "require-dev": {
     "typo3/cms": "6.2.*",
-    "typo3-ter/phpunit": "4.4.0",
+    "typo3-ter/phpunit": "4.8.*",
     "squizlabs/php_codesniffer": "*",
     "sebastian/phpcpd": "*",
     "phpmd/phpmd": "*",
