@@ -1,7 +1,7 @@
 <phpunit>
 	<testsuites>
 		<testsuite name="aoe_dbsequenzer">
-			<directory suffix="Test.php">./</directory>
+			<directory suffix="Test.php">./Unit</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

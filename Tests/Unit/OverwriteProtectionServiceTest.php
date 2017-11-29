@@ -63,7 +63,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArray() {
 		$test = array ('field1' => 'a' );
-		$dataHandlerMock = $this->getMock ( DataHandler::class );
+		$dataHandlerMock = $this->getMockBuilder ( DataHandler::class )->disableOriginalConstructor()->getMock();
 		$this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $dataHandlerMock );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}
@@ -72,7 +72,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArrayWithProtection() {
 		$test = array ('field1' => 'a', Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323' );
-		$dataHandlerMock = $this->getMock ( DataHandler::class );
+        $dataHandlerMock = $this->getMockBuilder ( DataHandler::class )->disableOriginalConstructor()->getMock();
 		$test = $this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $dataHandlerMock );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}
