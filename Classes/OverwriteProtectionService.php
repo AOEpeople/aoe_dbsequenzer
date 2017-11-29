@@ -38,6 +38,15 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 * @var string
 	 */
 	const OVERWRITE_PROTECTION_MODE = 'tx_aoe_dbsquenzer_protectoverwrite_mode';
+    /**
+     * @var int
+     */
+	const OVERWRITE_PROTECTION_MODE_CONFLICT = 0;
+    /**
+     * @var int
+     */
+    const OVERWRITE_PROTECTION_MODE_OVERWRITE = 1;
+
 	/**
 	 * array of configured tables that should call the sequenzer
 	 *
@@ -107,7 +116,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tcemain
 	 */
 	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, \TYPO3\CMS\Core\DataHandling\DataHandler &$tcemain) {
-		if (FALSE === $this->needsOverWriteProtection ( $table )) {
+	    if (FALSE === $this->needsOverWriteProtection ( $table )) {
 			return;
 		}
 
@@ -122,7 +131,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		if (FALSE === $this->hasOverWriteProtection ( $incomingFieldArray )) {
 			$this->removeOverwriteprotection( $id, $table );
 		} else {
-			$protection = strtotime ( $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL] );
+			$protection = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
 			$mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
 
 			$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
@@ -203,7 +212,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	private function hasOverWriteProtection(array $fields_values) {
 		if (isset ( $fields_values [self::OVERWRITE_PROTECTION_TILL] )) {
 			$value = trim ( $fields_values [self::OVERWRITE_PROTECTION_TILL] );
-			if (FALSE === empty ( $value ) && FALSE !== strtotime ( $value )) {
+			if (FALSE === empty ( $value ) && FALSE !== is_numeric ( $value )) {
 				return true;
 			}
 		}

@@ -6,6 +6,7 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="protectoverwrite_headline">Protect overwrite</label>
 			<label index="protectoverwrite_till">Protect this element from being overwritten by the time</label>
 			<label index="tx_aoedbsequenzer_overwriteprotection">Content Overwrite Protection</label>
 			<label index="protected_uid">Uid</label>
@@ -16,6 +17,7 @@
 			<label index="mode_overwrite">overwrite content</label>
 		</languageKey>
 		<languageKey index="de" type="array">
+			<label index="protectoverwrite_headline">Überschreibschutz</label>
 			<label index="protectoverwrite_till">Schütze dieses Element vor dem Überschreiben bis zum Zeitpunkt:</label>
 			<label index="tx_aoedbsequenzer_overwriteprotection">Überschreibschutz für Inhalte</label>
 			<label index="protected_uid">Uid von geschützem Element</label>

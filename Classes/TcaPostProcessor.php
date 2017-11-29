@@ -41,41 +41,69 @@ class Tx_AoeDbsequenzer_TcaPostProcessor
     {
         $GLOBALS['TCA'] = $tca;
 
-        $columnConfig = [
+        $additionalColumns = [
             'tx_aoe_dbsquenzer_protectoverwrite_till' => [
                 'label' => 'LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protectoverwrite_till',
                 'config' => [
                     'type' => 'user',
-                    'userFunc' => 'Tx_AoeDbsequenzer_OverwriteProtectionService->renderInput',
+                    'userFunc' => 'Tx_AoeDbsequenzer_Form_OverwriteTillElement->render',
                     'eval' => 'datetime'
+                ]
+            ],
+            'tx_aoe_dbsquenzer_protectoverwrite_mode' => [
+                'label' => 'LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protected_mode',
+                'config' => [
+                    'type' => 'user',
+                    'userFunc' => 'Tx_AoeDbsequenzer_Form_OverwriteModeElement->render',
                 ]
             ]
         ];
-        $columnName = 'tx_aoe_dbsquenzer_protectoverwrite_till';
+
+        $columnNames[] = Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL;
+        $columnNames[] = Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_MODE;
+        $columnNamesStr = ' ' . implode(', ', $columnNames);
+
+        $newFieldsString = '--palette--;LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protectoverwrite_headline;tx_aoe_dbsequenzer';
+        $newFieldsStringRegex = preg_quote($newFieldsString, '/');
 
         foreach ($this->getTcaTablesWithOverwriteProtectionSupport() as $table) {
             // add columnsConfig at END of TCA-configuration
-            ExtensionManagementUtility::addTCAcolumns($table, $columnConfig);
-            ExtensionManagementUtility::addToAllTCAtypes($table, $columnName);
+            ExtensionManagementUtility::addTCAcolumns($table, $additionalColumns);
+
+            ExtensionManagementUtility::addFieldsToPalette(
+                $table,
+                'tx_aoe_dbsequenzer',
+                $columnNamesStr
+            );
+
+            ExtensionManagementUtility::addToAllTCAtypes(
+                $table,
+                $newFieldsString
+            );
+
+            //ExtensionManagementUtility::addToAllTCAtypes($table, $columnNames[0]);
+            //ExtensionManagementUtility::addToAllTCAtypes($table, $columnNames[1]);
 
             // move columnsConfig from END of TCA-configuration to BEGIN of TCA-configuration
-            if(is_array($GLOBALS['TCA'][$table]['types'])) {
-                foreach($GLOBALS['TCA'][$table]['types'] as &$tableTypeConfig) {
-                    if(array_key_exists('showitem', $tableTypeConfig) && preg_match('/'.$columnName.'$/i', $tableTypeConfig['showitem'])) {
+            if (is_array($GLOBALS['TCA'][$table]['types'])) {
+                foreach ($GLOBALS['TCA'][$table]['types'] as &$tableTypeConfig) {
+                    if (array_key_exists('showitem', $tableTypeConfig) &&
+                        preg_match('/' . $newFieldsStringRegex . '$/i', $tableTypeConfig['showitem'])) {
+
                         $showItems = &$tableTypeConfig['showitem'];
 
                         // 1. delete columnsConfig at END of TCA-configuration
-                        $showItems = preg_replace('/,\s?'.$columnName.'/i', '', $showItems);
+                        $showItems = preg_replace('/,\s?' . $newFieldsStringRegex . '/i', '', $showItems);
 
                         // 2. add columnsConfig at BEGIN of TCA-configuration
-                        if(preg_match('/^--div--/i', $showItems)) {
+                        if (preg_match('/^--div--/i', $showItems)) {
                             // first entry is an tab
                             $firstColumnEntry = substr($showItems, 0, stripos($showItems, ',') + 1);
                             $showItems = str_replace($firstColumnEntry, '', $showItems);
-                            $showItems = $firstColumnEntry . $columnName . ',' . $showItems;
+                            $showItems = $firstColumnEntry . $newFieldsString . ',' . $showItems;
                         } else {
                             // first entry is no tab
-                            $showItems = $columnName . ',' . $showItems;
+                            $showItems = $newFieldsString . ',' . $showItems;
                         }
                     }
                 }

@@ -13,5 +13,6 @@ return array(
 	'tx_aoedbsequenzer_sequenzer' => $extensionClassesPath . 'Sequenzer.php',
 	'tx_aoedbsequenzer_typo3service' => $extensionClassesPath . 'TYPO3Service.php',
 	'tx_aoedbsequenzer_typo3servicetest' => $extensionPath . 'Tests/TYPO3ServiceTest.php',
+    'tx_aoedbsequenzer_form_overwritetillelement' => $extensionPath . 'Form/Tx_AoeDbsequenzer_Form_OverwriteTillElement.php',
+    'tx_aoedbsequenzer_form_overwritemodeelement' => $extensionPath . 'Form/Tx_AoeDbsequenzer_Form_OverwriteModeElement.php',
 );
-?>
