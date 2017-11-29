@@ -96,19 +96,6 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 		$this->overwriteProtection->setOverwriteprotectionRepository($overwriteprotectionRepository);
 		$this->overwriteProtection->processCmdmap_postProcess ( 'delete', 'table1', 1 );
 	}
-	/**
-	 * @test
-	 */
-	public function renderInput() {
-		$overwriteprotectionRepository = $this->getMock('Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository');
-		$overwriteprotectionRepository->expects ( $this->once () )->method ( 'findByProtectedUidAndTableName' )->will($this->returnValue(array()));
-		$this->overwriteProtection->setOverwriteprotectionRepository($overwriteprotectionRepository);
-
-		$PA = array();
-		$result = $this->overwriteProtection->renderInput ( $PA );
-		$this->assertNotNull($result);
-		$this->assertNotContains('###UID###', $result);
-	}
 
 	/**
 	 * (non-PHPdoc)

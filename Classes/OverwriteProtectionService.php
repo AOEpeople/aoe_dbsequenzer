@@ -159,39 +159,6 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	}
 
 	/**
-	 * Render Form Field in typo3 backend
-	 * @param array $PA
-	 */
-	public function renderInput(array $PA) {
-		$content = file_get_contents ( dirname ( __FILE__ ) . '/../Resources/Private/Templates/formField.php' );
-		$content = str_replace ( '###UID###', $PA ['row'] ['uid'], $content );
-		$content = str_replace ( '###TABLE###', $PA ['table'], $content );
-		$content = str_replace ( '###ID###', uniqid (), $content );
-		$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $PA ['row'] ['uid'], $PA ['table'] );
-		$value = '';
-		$overwriteMode = '';
-		$conflictMode = '';
-
-		foreach ( $result as $overwriteprotection ) {
-			/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
-			$value = $overwriteprotection->getProtectedTime ();
-			$value = date ( 'H:i d-m-Y', $value );
-			if ($overwriteprotection->getProtectedMode () === 0) {
-				$conflictMode = 'selected="selected"';
-			} else {
-				$overwriteMode = 'selected="selected"';
-			}
-		}
-		$content = str_replace ( '###VALUE###', $value, $content );
-		$content = str_replace ( '###OVERWIRTE_MODE###', $overwriteMode, $content );
-		$content = str_replace ( '###CONFLICT_MODE###', $conflictMode, $content );
-		$content = str_replace ( '###LABEL_MODE###', $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protected_mode'), $content );
-		$content = str_replace ( '###LABEL_MODE_CONFLICT###', $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_conflict'), $content );
-		$content = str_replace ( '###LABEL_MODE_OVERWIRTE###', $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_overwrite'), $content );
-		return $content;
-	}
-
-	/**
 	 * @param Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository
 	 */
 	public function setOverwriteprotectionRepository(Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository) {
