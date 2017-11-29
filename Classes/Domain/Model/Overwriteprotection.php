@@ -22,11 +22,13 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * Overwriteprotection
  * @package aoe_survey
  */
-class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends AbstractEntity {
 	/**
 	 * @var integer
 	 */
@@ -109,6 +111,4 @@ class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends \TYPO3\CMS\Extb
 	public function setDeleted($deleted) {
 		$this->deleted = $deleted;
 	}
-
-
 }

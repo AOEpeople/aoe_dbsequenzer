@@ -22,6 +22,13 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Lang\LanguageService;
+
 /**
  * test case for Tx_AoeDbsequenzer_OverwriteProtection
  * @package aoe_dbsequenzer
@@ -41,13 +48,13 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 		$conf = array ();
 		$conf ['tables'] = 'table1,table2';
 
-		$GLOBALS['BE_USER'] = $this->getMock('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication', array(), array(), '', FALSE);
+		$GLOBALS['BE_USER'] = $this->getMock(BackendUserAuthentication::class, array(), array(), '', FALSE);
 		$GLOBALS['BE_USER']->user = array('uid' => uniqid());
-		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection', array(), array(), '', FALSE);
-		$GLOBALS['LANG'] = $this->getMock('TYPO3\\CMS\\Lang\\LanguageService', array(), array(), '', FALSE);
+		$GLOBALS['TYPO3_DB'] = $this->getMock(DatabaseConnection::class, array(), array(), '', FALSE);
+		$GLOBALS['LANG'] = $this->getMock(LanguageService::class, array(), array(), '', FALSE);
 
-		$objectManagerMock = $this->getMockBuilder('TYPO3\CMS\Extbase\Object\ObjectManager')->getMock();
-		$objectManagerMock->method('get')->willReturn($this->getMock('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager', array('persistAll')));
+		$objectManagerMock = $this->getMockBuilder(ObjectManager::class)->getMock();
+		$objectManagerMock->method('get')->willReturn($this->getMock(PersistenceManager::class, array('persistAll')));
 		$this->overwriteProtection = new Tx_AoeDbsequenzer_OverwriteProtectionService ( $conf );
 		$this->overwriteProtection->injectObjectManager($objectManagerMock);
 	}
@@ -56,7 +63,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArray() {
 		$test = array ('field1' => 'a' );
-		$dataHandlerMock = $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' );
+		$dataHandlerMock = $this->getMock ( DataHandler::class );
 		$this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $dataHandlerMock );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}
@@ -65,7 +72,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionServiceTest extends Tx_AoeDbsequenzer
 	 */
 	public function processDatamap_preProcessFieldArrayWithProtection() {
 		$test = array ('field1' => 'a', Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323' );
-		$dataHandlerMock = $this->getMock ( 'TYPO3\\CMS\\Core\\DataHandling\\DataHandler' );
+		$dataHandlerMock = $this->getMock ( DataHandler::class );
 		$test = $this->overwriteProtection->processDatamap_preProcessFieldArray ( $test, 'table1', 1, $dataHandlerMock );
 		$this->assertFalse ( isset ( $test [Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL] ) );
 	}

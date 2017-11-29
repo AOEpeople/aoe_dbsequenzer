@@ -22,14 +22,17 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Overwriteprotection Repository
  * @package aoe_dbsequenzer
  */
-class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends Repository
 {
 
     /**
@@ -37,7 +40,7 @@ class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends 
      */
     public function __construct()
     {
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         parent::__construct($objectManager);
     }
 
@@ -47,7 +50,7 @@ class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends 
     public function initializeObject()
     {
         /* @var $querySettings Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
         $querySettings->setRespectStoragePage(false);
         $this->setDefaultQuerySettings($querySettings);
     }
@@ -55,7 +58,7 @@ class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends 
     /**
      * @param integer $protectedUid
      * @param string $tableName
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
+     * @return QueryResultInterface|array
      */
     public function findByProtectedUidAndTableName($protectedUid, $tableName)
     {

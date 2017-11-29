@@ -22,12 +22,14 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+
 /**
  *
  * @author danielpotzinger
  *
  */
-class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection {
+class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends DatabaseConnection {
 	/**
 	 * @var boolean
 	 */

@@ -22,9 +22,10 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Lang\LanguageService;
-use \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * @package aoe_dbsequenzer
@@ -71,7 +72,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		}
 		$explodedValues = explode ( ',', $conf ['tables'] );
 		$this->supportedTables = array_map ( 'trim', $explodedValues );
-		$this->objectManager = GeneralUtility::makeInstance ('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+		$this->objectManager = GeneralUtility::makeInstance (ObjectManager::class);
 	}
 
 	/**
@@ -202,7 +203,7 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 */
 	private function persistAll() {
 		/* @var $persistenceManager PersistenceManager */
-		$persistenceManager = $this->objectManager->get ( 'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager' );
+		$persistenceManager = $this->objectManager->get ( PersistenceManager::class );
 		$persistenceManager->persistAll ();
 	}
 	/**
