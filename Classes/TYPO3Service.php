@@ -49,20 +49,17 @@ class TYPO3Service
     private $supportedTables;
 
     /**
-     *
      * @param Sequenzer $sequenzer
      */
-    public function __construct(Sequenzer $sequenzer, $conf = null)
+    public function __construct(Sequenzer $sequenzer)
     {
+        $this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
+
         $this->sequenzer = $sequenzer;
-        if (is_null($conf)) {
-            $this->conf = unserialize($GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer']);
-        } else {
-            $this->conf = $conf;
-        }
-        $this->sequenzer->setDefaultOffset(intval($this->conf ['offset']));
-        $this->sequenzer->setDefaultStart(intval($this->conf ['system']));
-        $explodedValues = explode(',', $this->conf ['tables']);
+        $this->sequenzer->setDefaultOffset(intval($this->conf['offset']));
+        $this->sequenzer->setDefaultStart(intval($this->conf['system']));
+
+        $explodedValues = explode(',', $this->conf['tables']);
         $this->supportedTables = array_map('trim', $explodedValues);
     }
 
@@ -85,19 +82,22 @@ class TYPO3Service
      */
     public function modifyInsertFields($tableName, array $fields_values)
     {
-        if ($this->needsSequenzer($tableName)) {
-            if (isset($fields_values['uid'])) {
-                $e = new \Exception();
-                GeneralUtility::devLog(
-                    'UID ' . $fields_values['uid'] . ' is already set for table "' . $tableName . '"',
-                    'aoe_dbsequenzer',
-                    2,
-                    $e->getTraceAsString()
-                );
-            } else {
-                $fields_values['uid'] = $this->sequenzer->getNextIdForTable($tableName);
-            }
+        if (false === $this->needsSequenzer($tableName)) {
+            return $fields_values;
         }
+
+        if (isset($fields_values['uid'])) {
+            $e = new \Exception();
+            GeneralUtility::devLog(
+                'UID ' . $fields_values['uid'] . ' is already set for table "' . $tableName . '"',
+                'aoe_dbsequenzer',
+                2,
+                $e->getTraceAsString()
+            );
+        } else {
+            $fields_values['uid'] = $this->sequenzer->getNextIdForTable($tableName);
+        }
+
         return $fields_values;
     }
 

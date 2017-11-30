@@ -45,36 +45,50 @@ class TYPO3ServiceTest extends UnitTestCase
     private $sequenzer;
 
     /**
-     * (non-PHPdoc)
      * @see PHPUnit_Framework_TestCase::setUp()
      */
     public function setUp()
     {
-        $conf = [];
-        $conf ['offset'] = '1';
-        $conf ['system'] = 'testa';
-        $conf ['tables'] = 'table1,table2';
-        $this->sequenzer = $this->getMock(Sequenzer::class, [], [], '', false);
-        $this->service = new TYPO3Service ($this->sequenzer, $conf);
+        $testConfiguration = [];
+        $testConfiguration['offset'] = '1';
+        $testConfiguration['system'] = 'testa';
+        $testConfiguration['tables'] = 'table1,table2';
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer'] = serialize($testConfiguration);
+
+        $this->sequenzer = $this->getMockBuilder(Sequenzer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->service = new TYPO3Service($this->sequenzer);
     }
 
     /**
      * @test
      */
-    public function modifyInsertFields()
+    public function modifyInsertFields_NotSupportedTable()
     {
-        $this->sequenzer->expects($this->once())->method('getNextIdForTable')->willReturn(1);
-        $test = $this->service->modifyInsertFields('table1', ['field1' => 'a']);
-        $this->assertTrue(isset ($test ['uid']));
+        $this->sequenzer->expects($this->never())->method('getNextIdForTable');
+        $modifiedFields = $this->service->modifyInsertFields('tableXY', ['field1' => 'a']);
+        $this->assertFalse(isset($modifiedFields['uid']));
     }
 
     /**
-     * (non-PHPdoc)
+     * @test
+     */
+    public function modifyInsertFields_GetNextIdForTable()
+    {
+        $this->sequenzer->expects($this->once())->method('getNextIdForTable')->willReturn(1);
+        $modifiedFields = $this->service->modifyInsertFields('table1', ['field1' => 'a']);
+        $this->assertTrue(isset($modifiedFields['uid']));
+        $this->assertEquals(1, $modifiedFields['uid']);
+    }
+
+    /**
      * @see PHPUnit_Framework_TestCase::tearDown()
      */
     protected function tearDown()
     {
-        unset ($this->sequenzer);
-        unset ($this->service);
+        unset($this->sequenzer);
+        unset($this->service);
+        unset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
     }
 }
