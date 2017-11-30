@@ -62,10 +62,10 @@ class OverwriteProtectionRepository extends Repository
         $query = $this->createQuery();
         $query->matching(
             $query->logicalAnd(
-                array(
+                [
                     $query->equals('protected_uid', intval($protectedUid)),
                     $query->equals('protected_tablename', $tableName)
-                )
+                ]
             )
         );
         return $query->execute();
