@@ -71,36 +71,21 @@ class OverwriteProtectionService
     private $objectManager;
 
     /**
-     * @param array $conf
-     */
-    public function __construct($conf = null)
-    {
-        if (is_null($conf)) {
-            $conf = unserialize($GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer']);
-        }
-        $explodedValues = explode(',', $conf ['tables']);
-        $this->supportedTables = array_map('trim', $explodedValues);
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-    }
-
-    /**
-     * Injects ObjectManager instance
      * @param ObjectManagerInterface $objectManager
      */
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
+    public function __construct(ObjectManagerInterface $objectManager = null)
     {
-        $this->objectManager = $objectManager;
-    }
+        $extConf = unserialize($GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer']);
+        $explodedValues = explode(',', $extConf ['tables']);
+        $this->supportedTables = array_map('trim', $explodedValues);
 
-    /**
-     * @return OverwriteProtectionRepository
-     */
-    public function getOverwriteProtectionRepository()
-    {
-        if (!isset ($this->overwriteProtectionRepository)) {
-            $this->overwriteProtectionRepository = $this->objectManager->get(OverwriteProtectionRepository::class);
+        if ($objectManager == null) {
+            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        } else {
+            $this->objectManager = $objectManager;
         }
-        return $this->overwriteProtectionRepository;
+
+        $this->overwriteProtectionRepository = $this->objectManager->get(OverwriteProtectionRepository::class);
     }
 
     /**
@@ -147,7 +132,7 @@ class OverwriteProtectionService
             $protection = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
             $mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
 
-            $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($id, $table);
+            $result = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
             if ($result->count() === 0) {
                 /* @var $overwriteProtection OverwriteProtection */
                 $overwriteProtection = $this->objectManager->get(OverwriteProtection::class);
@@ -156,35 +141,19 @@ class OverwriteProtectionService
                 $overwriteProtection->setProtectedTablename($table);
                 $overwriteProtection->setProtectedUid($id);
                 $overwriteProtection->setProtectedTime($protection);
-                $this->getOverwriteProtectionRepository()->add($overwriteProtection);
+                $this->overwriteProtectionRepository->add($overwriteProtection);
             } else {
-                foreach ($result as $overwriteProtection) {
+                foreach ($result->toArray() as $overwriteProtection) {
                     /* @var $overwriteProtection OverwriteProtection */
                     $overwriteProtection->setProtectedMode($mode);
                     $overwriteProtection->setProtectedTime($protection);
-                    $this->getOverwriteProtectionRepository()->update($overwriteProtection);
+                    $this->overwriteProtectionRepository->update($overwriteProtection);
                 }
             }
             $this->persistAll();
         }
         unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_TILL]);
         unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_MODE]);
-    }
-
-    /**
-     * @param OverwriteProtectionRepository $overwriteProtectionRepository
-     */
-    public function setOverwriteProtectionRepository(OverwriteProtectionRepository $overwriteProtectionRepository)
-    {
-        $this->overwriteProtectionRepository = $overwriteProtectionRepository;
-    }
-
-    /**
-     * @return LanguageService
-     */
-    private function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
     }
 
     /**
@@ -210,8 +179,7 @@ class OverwriteProtectionService
      */
     private function needsOverWriteProtection($tableName)
     {
-        if ($tableName !== self::OVERWRITE_PROTECTION_TABLE && in_array($tableName,
-                $this->supportedTables)) {
+        if ($tableName !== self::OVERWRITE_PROTECTION_TABLE && in_array($tableName, $this->supportedTables)) {
             return true;
         }
         return false;
@@ -235,9 +203,9 @@ class OverwriteProtectionService
      */
     private function removeOverwriteProtection($id, $table)
     {
-        $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($id, $table);
-        foreach ($result as $overwriteProtection) {
-            $this->getOverwriteProtectionRepository()->remove($overwriteProtection);
+        $result = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
+        foreach ($result->toArray() as $overwriteProtection) {
+            $this->overwriteProtectionRepository->remove($overwriteProtection);
         }
         $this->persistAll();
     }

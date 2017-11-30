@@ -24,6 +24,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\Domain\Model\OverwriteProtection;
 use Aoe\AoeDbSequenzer\Domain\Repository\OverwriteProtectionRepository;
 use Aoe\AoeDbSequenzer\OverwriteProtectionService;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -31,7 +32,9 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Lang\LanguageService;
 
 /**
@@ -45,84 +48,193 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     private $overwriteProtectionService;
 
     /**
-     * (non-PHPdoc)
+     * @var OverwriteProtectionRepository|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $overwriteProtectionRepository;
+
+    /**
+     * @var PersistenceManager|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $persistenceManager;
+
+    /**
      * @see PHPUnit_Framework_TestCase::setUp()
      */
     public function setUp()
     {
-        $conf = array();
-        $conf ['tables'] = 'table1,table2';
+        $testConfiguration['tables'] = 'table1,table2';
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer'] = serialize($testConfiguration);
 
-        $GLOBALS['BE_USER'] = $this->getMock(BackendUserAuthentication::class, array(), array(), '', false);
-        $GLOBALS['BE_USER']->user = array('uid' => uniqid());
-        $GLOBALS['TYPO3_DB'] = $this->getMock(DatabaseConnection::class, array(), array(), '', false);
-        $GLOBALS['LANG'] = $this->getMock(LanguageService::class, array(), array(), '', false);
+        $GLOBALS['BE_USER'] = $this->getMockBuilder(BackendUserAuthentication::class)
+            ->disableOriginalConstructor()->getMock();
+        $GLOBALS['BE_USER']->user = ['uid' => uniqid()];
+        $GLOBALS['TYPO3_DB'] = $this->getMockBuilder(DatabaseConnection::class)
+            ->disableOriginalConstructor()->getMock();
+        $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)
+            ->disableOriginalConstructor()->getMock();
 
-        /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject $objectManagerMock */
-        $objectManagerMock = $this->getMockBuilder(ObjectManager::class)->getMock();
-        $objectManagerMock->method('get')->willReturn($this->getMock(PersistenceManager::class, array('persistAll')));
-        $this->overwriteProtectionService = new OverwriteProtectionService ($conf);
-        $this->overwriteProtectionService->injectObjectManager($objectManagerMock);
+        $this->persistenceManager = $this->getMockBuilder(PersistenceManager::class)
+            ->setMethods(['persistAll'])->getMock();
+
+        $this->overwriteProtectionRepository = $this->getMockBuilder(OverwriteProtectionRepository::class)
+            ->setMethods(['findByProtectedUidAndTableName', 'add', 'update', 'remove'])
+            ->getMock();
+
+        /** @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject $objectManagerMock */
+        $objectManagerMock = $this->getMockBuilder(ObjectManager::class)
+            ->setMethods(['get'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $objectManagerMock->expects($this->any())
+            ->method('get')
+            ->willReturnMap([
+                [OverwriteProtectionRepository::class, $this->overwriteProtectionRepository],
+                [PersistenceManager::class, $this->persistenceManager],
+                [OverwriteProtection::class, new OverwriteProtection()]
+            ]);
+
+        $this->overwriteProtectionService = new OverwriteProtectionService($objectManagerMock);
     }
 
     /**
      * @test
      */
-    public function processDatamap_preProcessFieldArray()
+    public function processDatamap_preProcessFieldArray_NoOverwriteProtection_NotSupportedTable()
     {
-        $test = array('field1' => 'a');
+        $incomingFieldArray = ['field1' => 'a'];
         /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
         $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
-        $this->overwriteProtectionService->processDatamap_preProcessFieldArray($test, 'table1', 1, $dataHandlerMock);
-        $this->assertFalse(isset ($test [OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
+        $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'tableXY', 1, $dataHandlerMock);
+        $this->assertFalse(isset($test[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
     }
 
     /**
      * @test
      */
-    public function processDatamap_preProcessFieldArrayWithProtection()
+    public function processDatamap_preProcessFieldArray_NoOverwriteProtection_MandatoryFieldsAreMissing()
     {
-        $test = array('field1' => 'a', OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323');
+        $incomingFieldArray = ['field1' => 'a'];
         /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
         $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
-        $test = $this->overwriteProtectionService->processDatamap_preProcessFieldArray($test, 'table1', 1,
-            $dataHandlerMock);
-        $this->assertFalse(isset ($test [OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
+        $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'table1', 1, $dataHandlerMock);
+        $this->assertFalse(isset($test[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessWithoutValidTable()
+    public function processDatamap_preProcessFieldArray_RemoveExistingOverwriteProtection()
     {
-        /** @var OverwriteProtectionRepository|\PHPUnit_Framework_MockObject_MockObject $overwriteProtectionRepository */
-        $overwriteProtectionRepository = $this->getMock(OverwriteProtectionRepository::class);
-        $overwriteProtectionRepository->expects($this->never())->method('findByProtectedUidAndTableName');
-        $this->overwriteProtectionService->setOverwriteprotectionRepository($overwriteProtectionRepository);
+        $incomingFieldArray = [
+            OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '',
+            OverwriteProtectionService::OVERWRITE_PROTECTION_MODE => '1'
+        ];
+
+        /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
+        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult->expects($this->once())->method('toArray')->willReturn([
+            new OverwriteProtection()
+        ]);
+
+        $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
+            ->willReturn($mockQueryResult);
+        $this->overwriteProtectionRepository->expects($this->once())->method('remove');
+        $this->persistenceManager->expects($this->once())->method('persistAll');
+
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'table1', 1, $dataHandlerMock);
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_MODE]));
+    }
+
+    /**
+     * @test
+     */
+    public function processDatamap_preProcessFieldArray_WithProtection_AddNewOverwriteProtectionDataset()
+    {
+        /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
+        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult->expects($this->once())->method('count')->willReturn(0);
+
+        $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
+            ->willReturn($mockQueryResult);
+        $this->overwriteProtectionRepository->expects($this->once())->method('add');
+        $this->persistenceManager->expects($this->once())->method('persistAll');
+
+        $incomingFieldArray = [
+            OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323',
+            OverwriteProtectionService::OVERWRITE_PROTECTION_MODE => '1'
+        ];
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'table1', 1, $dataHandlerMock);
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_MODE]));
+    }
+
+    /**
+     * @test
+     */
+    public function processDatamap_preProcessFieldArray_WithProtection_UpdateExistingOverwriteProtectionDataset()
+    {
+        /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
+        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult->expects($this->once())->method('count')->willReturn(1);
+        $mockQueryResult->expects($this->once())->method('toArray')->willReturn([
+            new OverwriteProtection()
+        ]);
+
+        $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
+            ->willReturn($mockQueryResult);
+        $this->overwriteProtectionRepository->expects($this->once())->method('update');
+        $this->persistenceManager->expects($this->once())->method('persistAll');
+
+        $incomingFieldArray = [
+            OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323',
+            OverwriteProtectionService::OVERWRITE_PROTECTION_MODE => '1'
+        ];
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'table1', 1, $dataHandlerMock);
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_MODE]));
+    }
+
+    /**
+     * @test
+     */
+    public function processCmdmap_postProcess_NotSupportedTable()
+    {
+        $this->overwriteProtectionRepository->expects($this->never())->method('findByProtectedUidAndTableName');
         $this->overwriteProtectionService->processCmdmap_postProcess('test', 'test', 1);
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessWithValidTableAndInvalidCommand()
+    public function processCmdmap_postProcess_WithSupportedTableAndInvalidCommand()
     {
-        /** @var OverwriteProtectionRepository|\PHPUnit_Framework_MockObject_MockObject $overwriteProtectionRepository */
-        $overwriteProtectionRepository = $this->getMock(OverwriteProtectionRepository::class);
-        $overwriteProtectionRepository->expects($this->never())->method('findByProtectedUidAndTableName');
-        $this->overwriteProtectionService->setOverwriteprotectionRepository($overwriteProtectionRepository);
+        $this->overwriteProtectionRepository->expects($this->never())->method('findByProtectedUidAndTableName');
         $this->overwriteProtectionService->processCmdmap_postProcess('test', 'table1', 1);
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessWithValidTableAndValidCommand()
+    public function processCmdmap_postProcess_WithSupportedTableAndValidCommand()
     {
-        /** @var OverwriteProtectionRepository|\PHPUnit_Framework_MockObject_MockObject $overwriteProtectionRepository */
-        $overwriteProtectionRepository = $this->getMock(OverwriteProtectionRepository::class);
-        $overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')->willReturn([]);
-        $this->overwriteProtectionService->setOverwriteprotectionRepository($overwriteProtectionRepository);
+        /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
+        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult->expects($this->once())->method('toArray')->willReturn([
+            new OverwriteProtection()
+        ]);
+
+        $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
+            ->willReturn($mockQueryResult);
+        $this->overwriteProtectionRepository->expects($this->once())->method('remove');
+        $this->persistenceManager->expects($this->once())->method('persistAll');
+
         $this->overwriteProtectionService->processCmdmap_postProcess('delete', 'table1', 1);
     }
 
@@ -132,6 +244,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
      */
     protected function tearDown()
     {
-        unset ($this->overwriteProtectionService);
+        unset($this->overwriteProtectionService);
+        unset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
     }
 }
