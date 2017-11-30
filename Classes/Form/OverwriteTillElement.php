@@ -1,4 +1,6 @@
 <?php
+namespace Aoe\AoeDbSequenzer\Form;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -25,9 +27,9 @@
 use TYPO3\CMS\Backend\Form\Element\InputTextElement;
 
 /**
- * @package aoe_dbsequenzer
+ * @package Aoe\AoeDbSequenzer\Form
  */
-class Tx_AoeDbsequenzer_Form_OverwriteTillElement extends Tx_AoeDbsequenzer_Form_AbstractOverwriteElement {
+class OverwriteTillElement extends AbstractOverwriteElement {
     /**
      * @param array $PA
      * @return String

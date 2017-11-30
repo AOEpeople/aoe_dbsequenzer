@@ -1,8 +1,10 @@
 <?php
+namespace Aoe\AoeDbSequenzer\Domain\Repository;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011 AOE GmbH (dev@aoe.com)
+ *  (c) 2017 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,12 +31,10 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * Overwriteprotection Repository
- * @package aoe_dbsequenzer
+ * @package Aoe\AoeDbSequenzer\Domain\Repository
  */
-class Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository extends Repository
+class OverwriteProtectionRepository extends Repository
 {
-
     /**
      *
      */

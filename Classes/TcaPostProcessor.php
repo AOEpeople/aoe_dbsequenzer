@@ -1,4 +1,6 @@
 <?php
+namespace Aoe\AoeDbSequenzer;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -26,9 +28,9 @@
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
- * @package aoe_dbsequenzer
+ * @package Aoe\AoeDbSequenzer
  */
-class Tx_AoeDbsequenzer_TcaPostProcessor
+class TcaPostProcessor
 {
     /**
      * Add overwrite-protection-field to TCA-fields of DB-tables which support overwrite-protection
@@ -58,8 +60,8 @@ class Tx_AoeDbsequenzer_TcaPostProcessor
             ]
         ];
 
-        $columnNames[] = Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_TILL;
-        $columnNames[] = Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_MODE;
+        $columnNames[] = OverwriteProtectionService::OVERWRITE_PROTECTION_TILL;
+        $columnNames[] = OverwriteProtectionService::OVERWRITE_PROTECTION_MODE;
         $columnNamesStr = ' ' . implode(', ', $columnNames);
 
         $newFieldsString = '--palette--;LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protectoverwrite_headline;tx_aoe_dbsequenzer';
@@ -79,9 +81,6 @@ class Tx_AoeDbsequenzer_TcaPostProcessor
                 $table,
                 $newFieldsString
             );
-
-            //ExtensionManagementUtility::addToAllTCAtypes($table, $columnNames[0]);
-            //ExtensionManagementUtility::addToAllTCAtypes($table, $columnNames[1]);
 
             // move columnsConfig from END of TCA-configuration to BEGIN of TCA-configuration
             if (is_array($GLOBALS['TCA'][$table]['types'])) {

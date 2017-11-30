@@ -1,8 +1,10 @@
 <?php
+namespace Aoe\AoeDbSequenzer\Xclass;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
+ *  (c) 2017 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,20 +24,19 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use Aoe\AoeDbSequenzer\Sequenzer;
+use Aoe\AoeDbSequenzer\TYPO3Service;
 
 /**
- *
- * @author danielpotzinger
- *
+ * @package Aoe\AoeDbSequenzer\Xclass
  */
-class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends DatabaseConnection {
+class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection {
 	/**
 	 * @var boolean
 	 */
 	private $isEnabled = TRUE;
     /**
-     * @var Tx_AoeDbsequenzer_TYPO3Service
+     * @var TYPO3Service
      */
     private $TYPO3Service;
 
@@ -97,12 +98,12 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends DatabaseConnection {
 	 * @param	string		$table See exec_UPDATEquery()
 	 * @param	string		$where See exec_UPDATEquery()
 	 * @param	array		$fields_values See exec_UPDATEquery()
-	 * @param	array		$no_quote_fields See fullQuoteArray()
+	 * @param	boolean     $no_quote_fields See fullQuoteArray()
 	 * @return	string		Full SQL query for UPDATE (unless $fields_values does not contain any elements in which case it will be false)
 	 */
 	public function UPDATEquery($table, $where, $fields_values, $no_quote_fields = FALSE) {
 		if ($this->getTYPO3Service()->needsSequenzer($table) && isset($fields_values['uid'])) {
-			throw new InvalidArgumentException('no uid allowed in update statement!');
+			throw new \InvalidArgumentException('no uid allowed in update statement!');
 		}
 		return parent::UPDATEquery($table, $where, $fields_values, $no_quote_fields);
 	}
@@ -134,17 +135,17 @@ class Tx_AoeDbsequenzer_Xclass_DatabaseConnection extends DatabaseConnection {
 	}
 
     /**
-     * create instance of Tx_AoeDbsequenzer_TYPO3Service by lazy-loading
+     * create instance of TYPO3Service by lazy-loading
      *
      * Why we do this?
      * Because some unittests backup the variable $GLOBALS (and so, also the variable $GLOBALS['TYPO3_DB']), which means, that this
-     * object/class will be serialized/unserialized, so the instance of Tx_AoeDbsequenzer_TYPO3Service will be null after unserialization!
+     * object/class will be serialized/unserialized, so the instance of TYPO3Service will be null after unserialization!
      *
-     * @return Tx_AoeDbsequenzer_TYPO3Service
+     * @return TYPO3Service
      */
     protected function getTYPO3Service() {
         if (false === isset($this->TYPO3Service)) {
-            $this->TYPO3Service = new Tx_AoeDbsequenzer_TYPO3Service(new Tx_AoeDbsequenzer_Sequenzer());
+            $this->TYPO3Service = new TYPO3Service(new Sequenzer());
         }
         return $this->TYPO3Service;
     }

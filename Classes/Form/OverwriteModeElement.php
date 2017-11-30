@@ -1,4 +1,6 @@
 <?php
+namespace Aoe\AoeDbSequenzer\Form;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,12 +24,13 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\OverwriteProtectionService;
 use TYPO3\CMS\Backend\Form\Element\SelectSingleElement;
 
 /**
- * @package aoe_dbsequenzer
+ * @package Aoe\AoeDbSequenzer\Form
  */
-class Tx_AoeDbsequenzer_Form_OverwriteModeElement extends Tx_AoeDbsequenzer_Form_AbstractOverwriteElement {
+class OverwriteModeElement extends AbstractOverwriteElement {
     /**
      * @param array $PA
      * @return String
@@ -57,11 +60,11 @@ class Tx_AoeDbsequenzer_Form_OverwriteModeElement extends Tx_AoeDbsequenzer_Form
                         'items' => [
                             [
                                 $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_conflict'),
-                                Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_MODE_CONFLICT
+                                OverwriteProtectionService::OVERWRITE_PROTECTION_MODE_CONFLICT
                             ],
                             [
                                 $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_overwrite'),
-                                Tx_AoeDbsequenzer_OverwriteProtectionService::OVERWRITE_PROTECTION_MODE_OVERWRITE
+                                OverwriteProtectionService::OVERWRITE_PROTECTION_MODE_OVERWRITE
                             ]
                         ]
                     ],

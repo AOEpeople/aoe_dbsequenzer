@@ -1,8 +1,10 @@
 <?php
+namespace Aoe\AoeDbSequenzer;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
+ *  (c) 2017 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,17 +26,15 @@
 
 /**
  * Sequenzer is used to generate system wide independent IDs
- *
- * @author danielpotzinger
- *
+ * @package Aoe\AoeDbSequenzer
  */
-class Tx_AoeDbsequenzer_Sequenzer {
+class Sequenzer {
 	/**
 	 * @var string
 	 */
 	private $table = 'tx_aoedbsequenzer_sequenz';
 	/**
-	 * @var mysqli
+	 * @var \mysqli
 	 */
 	private $dbLink;
 	/**
@@ -81,11 +81,11 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	 * @param $table
 	 * @param int $depth
 	 * @return int
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function getNextIdForTable($table, $depth = 0) {
 		if ($depth > 99) {
-			throw new Exception ( 'The sequenzer cannot return IDs for this table -' . $table . ' Too many recursions - maybe to much load?' );
+			throw new \Exception ( 'The sequenzer cannot return IDs for this table -' . $table . ' Too many recursions - maybe to much load?' );
 		}
 
 		$result = $this->query ( 'SELECT * FROM ' . $this->getTable () . ' WHERE tablename=\'' . $this->escapeString ( $table ) . '\'' );
@@ -120,7 +120,7 @@ class Tx_AoeDbsequenzer_Sequenzer {
 	 * Gets the default start value for a given table.
 	 * @param $table
 	 * @return int
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	private function getDefaultStartValue($table) {
 		$result = $this->query ( 'SELECT max(uid) as max FROM ' . $table );
@@ -160,13 +160,13 @@ class Tx_AoeDbsequenzer_Sequenzer {
 
     /**
      * @param $sql
-     * @return bool|mysqli_result
-     * @throws Exception
+     * @return bool|\mysqli_result
+     * @throws \Exception
      */
 	private function query($sql) {
 		$result = mysqli_query ($this->dbLink, $sql);
 		if (mysqli_error ( $this->dbLink )) {
-			throw new Exception ( mysqli_error ( $this->dbLink ), mysqli_errno ( $this->dbLink ) );
+			throw new \Exception ( mysqli_error ( $this->dbLink ), mysqli_errno ( $this->dbLink ) );
 		}
 		return $result;
 	}

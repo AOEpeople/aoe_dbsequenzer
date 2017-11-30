@@ -1,8 +1,10 @@
 <?php
+namespace Aoe\AoeDbSequenzer\Domain\Model;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
+ *  (c) 2017 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,10 +27,9 @@
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * Overwriteprotection
- * @package aoe_survey
+ * @package Aoe\AoeDbSequenzer\Domain\Model
  */
-class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends AbstractEntity {
+class OverwriteProtection extends AbstractEntity {
 	/**
 	 * @var integer
 	 */
@@ -49,42 +50,49 @@ class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends AbstractEntity 
 	 * @var integer
 	 */
 	protected $protectedMode;
+
 	/**
 	 * @return integer
 	 */
 	public function getProtectedUid() {
 		return $this->protectedUid;
 	}
+
 	/**
 	 * @return string
 	 */
 	public function getProtectedTablename() {
 		return $this->protectedTablename;
 	}
+
 	/**
 	 * @param integer $protectedUid
 	 */
 	public function setProtectedUid($protectedUid) {
 		$this->protectedUid = intval($protectedUid);
 	}
+
 	/**
 	 * @param string $protectedTablename
 	 */
 	public function setProtectedTablename($protectedTablename) {
 		$this->protectedTablename = $protectedTablename;
 	}
+
 	/**
 	 * @return integer
 	 */
 	public function getProtectedTime() {
 		return $this->protectedTime;
 	}
+
 	/**
 	 * @param integer $protectedTime
 	 */
 	public function setProtectedTime($protectedTime) {
 		$this->protectedTime = intval($protectedTime);
 	}
+
 	/**
 	 * @return integer
 	 */
@@ -98,6 +106,7 @@ class Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection extends AbstractEntity 
 	public function setProtectedMode($protectedMode) {
 		$this->protectedMode = intval($protectedMode);
 	}
+
 	/**
 	 * @return integer
 	 */

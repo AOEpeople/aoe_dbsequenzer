@@ -1,8 +1,10 @@
 <?php
+namespace Aoe\AoeDbSequenzer;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
+ *  (c) 2017 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,14 +27,11 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Sequenzer is used to generate system wide independet IDs
- *
- * @author danielpotzinger
- * @package aoe_dbsequenzer
+ * @package Aoe\AoeDbSequenzer
  */
-class Tx_AoeDbsequenzer_TYPO3Service {
+class TYPO3Service {
 	/**
-	 * @var Tx_AoeDbsequenzer_Sequenzer
+	 * @var Sequenzer
 	 */
 	private $sequenzer;
 	/**
@@ -46,11 +45,12 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	 * @var array
 	 */
 	private $supportedTables;
+
 	/**
 	 *
-	 * @param Tx_AoeDbsequenzer_Sequenzer $sequenzer
+	 * @param Sequenzer $sequenzer
 	 */
-	public function __construct(Tx_AoeDbsequenzer_Sequenzer $sequenzer, $conf = NULL) {
+	public function __construct(Sequenzer $sequenzer, $conf = NULL) {
 		$this->sequenzer = $sequenzer;
 		if (is_null ( $conf )) {
 			$this->conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer'] );
@@ -82,7 +82,7 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 	public function modifyInsertFields($tableName, array $fields_values) {
 		if ($this->needsSequenzer ($tableName)) {
 			if (isset($fields_values['uid'])) {
-                $e = new Exception();
+                $e = new \Exception();
                 GeneralUtility::devLog(
                     'UID ' . $fields_values['uid'] . ' is already set for table "' . $tableName . '"',
                     'aoe_dbsequenzer',
@@ -95,6 +95,7 @@ class Tx_AoeDbsequenzer_TYPO3Service {
 		}
 		return $fields_values;
 	}
+
 	/**
 	 * If a table is configured to use the sequenzer
 	 *

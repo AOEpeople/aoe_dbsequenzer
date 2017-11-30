@@ -1,8 +1,10 @@
 <?php
+namespace Aoe\AoeDbSequenzer;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
+ *  (c) 2017 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,15 +24,19 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\Domain\Model\OverwriteProtection;
+use Aoe\AoeDbSequenzer\Domain\Repository\OverwriteProtectionRepository;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
- * @package aoe_dbsequenzer
+ * @package Aoe\AoeDbSequenzer
  */
-class Tx_AoeDbsequenzer_OverwriteProtectionService {
+class OverwriteProtectionService {
 	/**
 	 * @var string
 	 */
@@ -55,11 +61,11 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	 */
 	private $supportedTables;
 	/**
-	 * @var Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository
+	 * @var OverwriteProtectionRepository
 	 */
-	private $overwriteprotectionRepository;
+	private $overwriteProtectionRepository;
 	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+	 * @var ObjectManagerInterface
 	 */
 	private $objectManager;
 
@@ -77,21 +83,21 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 
 	/**
 	 * Injects ObjectManager instance
-	 * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
+	 * @param ObjectManagerInterface $objectManager
 	 */
-	public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
+	public function injectObjectManager(ObjectManagerInterface $objectManager)
 	{
 		$this->objectManager = $objectManager;
 	}
 
 	/**
-	 * @return Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository
+	 * @return OverwriteProtectionRepository
 	 */
-	public function getOverwriteprotectionRepository() {
-		if (! isset ( $this->overwriteprotectionRepository )) {
-			$this->overwriteprotectionRepository = $this->objectManager->get ( 'Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository' );
+	public function getOverwriteProtectionRepository() {
+		if (! isset ( $this->overwriteProtectionRepository )) {
+			$this->overwriteProtectionRepository = $this->objectManager->get(OverwriteProtectionRepository::class);
 		}
-		return $this->overwriteprotectionRepository;
+		return $this->overwriteProtectionRepository;
 	}
 
 	/**
@@ -107,16 +113,16 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		if ($command !== 'delete') {
 			return;
 		}
-		$this->removeOverwriteprotection( $id, $table );
+		$this->removeOverwriteProtection( $id, $table );
 	}
 	/**
 	 * Hook for updates in Typo3 backend
 	 * @param array $incomingFieldArray
 	 * @param string $table
 	 * @param integer $id
-	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $tcemain
+	 * @param DataHandler $tcemain
 	 */
-	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, \TYPO3\CMS\Core\DataHandling\DataHandler &$tcemain) {
+	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, DataHandler &$tcemain) {
 	    if (FALSE === $this->needsOverWriteProtection ( $table )) {
 			return;
 		}
@@ -130,27 +136,27 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
         }
 
 		if (FALSE === $this->hasOverWriteProtection ( $incomingFieldArray )) {
-			$this->removeOverwriteprotection( $id, $table );
+			$this->removeOverwriteProtection( $id, $table );
 		} else {
 			$protection = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
 			$mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
 
-			$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
+			$result = $this->getOverwriteProtectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
 			if ($result->count() === 0) {
-				/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
-				$overwriteprotection = $this->objectManager->get ( 'Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection' );
-				$overwriteprotection->setProtectedMode ( $mode );
-				$overwriteprotection->setPid ( $tcemain->getPID ( $table, $id ) );
-				$overwriteprotection->setProtectedTablename ( $table );
-				$overwriteprotection->setProtectedUid ( $id );
-				$overwriteprotection->setProtectedTime ( $protection );
-				$this->getOverwriteprotectionRepository ()->add ( $overwriteprotection );
+				/* @var $overwriteProtection OverwriteProtection */
+				$overwriteProtection = $this->objectManager->get (OverwriteProtection::class);
+				$overwriteProtection->setProtectedMode ( $mode );
+				$overwriteProtection->setPid ( $tcemain->getPID ( $table, $id ) );
+				$overwriteProtection->setProtectedTablename ( $table );
+				$overwriteProtection->setProtectedUid ( $id );
+				$overwriteProtection->setProtectedTime ( $protection );
+				$this->getOverwriteProtectionRepository ()->add ( $overwriteProtection );
 			} else {
-				foreach ( $result as $overwriteprotection ) {
-					/* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
-					$overwriteprotection->setProtectedMode ( $mode );
-					$overwriteprotection->setProtectedTime ( $protection );
-					$this->getOverwriteprotectionRepository ()->update($overwriteprotection);
+				foreach ( $result as $overwriteProtection ) {
+					/* @var $overwriteProtection OverwriteProtection */
+					$overwriteProtection->setProtectedMode ( $mode );
+					$overwriteProtection->setProtectedTime ( $protection );
+					$this->getOverwriteProtectionRepository ()->update($overwriteProtection);
 				}
 			}
 			$this->persistAll();
@@ -160,10 +166,10 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 	}
 
 	/**
-	 * @param Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository
+	 * @param OverwriteProtectionRepository $overwriteProtectionRepository
 	 */
-	public function setOverwriteprotectionRepository(Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository $overwriteprotectionRepository) {
-		$this->overwriteprotectionRepository = $overwriteprotectionRepository;
+	public function setOverwriteProtectionRepository(OverwriteProtectionRepository $overwriteProtectionRepository) {
+		$this->overwriteProtectionRepository = $overwriteProtectionRepository;
 	}
 
 	/**
@@ -207,15 +213,15 @@ class Tx_AoeDbsequenzer_OverwriteProtectionService {
 		$persistenceManager->persistAll ();
 	}
 	/**
-	 * remove overwriteprotection
+	 * remove overwriteProtection
 	 *
 	 * @param integer $id
 	 * @param string $table
 	 */
-	private function removeOverwriteprotection($id, $table) {
-		$result = $this->getOverwriteprotectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-		foreach ( $result as $overwriteprotection ) {
-			$this->getOverwriteprotectionRepository ()->remove ( $overwriteprotection );
+	private function removeOverwriteProtection($id, $table) {
+		$result = $this->getOverwriteProtectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
+		foreach ( $result as $overwriteProtection ) {
+			$this->getOverwriteProtectionRepository ()->remove ( $overwriteProtection );
 		}
 		$this->persistAll();
 	}

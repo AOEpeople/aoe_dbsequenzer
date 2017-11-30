@@ -1,8 +1,10 @@
 <?php
+namespace Aoe\AoeDbSequenzer\Tests\Unit;
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009 AOE GmbH (dev@aoe.com)
+ *  (c) 2017 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,18 +24,20 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\Sequenzer;
+use Aoe\AoeDbSequenzer\TYPO3Service;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
+
 /**
- * test case for Tx_AoeDbsequenzer_TYPO3Service
- * @package aoe_dbsequenzer
- * @subpackage Tests
+ * @package Aoe\AoeDbSequenzer\Tests\Unit
  */
-class Tx_AoeDbsequenzer_TYPO3ServiceTest extends Tx_AoeDbsequenzer_BaseTest {
+class TYPO3ServiceTest extends UnitTestCase {
 	/**
-	 * @var Tx_AoeDbsequenzer_TYPO3Service
+	 * @var TYPO3Service
 	 */
 	private $service;
 	/**
-	 * @var PHPUnit_Framework_MockObject_MockObject
+	 * @var Sequenzer|\PHPUnit_Framework_MockObject_MockObject
 	 */
 	private $sequenzer;
 	/**
@@ -45,14 +49,14 @@ class Tx_AoeDbsequenzer_TYPO3ServiceTest extends Tx_AoeDbsequenzer_BaseTest {
 		$conf ['offset'] = '1';
 		$conf ['system'] = 'testa';
 		$conf ['tables'] = 'table1,table2';
-		$this->sequenzer = $this->getMock ( 'Tx_AoeDbsequenzer_Sequenzer', array (), array (), '', FALSE );
-		$this->service = new Tx_AoeDbsequenzer_TYPO3Service ( $this->sequenzer, $conf );
+		$this->sequenzer = $this->getMock ( Sequenzer::class, array (), array (), '', FALSE );
+		$this->service = new TYPO3Service ( $this->sequenzer, $conf );
 	}
 	/**
 	 * @test
 	 */
 	public function modifyInsertFields() {
-		$this->sequenzer->expects ( $this->once () )->method ( 'getNextIdForTable' )->will ( $this->returnValue ( 1 ) );
+		$this->sequenzer->expects ( $this->once () )->method ( 'getNextIdForTable' )->willReturn ( 1 );
 		$test = $this->service->modifyInsertFields ( 'table1', array ('field1' => 'a' ) );
 		$this->assertTrue ( isset ( $test ['uid'] ) );
 	}

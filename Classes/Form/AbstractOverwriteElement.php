@@ -1,4 +1,6 @@
 <?php
+namespace Aoe\AoeDbSequenzer\Form;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,16 +24,18 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\Domain\Model\OverwriteProtection;
+use Aoe\AoeDbSequenzer\Domain\Repository\OverwriteProtectionRepository;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Lang\LanguageService;
 
 /**
- * @package aoe_dbsequenzer
+ * @package Aoe\AoeDbSequenzer\Form
  */
-abstract class Tx_AoeDbsequenzer_Form_AbstractOverwriteElement {
-
+abstract class AbstractOverwriteElement
+{
     /**
      * @param integer $protectedUid
      * @param string $tableName
@@ -46,14 +50,14 @@ abstract class Tx_AoeDbsequenzer_Form_AbstractOverwriteElement {
     /**
      * @param integer $protectedUid
      * @param string $tableName
-     * @return Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection
+     * @return OverwriteProtection
      */
     protected function getOverwriteProtection($protectedUid, $tableName)
     {
         $result = $this->getOverwriteprotectionRepository()->findByProtectedUidAndTableName($protectedUid, $tableName);
-        foreach ($result as $overwriteprotection) {
-            /* @var $overwriteprotection Tx_AoeDbsequenzer_Domain_Model_Overwriteprotection */
-            return $overwriteprotection;
+        foreach ($result as $overwriteProtection) {
+            /* @var $overwriteProtection OverwriteProtection */
+            return $overwriteProtection;
         }
 
         return null;
@@ -76,11 +80,11 @@ abstract class Tx_AoeDbsequenzer_Form_AbstractOverwriteElement {
     }
 
     /**
-     * @return Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository
+     * @return OverwriteProtectionRepository
      */
     protected function getOverwriteprotectionRepository()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        return $objectManager->get('Tx_AoeDbsequenzer_Domain_Repository_OverwriteprotectionRepository');
+        return $objectManager->get(OverwriteProtectionRepository::class);
     }
 }

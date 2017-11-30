@@ -32,6 +32,13 @@
     }
   ],
   "autoload": {
-    "classmap": ["Classes/", "Tests"]
+    "psr-4": {
+      "Aoe\\AoeDbSequenzer\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aoe\\AoeDbSequenzer\\Tests\\": "Tests"
+    }
   }
 }
