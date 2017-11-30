@@ -36,6 +36,7 @@ class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection
      * @var boolean
      */
     private $isEnabled = true;
+
     /**
      * @var TYPO3Service
      */

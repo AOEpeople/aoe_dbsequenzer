@@ -35,18 +35,22 @@ class OverwriteProtection extends AbstractEntity
      * @var integer
      */
     protected $deleted;
+
     /**
      * @var integer
      */
     protected $protectedUid;
+
     /**
      * @var string
      */
     protected $protectedTablename;
+
     /**
      * @var integer
      */
     protected $protectedTime;
+
     /**
      * @var integer
      */

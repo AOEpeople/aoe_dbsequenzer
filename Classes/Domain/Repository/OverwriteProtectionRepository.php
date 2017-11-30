@@ -35,9 +35,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class OverwriteProtectionRepository extends Repository
 {
-    /**
-     *
-     */
     public function __construct()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

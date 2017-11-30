@@ -34,18 +34,22 @@ class Sequenzer
      * @var string
      */
     private $table = 'tx_aoedbsequenzer_sequenz';
+
     /**
      * @var \mysqli
      */
     private $dbLink;
+
     /**
      * @var integer
      */
     private $defaultStart = 0;
+
     /**
      * @var integer
      */
     private $defaultOffset = 1;
+
     /**
      * @var integer
      */

@@ -37,6 +37,7 @@ class TYPO3ServiceTest extends UnitTestCase
      * @var TYPO3Service
      */
     private $service;
+
     /**
      * @var Sequenzer|\PHPUnit_Framework_MockObject_MockObject
      */

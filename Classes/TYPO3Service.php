@@ -35,6 +35,7 @@ class TYPO3Service
      * @var Sequenzer
      */
     private $sequenzer;
+
     /**
      * @var array
      */

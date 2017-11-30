@@ -42,14 +42,17 @@ class OverwriteProtectionService
      * @var string
      */
     const OVERWRITE_PROTECTION_TILL = 'tx_aoe_dbsquenzer_protectoverwrite_till';
+
     /**
      * @var string
      */
     const OVERWRITE_PROTECTION_MODE = 'tx_aoe_dbsquenzer_protectoverwrite_mode';
+
     /**
      * @var int
      */
     const OVERWRITE_PROTECTION_MODE_CONFLICT = 0;
+
     /**
      * @var int
      */
@@ -61,10 +64,12 @@ class OverwriteProtectionService
      * @var array
      */
     private $supportedTables;
+
     /**
      * @var OverwriteProtectionRepository
      */
     private $overwriteProtectionRepository;
+
     /**
      * @var ObjectManagerInterface
      */
