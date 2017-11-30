@@ -31,41 +31,48 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
  */
-class TYPO3ServiceTest extends UnitTestCase {
-	/**
-	 * @var TYPO3Service
-	 */
-	private $service;
-	/**
-	 * @var Sequenzer|\PHPUnit_Framework_MockObject_MockObject
-	 */
-	private $sequenzer;
-	/**
-	 * (non-PHPdoc)
-	 * @see PHPUnit_Framework_TestCase::setUp()
-	 */
-	public function setUp() {
-		$conf = array ();
-		$conf ['offset'] = '1';
-		$conf ['system'] = 'testa';
-		$conf ['tables'] = 'table1,table2';
-		$this->sequenzer = $this->getMock ( Sequenzer::class, array (), array (), '', FALSE );
-		$this->service = new TYPO3Service ( $this->sequenzer, $conf );
-	}
-	/**
-	 * @test
-	 */
-	public function modifyInsertFields() {
-		$this->sequenzer->expects ( $this->once () )->method ( 'getNextIdForTable' )->willReturn ( 1 );
-		$test = $this->service->modifyInsertFields ( 'table1', array ('field1' => 'a' ) );
-		$this->assertTrue ( isset ( $test ['uid'] ) );
-	}
-	/**
-	 * (non-PHPdoc)
-	 * @see PHPUnit_Framework_TestCase::tearDown()
-	 */
-	protected function tearDown() {
-		unset ( $this->sequenzer );
-		unset ( $this->service );
-	}
+class TYPO3ServiceTest extends UnitTestCase
+{
+    /**
+     * @var TYPO3Service
+     */
+    private $service;
+    /**
+     * @var Sequenzer|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $sequenzer;
+
+    /**
+     * (non-PHPdoc)
+     * @see PHPUnit_Framework_TestCase::setUp()
+     */
+    public function setUp()
+    {
+        $conf = array();
+        $conf ['offset'] = '1';
+        $conf ['system'] = 'testa';
+        $conf ['tables'] = 'table1,table2';
+        $this->sequenzer = $this->getMock(Sequenzer::class, array(), array(), '', false);
+        $this->service = new TYPO3Service ($this->sequenzer, $conf);
+    }
+
+    /**
+     * @test
+     */
+    public function modifyInsertFields()
+    {
+        $this->sequenzer->expects($this->once())->method('getNextIdForTable')->willReturn(1);
+        $test = $this->service->modifyInsertFields('table1', array('field1' => 'a'));
+        $this->assertTrue(isset ($test ['uid']));
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see PHPUnit_Framework_TestCase::tearDown()
+     */
+    protected function tearDown()
+    {
+        unset ($this->sequenzer);
+        unset ($this->service);
+    }
 }

@@ -30,7 +30,8 @@ use TYPO3\CMS\Backend\Form\Element\SelectSingleElement;
 /**
  * @package Aoe\AoeDbSequenzer\Form
  */
-class OverwriteModeElement extends AbstractOverwriteElement {
+class OverwriteModeElement extends AbstractOverwriteElement
+{
     /**
      * @param array $PA
      * @return String
@@ -46,7 +47,7 @@ class OverwriteModeElement extends AbstractOverwriteElement {
         $data = [
             'inlineStructure' => [],
             'parameterArray' => [
-                'itemFormElName' => 'data['.$PA['table'].']['.$PA['row']['uid'].'][tx_aoe_dbsquenzer_protectoverwrite_mode]',
+                'itemFormElName' => 'data[' . $PA['table'] . '][' . $PA['row']['uid'] . '][tx_aoe_dbsquenzer_protectoverwrite_mode]',
                 'itemFormElValue' => [$itemFormElValue],
                 'fieldName' => 'tx_aoe_dbsquenzer_protectoverwrite_mode',
                 'fieldChangeFunc' => [],

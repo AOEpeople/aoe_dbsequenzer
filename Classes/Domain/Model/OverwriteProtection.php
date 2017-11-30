@@ -29,95 +29,106 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 /**
  * @package Aoe\AoeDbSequenzer\Domain\Model
  */
-class OverwriteProtection extends AbstractEntity {
-	/**
-	 * @var integer
-	 */
-	protected $deleted;
-	/**
-	 * @var integer
-	 */
-	protected $protectedUid;
-	/**
-	 * @var string
-	 */
-	protected $protectedTablename;
-	/**
-	 * @var integer
-	 */
-	protected $protectedTime;
-	/**
-	 * @var integer
-	 */
-	protected $protectedMode;
+class OverwriteProtection extends AbstractEntity
+{
+    /**
+     * @var integer
+     */
+    protected $deleted;
+    /**
+     * @var integer
+     */
+    protected $protectedUid;
+    /**
+     * @var string
+     */
+    protected $protectedTablename;
+    /**
+     * @var integer
+     */
+    protected $protectedTime;
+    /**
+     * @var integer
+     */
+    protected $protectedMode;
 
-	/**
-	 * @return integer
-	 */
-	public function getProtectedUid() {
-		return $this->protectedUid;
-	}
+    /**
+     * @return integer
+     */
+    public function getProtectedUid()
+    {
+        return $this->protectedUid;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getProtectedTablename() {
-		return $this->protectedTablename;
-	}
+    /**
+     * @return string
+     */
+    public function getProtectedTablename()
+    {
+        return $this->protectedTablename;
+    }
 
-	/**
-	 * @param integer $protectedUid
-	 */
-	public function setProtectedUid($protectedUid) {
-		$this->protectedUid = intval($protectedUid);
-	}
+    /**
+     * @param integer $protectedUid
+     */
+    public function setProtectedUid($protectedUid)
+    {
+        $this->protectedUid = intval($protectedUid);
+    }
 
-	/**
-	 * @param string $protectedTablename
-	 */
-	public function setProtectedTablename($protectedTablename) {
-		$this->protectedTablename = $protectedTablename;
-	}
+    /**
+     * @param string $protectedTablename
+     */
+    public function setProtectedTablename($protectedTablename)
+    {
+        $this->protectedTablename = $protectedTablename;
+    }
 
-	/**
-	 * @return integer
-	 */
-	public function getProtectedTime() {
-		return $this->protectedTime;
-	}
+    /**
+     * @return integer
+     */
+    public function getProtectedTime()
+    {
+        return $this->protectedTime;
+    }
 
-	/**
-	 * @param integer $protectedTime
-	 */
-	public function setProtectedTime($protectedTime) {
-		$this->protectedTime = intval($protectedTime);
-	}
+    /**
+     * @param integer $protectedTime
+     */
+    public function setProtectedTime($protectedTime)
+    {
+        $this->protectedTime = intval($protectedTime);
+    }
 
-	/**
-	 * @return integer
-	 */
-	public function getProtectedMode() {
-		return $this->protectedMode;
-	}
+    /**
+     * @return integer
+     */
+    public function getProtectedMode()
+    {
+        return $this->protectedMode;
+    }
 
-	/**
-	 * @param integer $protectedMode
-	 */
-	public function setProtectedMode($protectedMode) {
-		$this->protectedMode = intval($protectedMode);
-	}
+    /**
+     * @param integer $protectedMode
+     */
+    public function setProtectedMode($protectedMode)
+    {
+        $this->protectedMode = intval($protectedMode);
+    }
 
-	/**
-	 * @return integer
-	 */
-	public function getDeleted() {
-		return $this->deleted;
-	}
+    /**
+     * @return integer
+     */
+    public function getDeleted()
+    {
+        return $this->deleted;
+    }
 
-	/**
-	 * @param integer $deleted
-	 */
-	public function setDeleted($deleted) {
-		$this->deleted = $deleted;
-	}
+    /**
+     * @param integer $deleted
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = $deleted;
+    }
 }

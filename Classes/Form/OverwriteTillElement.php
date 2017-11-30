@@ -29,7 +29,8 @@ use TYPO3\CMS\Backend\Form\Element\InputTextElement;
 /**
  * @package Aoe\AoeDbSequenzer\Form
  */
-class OverwriteTillElement extends AbstractOverwriteElement {
+class OverwriteTillElement extends AbstractOverwriteElement
+{
     /**
      * @param array $PA
      * @return String
@@ -44,7 +45,7 @@ class OverwriteTillElement extends AbstractOverwriteElement {
 
         $data = [
             'parameterArray' => [
-                'itemFormElName' => 'data['.$PA['table'].']['.$PA['row']['uid'].'][tx_aoe_dbsquenzer_protectoverwrite_till]',
+                'itemFormElName' => 'data[' . $PA['table'] . '][' . $PA['row']['uid'] . '][tx_aoe_dbsquenzer_protectoverwrite_till]',
                 'itemFormElValue' => $itemFormElValue,
                 'fieldName' => 'tx_aoe_dbsquenzer_protectoverwrite_till',
                 'fieldConf' => [

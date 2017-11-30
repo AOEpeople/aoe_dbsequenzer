@@ -29,59 +29,63 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * @package Aoe\AoeDbSequenzer
  */
-class TYPO3Service {
-	/**
-	 * @var Sequenzer
-	 */
-	private $sequenzer;
-	/**
-	 * @var array
-	 */
-	private $conf;
+class TYPO3Service
+{
+    /**
+     * @var Sequenzer
+     */
+    private $sequenzer;
+    /**
+     * @var array
+     */
+    private $conf;
 
-	/**
-	 * array of configured tables that should call the sequenzer
-	 *
-	 * @var array
-	 */
-	private $supportedTables;
+    /**
+     * array of configured tables that should call the sequenzer
+     *
+     * @var array
+     */
+    private $supportedTables;
 
-	/**
-	 *
-	 * @param Sequenzer $sequenzer
-	 */
-	public function __construct(Sequenzer $sequenzer, $conf = NULL) {
-		$this->sequenzer = $sequenzer;
-		if (is_null ( $conf )) {
-			$this->conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer'] );
-		} else {
-			$this->conf = $conf;
-		}
-		$this->sequenzer->setDefaultOffset ( intval ( $this->conf ['offset'] ) );
-		$this->sequenzer->setDefaultStart ( intval ( $this->conf ['system'] ) );
-		$explodedValues = explode ( ',', $this->conf ['tables'] );
-		$this->supportedTables = array_map ( 'trim', $explodedValues );
-	}
+    /**
+     *
+     * @param Sequenzer $sequenzer
+     */
+    public function __construct(Sequenzer $sequenzer, $conf = null)
+    {
+        $this->sequenzer = $sequenzer;
+        if (is_null($conf)) {
+            $this->conf = unserialize($GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer']);
+        } else {
+            $this->conf = $conf;
+        }
+        $this->sequenzer->setDefaultOffset(intval($this->conf ['offset']));
+        $this->sequenzer->setDefaultStart(intval($this->conf ['system']));
+        $explodedValues = explode(',', $this->conf ['tables']);
+        $this->supportedTables = array_map('trim', $explodedValues);
+    }
 
-	/**
-	 * sets the db link
-	 *
-	 * @param \mysqli|NULL $link
-	 */
-	public function setDbLink($link) {
-		$this->sequenzer->setDbLink ( $link );
-	}
+    /**
+     * sets the db link
+     *
+     * @param \mysqli|NULL $link
+     */
+    public function setDbLink($link)
+    {
+        $this->sequenzer->setDbLink($link);
+    }
 
-	/**
-	 * Modify a TYPO3 insert array (key -> value) , and adds the uid that should be forced during INSERT
-	 *
-	 * @param string $tableName
-	 * @param array $fields_values
+    /**
+     * Modify a TYPO3 insert array (key -> value) , and adds the uid that should be forced during INSERT
+     *
+     * @param string $tableName
+     * @param array $fields_values
      * @return array
-	 */
-	public function modifyInsertFields($tableName, array $fields_values) {
-		if ($this->needsSequenzer ($tableName)) {
-			if (isset($fields_values['uid'])) {
+     */
+    public function modifyInsertFields($tableName, array $fields_values)
+    {
+        if ($this->needsSequenzer($tableName)) {
+            if (isset($fields_values['uid'])) {
                 $e = new \Exception();
                 GeneralUtility::devLog(
                     'UID ' . $fields_values['uid'] . ' is already set for table "' . $tableName . '"',
@@ -89,23 +93,24 @@ class TYPO3Service {
                     2,
                     $e->getTraceAsString()
                 );
-			} else {
-				$fields_values['uid'] = $this->sequenzer->getNextIdForTable ( $tableName );
-			}
-		}
-		return $fields_values;
-	}
+            } else {
+                $fields_values['uid'] = $this->sequenzer->getNextIdForTable($tableName);
+            }
+        }
+        return $fields_values;
+    }
 
-	/**
-	 * If a table is configured to use the sequenzer
-	 *
-	 * @param string $tableName
-	 * @return boolean
-	 */
-	public function needsSequenzer($tableName) {
-		if (in_array ( $tableName, $this->supportedTables )) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * If a table is configured to use the sequenzer
+     *
+     * @param string $tableName
+     * @return boolean
+     */
+    public function needsSequenzer($tableName)
+    {
+        if (in_array($tableName, $this->supportedTables)) {
+            return true;
+        }
+        return false;
+    }
 }

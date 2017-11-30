@@ -36,193 +36,209 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 /**
  * @package Aoe\AoeDbSequenzer
  */
-class OverwriteProtectionService {
-	/**
-	 * @var string
-	 */
-	const OVERWRITE_PROTECTION_TILL = 'tx_aoe_dbsquenzer_protectoverwrite_till';
-	/**
-	 * @var string
-	 */
-	const OVERWRITE_PROTECTION_MODE = 'tx_aoe_dbsquenzer_protectoverwrite_mode';
+class OverwriteProtectionService
+{
+    /**
+     * @var string
+     */
+    const OVERWRITE_PROTECTION_TILL = 'tx_aoe_dbsquenzer_protectoverwrite_till';
+    /**
+     * @var string
+     */
+    const OVERWRITE_PROTECTION_MODE = 'tx_aoe_dbsquenzer_protectoverwrite_mode';
     /**
      * @var int
      */
-	const OVERWRITE_PROTECTION_MODE_CONFLICT = 0;
+    const OVERWRITE_PROTECTION_MODE_CONFLICT = 0;
     /**
      * @var int
      */
     const OVERWRITE_PROTECTION_MODE_OVERWRITE = 1;
 
-	/**
-	 * array of configured tables that should call the sequenzer
-	 *
-	 * @var array
-	 */
-	private $supportedTables;
-	/**
-	 * @var OverwriteProtectionRepository
-	 */
-	private $overwriteProtectionRepository;
-	/**
-	 * @var ObjectManagerInterface
-	 */
-	private $objectManager;
+    /**
+     * array of configured tables that should call the sequenzer
+     *
+     * @var array
+     */
+    private $supportedTables;
+    /**
+     * @var OverwriteProtectionRepository
+     */
+    private $overwriteProtectionRepository;
+    /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
 
-	/**
-	 * @param array $conf
-	 */
-	public function __construct($conf = NULL) {
-		if (is_null ( $conf )) {
-			$conf = unserialize ( $GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer'] );
-		}
-		$explodedValues = explode ( ',', $conf ['tables'] );
-		$this->supportedTables = array_map ( 'trim', $explodedValues );
-		$this->objectManager = GeneralUtility::makeInstance (ObjectManager::class);
-	}
+    /**
+     * @param array $conf
+     */
+    public function __construct($conf = null)
+    {
+        if (is_null($conf)) {
+            $conf = unserialize($GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer']);
+        }
+        $explodedValues = explode(',', $conf ['tables']);
+        $this->supportedTables = array_map('trim', $explodedValues);
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+    }
 
-	/**
-	 * Injects ObjectManager instance
-	 * @param ObjectManagerInterface $objectManager
-	 */
-	public function injectObjectManager(ObjectManagerInterface $objectManager)
-	{
-		$this->objectManager = $objectManager;
-	}
+    /**
+     * Injects ObjectManager instance
+     * @param ObjectManagerInterface $objectManager
+     */
+    public function injectObjectManager(ObjectManagerInterface $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
 
-	/**
-	 * @return OverwriteProtectionRepository
-	 */
-	public function getOverwriteProtectionRepository() {
-		if (! isset ( $this->overwriteProtectionRepository )) {
-			$this->overwriteProtectionRepository = $this->objectManager->get(OverwriteProtectionRepository::class);
-		}
-		return $this->overwriteProtectionRepository;
-	}
+    /**
+     * @return OverwriteProtectionRepository
+     */
+    public function getOverwriteProtectionRepository()
+    {
+        if (!isset ($this->overwriteProtectionRepository)) {
+            $this->overwriteProtectionRepository = $this->objectManager->get(OverwriteProtectionRepository::class);
+        }
+        return $this->overwriteProtectionRepository;
+    }
 
-	/**
-	 * Hook for deletes in Typo3 Backend. It also delete all overwrite protection
-	 * @param string $command
-	 * @param string $table
-	 * @param integer $id
-	 */
-	public function processCmdmap_postProcess($command, $table, $id) {
-		if (FALSE === $this->needsOverWriteProtection ( $table )) {
-			return;
-		}
-		if ($command !== 'delete') {
-			return;
-		}
-		$this->removeOverwriteProtection( $id, $table );
-	}
-	/**
-	 * Hook for updates in Typo3 backend
-	 * @param array $incomingFieldArray
-	 * @param string $table
-	 * @param integer $id
-	 * @param DataHandler $tcemain
-	 */
-	public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, DataHandler &$tcemain) {
-	    if (FALSE === $this->needsOverWriteProtection ( $table )) {
-			return;
-		}
+    /**
+     * Hook for deletes in Typo3 Backend. It also delete all overwrite protection
+     * @param string $command
+     * @param string $table
+     * @param integer $id
+     */
+    public function processCmdmap_postProcess($command, $table, $id)
+    {
+        if (false === $this->needsOverWriteProtection($table)) {
+            return;
+        }
+        if ($command !== 'delete') {
+            return;
+        }
+        $this->removeOverwriteProtection($id, $table);
+    }
+
+    /**
+     * Hook for updates in Typo3 backend
+     * @param array $incomingFieldArray
+     * @param string $table
+     * @param integer $id
+     * @param DataHandler $tcemain
+     */
+    public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, DataHandler &$tcemain)
+    {
+        if (false === $this->needsOverWriteProtection($table)) {
+            return;
+        }
 
         // check, if overwrite-protection-fields are set:
         // If they are NOT set, it means, that any other extension maybe called the process_datamap!
-        if(false === array_key_exists(self::OVERWRITE_PROTECTION_TILL, $incomingFieldArray) ||
-           false === array_key_exists(self::OVERWRITE_PROTECTION_MODE, $incomingFieldArray)
+        if (false === array_key_exists(self::OVERWRITE_PROTECTION_TILL, $incomingFieldArray) ||
+            false === array_key_exists(self::OVERWRITE_PROTECTION_MODE, $incomingFieldArray)
         ) {
             return;
         }
 
-		if (FALSE === $this->hasOverWriteProtection ( $incomingFieldArray )) {
-			$this->removeOverwriteProtection( $id, $table );
-		} else {
-			$protection = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
-			$mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
+        if (false === $this->hasOverWriteProtection($incomingFieldArray)) {
+            $this->removeOverwriteProtection($id, $table);
+        } else {
+            $protection = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
+            $mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
 
-			$result = $this->getOverwriteProtectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-			if ($result->count() === 0) {
-				/* @var $overwriteProtection OverwriteProtection */
-				$overwriteProtection = $this->objectManager->get (OverwriteProtection::class);
-				$overwriteProtection->setProtectedMode ( $mode );
-				$overwriteProtection->setPid ( $tcemain->getPID ( $table, $id ) );
-				$overwriteProtection->setProtectedTablename ( $table );
-				$overwriteProtection->setProtectedUid ( $id );
-				$overwriteProtection->setProtectedTime ( $protection );
-				$this->getOverwriteProtectionRepository ()->add ( $overwriteProtection );
-			} else {
-				foreach ( $result as $overwriteProtection ) {
-					/* @var $overwriteProtection OverwriteProtection */
-					$overwriteProtection->setProtectedMode ( $mode );
-					$overwriteProtection->setProtectedTime ( $protection );
-					$this->getOverwriteProtectionRepository ()->update($overwriteProtection);
-				}
-			}
-			$this->persistAll();
-		}
-		unset ( $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL] );
-		unset ( $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE] );
-	}
+            $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($id, $table);
+            if ($result->count() === 0) {
+                /* @var $overwriteProtection OverwriteProtection */
+                $overwriteProtection = $this->objectManager->get(OverwriteProtection::class);
+                $overwriteProtection->setProtectedMode($mode);
+                $overwriteProtection->setPid($tcemain->getPID($table, $id));
+                $overwriteProtection->setProtectedTablename($table);
+                $overwriteProtection->setProtectedUid($id);
+                $overwriteProtection->setProtectedTime($protection);
+                $this->getOverwriteProtectionRepository()->add($overwriteProtection);
+            } else {
+                foreach ($result as $overwriteProtection) {
+                    /* @var $overwriteProtection OverwriteProtection */
+                    $overwriteProtection->setProtectedMode($mode);
+                    $overwriteProtection->setProtectedTime($protection);
+                    $this->getOverwriteProtectionRepository()->update($overwriteProtection);
+                }
+            }
+            $this->persistAll();
+        }
+        unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_TILL]);
+        unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_MODE]);
+    }
 
-	/**
-	 * @param OverwriteProtectionRepository $overwriteProtectionRepository
-	 */
-	public function setOverwriteProtectionRepository(OverwriteProtectionRepository $overwriteProtectionRepository) {
-		$this->overwriteProtectionRepository = $overwriteProtectionRepository;
-	}
+    /**
+     * @param OverwriteProtectionRepository $overwriteProtectionRepository
+     */
+    public function setOverwriteProtectionRepository(OverwriteProtectionRepository $overwriteProtectionRepository)
+    {
+        $this->overwriteProtectionRepository = $overwriteProtectionRepository;
+    }
 
-	/**
-	 * @return LanguageService
-	 */
-	private function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
+    /**
+     * @return LanguageService
+     */
+    private function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 
-	/**
-	 * @param array $fields_values
-	 * @return boolean
-	 */
-	private function hasOverWriteProtection(array $fields_values) {
-		if (isset ( $fields_values [self::OVERWRITE_PROTECTION_TILL] )) {
-			$value = trim ( $fields_values [self::OVERWRITE_PROTECTION_TILL] );
-			if (FALSE === empty ( $value ) && FALSE !== is_numeric ( $value )) {
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * If a table is configured to use the sequenzer
-	 *
-	 * @param string $tableName
-	 * @return boolean
-	 */
-	private function needsOverWriteProtection($tableName) {
-		if ($tableName !== 'tx_aoedbsequenzer_domain_model_overwriteprotection' && in_array ( $tableName, $this->supportedTables )) {
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * persist all changes
-	 */
-	private function persistAll() {
-		/* @var $persistenceManager PersistenceManager */
-		$persistenceManager = $this->objectManager->get ( PersistenceManager::class );
-		$persistenceManager->persistAll ();
-	}
-	/**
-	 * remove overwriteProtection
-	 *
-	 * @param integer $id
-	 * @param string $table
-	 */
-	private function removeOverwriteProtection($id, $table) {
-		$result = $this->getOverwriteProtectionRepository ()->findByProtectedUidAndTableName ( $id, $table );
-		foreach ( $result as $overwriteProtection ) {
-			$this->getOverwriteProtectionRepository ()->remove ( $overwriteProtection );
-		}
-		$this->persistAll();
-	}
+    /**
+     * @param array $fields_values
+     * @return boolean
+     */
+    private function hasOverWriteProtection(array $fields_values)
+    {
+        if (isset ($fields_values [self::OVERWRITE_PROTECTION_TILL])) {
+            $value = trim($fields_values [self::OVERWRITE_PROTECTION_TILL]);
+            if (false === empty ($value) && false !== is_numeric($value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * If a table is configured to use the sequenzer
+     *
+     * @param string $tableName
+     * @return boolean
+     */
+    private function needsOverWriteProtection($tableName)
+    {
+        if ($tableName !== 'tx_aoedbsequenzer_domain_model_overwriteprotection' && in_array($tableName,
+                $this->supportedTables)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * persist all changes
+     */
+    private function persistAll()
+    {
+        /* @var $persistenceManager PersistenceManager */
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+    }
+
+    /**
+     * remove overwriteProtection
+     *
+     * @param integer $id
+     * @param string $table
+     */
+    private function removeOverwriteProtection($id, $table)
+    {
+        $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($id, $table);
+        foreach ($result as $overwriteProtection) {
+            $this->getOverwriteProtectionRepository()->remove($overwriteProtection);
+        }
+        $this->persistAll();
+    }
 }
