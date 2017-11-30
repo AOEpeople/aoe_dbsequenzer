@@ -4,7 +4,7 @@ if (!defined('TYPO3_MODE')) {
 }
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Database\\DatabaseConnection'] = array(
-    'className' => 'Tx_AoeDbsequenzer_Xclass_DatabaseConnection',
+    'className' => 'Aoe\\AoeDbSequenzer\\Xclass\\DatabaseConnection',
 );
 
 /** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
@@ -12,6 +12,6 @@ $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYP
 $signalSlotDispatcher->connect(
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::class,
     'tcaIsBeingBuilt',
-    \Tx_AoeDbsequenzer_TcaPostProcessor::class,
+    \Aoe\AoeDbSequenzer\TcaPostProcessor::class,
     'postProcessTca'
 );
