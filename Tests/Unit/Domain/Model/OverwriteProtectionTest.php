@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit\Domain\Model
+ * @covers \Aoe\AoeDbSequenzer\Domain\Model\OverwriteProtection
  */
 class OverwriteProtectionTest extends UnitTestCase
 {

@@ -30,6 +30,7 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
+ * @covers \Aoe\AoeDbSequenzer\TYPO3Service
  */
 class TYPO3ServiceTest extends UnitTestCase
 {
