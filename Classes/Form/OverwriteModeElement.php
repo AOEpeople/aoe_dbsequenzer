@@ -33,6 +33,16 @@ use TYPO3\CMS\Backend\Form\Element\SelectSingleElement;
 class OverwriteModeElement extends AbstractOverwriteElement
 {
     /**
+     * @var integer
+     */
+    const OVERWRITE_PROTECTION_MODE_CONFLICT = 0;
+
+    /**
+     * @var integer
+     */
+    const OVERWRITE_PROTECTION_MODE_OVERWRITE = 1;
+
+    /**
      * @param array $PA
      * @return String
      */
@@ -47,9 +57,9 @@ class OverwriteModeElement extends AbstractOverwriteElement
         $data = [
             'inlineStructure' => [],
             'parameterArray' => [
-                'itemFormElName' => 'data[' . $PA['table'] . '][' . $PA['row']['uid'] . '][tx_aoe_dbsquenzer_protectoverwrite_mode]',
+                'itemFormElName' => 'data[' . $PA['table'] . '][' . $PA['row']['uid'] . ']['.OverwriteProtectionService::OVERWRITE_PROTECTION_MODE.']',
                 'itemFormElValue' => [$itemFormElValue],
-                'fieldName' => 'tx_aoe_dbsquenzer_protectoverwrite_mode',
+                'fieldName' => OverwriteProtectionService::OVERWRITE_PROTECTION_MODE,
                 'fieldChangeFunc' => [],
                 'fieldConf' => [
                     'label' => '',
@@ -61,11 +71,11 @@ class OverwriteModeElement extends AbstractOverwriteElement
                         'items' => [
                             [
                                 $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_conflict'),
-                                OverwriteProtectionService::OVERWRITE_PROTECTION_MODE_CONFLICT
+                                self::OVERWRITE_PROTECTION_MODE_CONFLICT
                             ],
                             [
                                 $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:mode_overwrite'),
-                                OverwriteProtectionService::OVERWRITE_PROTECTION_MODE_OVERWRITE
+                                self::OVERWRITE_PROTECTION_MODE_OVERWRITE
                             ]
                         ]
                     ],

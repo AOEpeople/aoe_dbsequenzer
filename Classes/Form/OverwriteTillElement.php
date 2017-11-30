@@ -24,6 +24,7 @@ namespace Aoe\AoeDbSequenzer\Form;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\OverwriteProtectionService;
 use TYPO3\CMS\Backend\Form\Element\InputTextElement;
 
 /**
@@ -45,9 +46,9 @@ class OverwriteTillElement extends AbstractOverwriteElement
 
         $data = [
             'parameterArray' => [
-                'itemFormElName' => 'data[' . $PA['table'] . '][' . $PA['row']['uid'] . '][tx_aoe_dbsquenzer_protectoverwrite_till]',
+                'itemFormElName' => 'data[' . $PA['table'] . '][' . $PA['row']['uid'] . ']['.OverwriteProtectionService::OVERWRITE_PROTECTION_TILL.']',
                 'itemFormElValue' => $itemFormElValue,
-                'fieldName' => 'tx_aoe_dbsquenzer_protectoverwrite_till',
+                'fieldName' => OverwriteProtectionService::OVERWRITE_PROTECTION_TILL,
                 'fieldConf' => [
                     'label' => $this->getLanguageService()->sL('LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protectoverwrite_till'),
                     'config' => [

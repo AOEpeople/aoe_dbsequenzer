@@ -41,22 +41,17 @@ class OverwriteProtectionService
     /**
      * @var string
      */
+    const OVERWRITE_PROTECTION_TABLE = 'tx_aoedbsequenzer_domain_model_overwriteprotection';
+
+    /**
+     * @var string
+     */
     const OVERWRITE_PROTECTION_TILL = 'tx_aoe_dbsquenzer_protectoverwrite_till';
 
     /**
      * @var string
      */
     const OVERWRITE_PROTECTION_MODE = 'tx_aoe_dbsquenzer_protectoverwrite_mode';
-
-    /**
-     * @var int
-     */
-    const OVERWRITE_PROTECTION_MODE_CONFLICT = 0;
-
-    /**
-     * @var int
-     */
-    const OVERWRITE_PROTECTION_MODE_OVERWRITE = 1;
 
     /**
      * array of configured tables that should call the sequenzer
@@ -215,7 +210,7 @@ class OverwriteProtectionService
      */
     private function needsOverWriteProtection($tableName)
     {
-        if ($tableName !== 'tx_aoedbsequenzer_domain_model_overwriteprotection' && in_array($tableName,
+        if ($tableName !== self::OVERWRITE_PROTECTION_TABLE && in_array($tableName,
                 $this->supportedTables)) {
             return true;
         }

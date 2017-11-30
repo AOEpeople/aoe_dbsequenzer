@@ -33,7 +33,7 @@ class Sequenzer
     /**
      * @var string
      */
-    private $table = 'tx_aoedbsequenzer_sequenz';
+    const SEQUENZER_TABLE = 'tx_aoedbsequenzer_sequenz';
 
     /**
      * @var \mysqli
@@ -97,8 +97,8 @@ class Sequenzer
             throw new \Exception ('The sequenzer cannot return IDs for this table -' . $table . ' Too many recursions - maybe to much load?');
         }
 
-        $result = $this->query('SELECT * FROM ' . $this->getTable() . ' WHERE tablename=\'' . $this->escapeString($table) . '\'');
-        //echo 'SELECT * FROM '.$this->getTable().' WHERE tablename=\''.$this->escapeString($table).'\'';
+        $result = $this->query('SELECT * FROM ' . self::SEQUENZER_TABLE . ' WHERE tablename=\'' . $this->escapeString($table) . '\'');
+        //echo 'SELECT * FROM '.self::SEQUENZER_TABLE.' WHERE tablename=\''.$this->escapeString($table).'\'';
         $row = mysqli_fetch_assoc($result);
 
         if (!isset ($row ['current'])) {
@@ -117,7 +117,7 @@ class Sequenzer
 
         $new = $row ['current'] + $row ['offset'];
         $updateTimeStamp = $GLOBALS ['EXEC_TIME'];
-        $res2 = $this->query('UPDATE ' . $this->getTable() . ' SET current=' . $new . ', timestamp=' . $updateTimeStamp . ' WHERE timestamp=' . $row ['timestamp'] . ' AND tablename=\'' . $this->escapeString($table) . '\'');
+        $res2 = $this->query('UPDATE ' . self::SEQUENZER_TABLE . ' SET current=' . $new . ', timestamp=' . $updateTimeStamp . ' WHERE timestamp=' . $row ['timestamp'] . ' AND tablename=\'' . $this->escapeString($table) . '\'');
         if ($res2 && mysqli_affected_rows($this->dbLink) > 0) {
             return $new;
         } else {
@@ -149,17 +149,8 @@ class Sequenzer
     private function initSequenzerForTable($table)
     {
         $start = $this->getDefaultStartValue($table);
-        $insert = 'INSERT INTO ' . $this->getTable() . ' ( tablename, current, offset, timestamp ) VALUES ( \'' . $this->escapeString($table) . '\', ' . $start . ',' . intval($this->defaultOffset) . ',' . $GLOBALS ['EXEC_TIME'] . ' )';
+        $insert = 'INSERT INTO ' . self::SEQUENZER_TABLE . ' ( tablename, current, offset, timestamp ) VALUES ( \'' . $this->escapeString($table) . '\', ' . $start . ',' . intval($this->defaultOffset) . ',' . $GLOBALS ['EXEC_TIME'] . ' )';
         $this->query($insert);
-    }
-
-    /**
-     * get scheduler table name
-     * @return string
-     */
-    private function getTable()
-    {
-        return $this->table;
     }
 
     /**
