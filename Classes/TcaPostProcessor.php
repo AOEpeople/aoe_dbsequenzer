@@ -47,7 +47,7 @@ class TcaPostProcessor
                 'label' => 'LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protectoverwrite_till',
                 'config' => [
                     'type' => 'user',
-                    'userFunc' => 'Tx_AoeDbsequenzer_Form_OverwriteTillElement->render',
+                    'userFunc' => 'Aoe\AoeDbSequenzer\Form\OverwriteTillElement->render',
                     'eval' => 'datetime'
                 ]
             ],
@@ -55,7 +55,7 @@ class TcaPostProcessor
                 'label' => 'LLL:EXT:aoe_dbsequenzer/Resources/Private/Language/locallang_db.xml:protected_mode',
                 'config' => [
                     'type' => 'user',
-                    'userFunc' => 'Tx_AoeDbsequenzer_Form_OverwriteModeElement->render',
+                    'userFunc' => 'Aoe\AoeDbSequenzer\Form\OverwriteModeElement->render',
                 ]
             ]
         ];
