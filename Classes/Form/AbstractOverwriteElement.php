@@ -43,7 +43,7 @@ abstract class AbstractOverwriteElement
      */
     protected function hasOverwriteProtection($protectedUid, $tableName)
     {
-        $result = $this->getOverwriteprotectionRepository()->findByProtectedUidAndTableName($protectedUid, $tableName);
+        $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($protectedUid, $tableName);
         return ($result->count() > 0);
     }
 
@@ -54,8 +54,8 @@ abstract class AbstractOverwriteElement
      */
     protected function getOverwriteProtection($protectedUid, $tableName)
     {
-        $result = $this->getOverwriteprotectionRepository()->findByProtectedUidAndTableName($protectedUid, $tableName);
-        foreach ($result as $overwriteProtection) {
+        $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($protectedUid, $tableName);
+        foreach ($result->toArray() as $overwriteProtection) {
             /* @var $overwriteProtection OverwriteProtection */
             return $overwriteProtection;
         }
@@ -82,7 +82,7 @@ abstract class AbstractOverwriteElement
     /**
      * @return OverwriteProtectionRepository
      */
-    protected function getOverwriteprotectionRepository()
+    protected function getOverwriteProtectionRepository()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         return $objectManager->get(OverwriteProtectionRepository::class);
