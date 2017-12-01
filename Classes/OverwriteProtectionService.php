@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -66,26 +65,24 @@ class OverwriteProtectionService
     private $overwriteProtectionRepository;
 
     /**
+     * @var PersistenceManager
+     */
+    private $persistenceManager;
+
+    /**
      * @var ObjectManagerInterface
      */
     private $objectManager;
 
-    /**
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function __construct(ObjectManagerInterface $objectManager = null)
+    public function __construct()
     {
         $extConf = unserialize($GLOBALS ['TYPO3_CONF_VARS'] ['EXT'] ['extConf'] ['aoe_dbsequenzer']);
         $explodedValues = explode(',', $extConf ['tables']);
         $this->supportedTables = array_map('trim', $explodedValues);
 
-        if ($objectManager == null) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        } else {
-            $this->objectManager = $objectManager;
-        }
-
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->overwriteProtectionRepository = $this->objectManager->get(OverwriteProtectionRepository::class);
+        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
     }
 
     /**
@@ -129,8 +126,10 @@ class OverwriteProtectionService
         if (false === $this->hasOverWriteProtection($incomingFieldArray)) {
             $this->removeOverwriteProtection($id, $table);
         } else {
-            $protection = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
+            $protectionTime = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
             $mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
+
+            $protectionTime = $this->convertClientTimestampToUTC($protectionTime, $table, $tcemain);
 
             $result = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
             if ($result->count() === 0) {
@@ -140,17 +139,17 @@ class OverwriteProtectionService
                 $overwriteProtection->setPid($tcemain->getPID($table, $id));
                 $overwriteProtection->setProtectedTablename($table);
                 $overwriteProtection->setProtectedUid($id);
-                $overwriteProtection->setProtectedTime($protection);
+                $overwriteProtection->setProtectedTime($protectionTime);
                 $this->overwriteProtectionRepository->add($overwriteProtection);
             } else {
                 foreach ($result->toArray() as $overwriteProtection) {
                     /* @var $overwriteProtection OverwriteProtection */
                     $overwriteProtection->setProtectedMode($mode);
-                    $overwriteProtection->setProtectedTime($protection);
+                    $overwriteProtection->setProtectedTime($protectionTime);
                     $this->overwriteProtectionRepository->update($overwriteProtection);
                 }
             }
-            $this->persistAll();
+            $this->persistenceManager->persistAll();
         }
         unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_TILL]);
         unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_MODE]);
@@ -186,16 +185,6 @@ class OverwriteProtectionService
     }
 
     /**
-     * persist all changes
-     */
-    private function persistAll()
-    {
-        /* @var $persistenceManager PersistenceManager */
-        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $persistenceManager->persistAll();
-    }
-
-    /**
      * remove overwriteProtection
      *
      * @param integer $id
@@ -207,6 +196,25 @@ class OverwriteProtectionService
         foreach ($result->toArray() as $overwriteProtection) {
             $this->overwriteProtectionRepository->remove($overwriteProtection);
         }
-        $this->persistAll();
+        $this->persistenceManager->persistAll();
+    }
+
+    /**
+     * @param string $dateTimeValue
+     * @param string $table
+     * @param DataHandler $dataHandler
+     * @return string
+     */
+    private function convertClientTimestampToUTC($dateTimeValue, $table, DataHandler $dataHandler)
+    {
+        $evalArray = explode(',', $GLOBALS['TCA'][$table]['columns'][self::OVERWRITE_PROTECTION_TILL]['config']['eval']);
+
+        $result = $dataHandler->checkValue_input_Eval($dateTimeValue, $evalArray, null);
+
+        if (isset($result['value'])) {
+            return $result['value'];
+        }
+
+        return $dateTimeValue;
     }
 }

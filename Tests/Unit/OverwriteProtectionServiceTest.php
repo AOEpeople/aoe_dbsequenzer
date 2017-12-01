@@ -31,6 +31,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -66,6 +67,8 @@ class OverwriteProtectionServiceTest extends UnitTestCase
         $testConfiguration['tables'] = 'table1,table2';
         $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer'] = serialize($testConfiguration);
 
+        $GLOBALS['TCA']['table1']['columns'][OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]['config']['eval'] = 'datetime';
+
         $GLOBALS['BE_USER'] = $this->getMockBuilder(BackendUserAuthentication::class)
             ->disableOriginalConstructor()->getMock();
         $GLOBALS['BE_USER']->user = ['uid' => uniqid()];
@@ -94,7 +97,9 @@ class OverwriteProtectionServiceTest extends UnitTestCase
                 [OverwriteProtection::class, new OverwriteProtection()]
             ]);
 
-        $this->overwriteProtectionService = new OverwriteProtectionService($objectManagerMock);
+        GeneralUtility::setSingletonInstance(ObjectManager::class, $objectManagerMock);
+
+        $this->overwriteProtectionService = new OverwriteProtectionService();
     }
 
     /**
@@ -169,6 +174,8 @@ class OverwriteProtectionServiceTest extends UnitTestCase
         ];
         /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
         $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $dataHandlerMock->expects($this->once())->method('checkValue_input_Eval')->willReturn(['value' => '1515625200']);
+
         $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'table1', 1, $dataHandlerMock);
         $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
         $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_MODE]));
@@ -197,6 +204,8 @@ class OverwriteProtectionServiceTest extends UnitTestCase
         ];
         /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
         $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $dataHandlerMock->expects($this->once())->method('checkValue_input_Eval')->willReturn(['value' => '1515625200']);
+
         $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'table1', 1, $dataHandlerMock);
         $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
         $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_MODE]));
@@ -247,5 +256,6 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     {
         unset($this->overwriteProtectionService);
         unset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
+        unset($GLOBALS['TCA']['table1']['columns'][OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]['config']['eval']);
     }
 }
