@@ -139,6 +139,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
 
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
         $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult->expects($this->once())->method('count')->willReturn(1);
         $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
         $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
@@ -233,6 +234,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     {
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
         $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult->expects($this->once())->method('count')->willReturn(1);
         $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
         $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')

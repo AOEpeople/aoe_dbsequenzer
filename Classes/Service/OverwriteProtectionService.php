@@ -192,9 +192,11 @@ class OverwriteProtectionService
     private function removeOverwriteProtection($id, $table)
     {
         $queryResult = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
-        $overwriteProtection = $queryResult->getFirst();
-        $this->overwriteProtectionRepository->remove($overwriteProtection);
-        $this->persistenceManager->persistAll();
+        if ($queryResult->count() > 0) {
+            $overwriteProtection = $queryResult->getFirst();
+            $this->overwriteProtectionRepository->remove($overwriteProtection);
+            $this->persistenceManager->persistAll();
+        }
     }
 
     /**
