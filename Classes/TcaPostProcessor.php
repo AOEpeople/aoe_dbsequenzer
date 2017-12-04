@@ -61,6 +61,7 @@ class TcaPostProcessor
             ]
         ];
 
+        $columnNames = [];
         $columnNames[] = OverwriteProtectionService::OVERWRITE_PROTECTION_TILL;
         $columnNames[] = OverwriteProtectionService::OVERWRITE_PROTECTION_MODE;
         $columnNamesStr = ' ' . implode(', ', $columnNames);

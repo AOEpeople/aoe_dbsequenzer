@@ -43,8 +43,10 @@ abstract class AbstractOverwriteElement
      */
     protected function hasOverwriteProtection($protectedUid, $tableName)
     {
-        $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($protectedUid, $tableName);
-        return ($result->count() > 0);
+        $countOverwriteProtections = $this->getOverwriteProtectionRepository()
+            ->findByProtectedUidAndTableName($protectedUid, $tableName)
+            ->count() ;
+        return ($countOverwriteProtections > 0);
     }
 
     /**
@@ -54,13 +56,9 @@ abstract class AbstractOverwriteElement
      */
     protected function getOverwriteProtection($protectedUid, $tableName)
     {
-        $result = $this->getOverwriteProtectionRepository()->findByProtectedUidAndTableName($protectedUid, $tableName);
-        foreach ($result->toArray() as $overwriteProtection) {
-            /* @var $overwriteProtection OverwriteProtection */
-            return $overwriteProtection;
-        }
-
-        return null;
+        return $this->getOverwriteProtectionRepository()
+            ->findByProtectedUidAndTableName($protectedUid, $tableName)
+            ->getFirst();
     }
 
     /**

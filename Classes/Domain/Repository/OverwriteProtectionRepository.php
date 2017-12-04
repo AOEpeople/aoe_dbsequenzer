@@ -24,8 +24,6 @@ namespace Aoe\AoeDbSequenzer\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -35,12 +33,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class OverwriteProtectionRepository extends Repository
 {
-    public function __construct()
-    {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        parent::__construct($objectManager);
-    }
-
     /**
      * remove storage page
      */

@@ -131,8 +131,8 @@ class OverwriteProtectionService
 
             $protectionTime = $this->convertClientTimestampToUTC($protectionTime, $table, $tcemain);
 
-            $result = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
-            if ($result->count() === 0) {
+            $queryResult = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
+            if ($queryResult->count() === 0) {
                 /* @var $overwriteProtection OverwriteProtection */
                 $overwriteProtection = $this->objectManager->get(OverwriteProtection::class);
                 $overwriteProtection->setProtectedMode($mode);
@@ -142,12 +142,11 @@ class OverwriteProtectionService
                 $overwriteProtection->setProtectedTime($protectionTime);
                 $this->overwriteProtectionRepository->add($overwriteProtection);
             } else {
-                foreach ($result->toArray() as $overwriteProtection) {
-                    /* @var $overwriteProtection OverwriteProtection */
-                    $overwriteProtection->setProtectedMode($mode);
-                    $overwriteProtection->setProtectedTime($protectionTime);
-                    $this->overwriteProtectionRepository->update($overwriteProtection);
-                }
+                /* @var $overwriteProtection OverwriteProtection */
+                $overwriteProtection = $queryResult->getFirst();
+                $overwriteProtection->setProtectedMode($mode);
+                $overwriteProtection->setProtectedTime($protectionTime);
+                $this->overwriteProtectionRepository->update($overwriteProtection);
             }
             $this->persistenceManager->persistAll();
         }
@@ -192,10 +191,9 @@ class OverwriteProtectionService
      */
     private function removeOverwriteProtection($id, $table)
     {
-        $result = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
-        foreach ($result->toArray() as $overwriteProtection) {
-            $this->overwriteProtectionRepository->remove($overwriteProtection);
-        }
+        $queryResult = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
+        $overwriteProtection = $queryResult->getFirst();
+        $this->overwriteProtectionRepository->remove($overwriteProtection);
         $this->persistenceManager->persistAll();
     }
 
@@ -209,10 +207,10 @@ class OverwriteProtectionService
     {
         $evalArray = explode(',', $GLOBALS['TCA'][$table]['columns'][self::OVERWRITE_PROTECTION_TILL]['config']['eval']);
 
-        $result = $dataHandler->checkValue_input_Eval($dateTimeValue, $evalArray, null);
+        $evalResult = $dataHandler->checkValue_input_Eval($dateTimeValue, $evalArray, null);
 
-        if (isset($result['value'])) {
-            return $result['value'];
+        if (isset($evalResult['value'])) {
+            return $evalResult['value'];
         }
 
         return $dateTimeValue;

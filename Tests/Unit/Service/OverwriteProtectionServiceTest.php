@@ -82,6 +82,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
 
         $this->overwriteProtectionRepository = $this->getMockBuilder(OverwriteProtectionRepository::class)
             ->setMethods(['findByProtectedUidAndTableName', 'add', 'update', 'remove'])
+            ->disableOriginalConstructor()
             ->getMock();
 
         /** @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject $objectManagerMock */
@@ -138,9 +139,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
 
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
         $mockQueryResult = $this->getMock(QueryResultInterface::class);
-        $mockQueryResult->expects($this->once())->method('toArray')->willReturn([
-            new OverwriteProtection()
-        ]);
+        $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
         $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
             ->willReturn($mockQueryResult);
@@ -189,9 +188,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
         $mockQueryResult = $this->getMock(QueryResultInterface::class);
         $mockQueryResult->expects($this->once())->method('count')->willReturn(1);
-        $mockQueryResult->expects($this->once())->method('toArray')->willReturn([
-            new OverwriteProtection()
-        ]);
+        $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
         $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
             ->willReturn($mockQueryResult);
@@ -236,9 +233,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     {
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
         $mockQueryResult = $this->getMock(QueryResultInterface::class);
-        $mockQueryResult->expects($this->once())->method('toArray')->willReturn([
-            new OverwriteProtection()
-        ]);
+        $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
         $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
             ->willReturn($mockQueryResult);
