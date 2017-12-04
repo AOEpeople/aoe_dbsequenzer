@@ -88,7 +88,7 @@ class Typo3Service
         }
 
         if (isset($fields_values['uid'])) {
-            $e = new \Exception();
+            $e = new \Exception('', 1512378232);
             GeneralUtility::devLog(
                 'UID ' . $fields_values['uid'] . ' is already set for table "' . $tableName . '"',
                 'aoe_dbsequenzer',

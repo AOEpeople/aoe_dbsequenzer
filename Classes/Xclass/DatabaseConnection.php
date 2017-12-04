@@ -110,7 +110,7 @@ class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection
     public function UPDATEquery($table, $where, $fields_values, $no_quote_fields = false)
     {
         if ($this->getTypo3Service()->needsSequenzer($table) && isset($fields_values['uid'])) {
-            throw new \InvalidArgumentException('no uid allowed in update statement!');
+            throw new \InvalidArgumentException('no uid allowed in update statement!', 1512378277);
         }
         return parent::UPDATEquery($table, $where, $fields_values, $no_quote_fields);
     }

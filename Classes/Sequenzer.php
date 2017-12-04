@@ -94,7 +94,10 @@ class Sequenzer
     public function getNextIdForTable($table, $depth = 0)
     {
         if ($depth > 99) {
-            throw new \Exception ('The sequenzer cannot return IDs for this table -' . $table . ' Too many recursions - maybe to much load?');
+            throw new \Exception(
+                'The sequenzer cannot return IDs for this table -' . $table . ' Too many recursions - maybe to much load?',
+                1512378158
+            );
         }
 
         $result = $this->query('SELECT * FROM ' . self::SEQUENZER_TABLE . ' WHERE tablename=\'' . $this->escapeString($table) . '\'');
@@ -170,7 +173,10 @@ class Sequenzer
     {
         $result = mysqli_query($this->dbLink, $sql);
         if (mysqli_error($this->dbLink)) {
-            throw new \Exception (mysqli_error($this->dbLink), mysqli_errno($this->dbLink));
+            throw new \Exception(
+                mysqli_error($this->dbLink), mysqli_errno($this->dbLink),
+                1512378208
+            );
         }
         return $result;
     }
