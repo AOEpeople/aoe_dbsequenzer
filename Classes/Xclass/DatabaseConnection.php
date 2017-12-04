@@ -25,7 +25,7 @@ namespace Aoe\AoeDbSequenzer\Xclass;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Sequenzer;
-use Aoe\AoeDbSequenzer\TYPO3Service;
+use Aoe\AoeDbSequenzer\Service\Typo3Service;
 
 /**
  * @package Aoe\AoeDbSequenzer\Xclass
@@ -38,9 +38,9 @@ class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection
     private $isEnabled = true;
 
     /**
-     * @var TYPO3Service
+     * @var Typo3Service
      */
-    private $TYPO3Service;
+    private $typo3Service;
 
     /**
      * Enables the sequencer.
@@ -74,7 +74,7 @@ class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection
     function INSERTquery($table, $fields_values, $no_quote_fields = false)
     {
         if ($this->isEnabled) {
-            $fields_values = $this->getTYPO3Service()->modifyInsertFields($table, $fields_values);
+            $fields_values = $this->getTypo3Service()->modifyInsertFields($table, $fields_values);
         }
         return parent::INSERTquery($table, $fields_values, $no_quote_fields);
     }
@@ -92,7 +92,7 @@ class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection
     {
         if ($this->isEnabled) {
             foreach ($rows as &$row) {
-                $row = $this->getTYPO3Service()->modifyInsertFields($table, $row);
+                $row = $this->getTypo3Service()->modifyInsertFields($table, $row);
             }
         }
         return parent::INSERTmultipleRows($table, $fields, $rows, $no_quote_fields);
@@ -109,7 +109,7 @@ class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection
      */
     public function UPDATEquery($table, $where, $fields_values, $no_quote_fields = false)
     {
-        if ($this->getTYPO3Service()->needsSequenzer($table) && isset($fields_values['uid'])) {
+        if ($this->getTypo3Service()->needsSequenzer($table) && isset($fields_values['uid'])) {
             throw new \InvalidArgumentException('no uid allowed in update statement!');
         }
         return parent::UPDATEquery($table, $where, $fields_values, $no_quote_fields);
@@ -139,24 +139,24 @@ class DatabaseConnection extends \TYPO3\CMS\Core\Database\DatabaseConnection
     function sql_pconnect($host = null, $username = null, $password = null)
     {
         parent::sql_pconnect();
-        $this->getTYPO3Service()->setDbLink($this->getDatabaseHandle());
+        $this->getTypo3Service()->setDbLink($this->getDatabaseHandle());
         return $this->getDatabaseHandle();
     }
 
     /**
-     * create instance of TYPO3Service by lazy-loading
+     * create instance of Typo3Service by lazy-loading
      *
      * Why we do this?
      * Because some unittests backup the variable $GLOBALS (and so, also the variable $GLOBALS['TYPO3_DB']), which means, that this
-     * object/class will be serialized/unserialized, so the instance of TYPO3Service will be null after unserialization!
+     * object/class will be serialized/unserialized, so the instance of Typo3Service will be null after unserialization!
      *
-     * @return TYPO3Service
+     * @return Typo3Service
      */
-    protected function getTYPO3Service()
+    protected function getTypo3Service()
     {
-        if (false === isset($this->TYPO3Service)) {
-            $this->TYPO3Service = new TYPO3Service(new Sequenzer());
+        if (false === isset($this->typo3Service)) {
+            $this->typo3Service = new Typo3Service(new Sequenzer());
         }
-        return $this->TYPO3Service;
+        return $this->typo3Service;
     }
 }

@@ -25,17 +25,17 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Sequenzer;
-use Aoe\AoeDbSequenzer\Service\TYPO3Service;
+use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
- * @covers \Aoe\AoeDbSequenzer\TYPO3Service
+ * @covers \Aoe\AoeDbSequenzer\Typo3Service
  */
-class TYPO3ServiceTest extends UnitTestCase
+class Typo3ServiceTest extends UnitTestCase
 {
     /**
-     * @var TYPO3Service
+     * @var Typo3Service
      */
     private $service;
 
@@ -58,7 +58,7 @@ class TYPO3ServiceTest extends UnitTestCase
         $this->sequenzer = $this->getMockBuilder(Sequenzer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->service = new TYPO3Service($this->sequenzer);
+        $this->service = new Typo3Service($this->sequenzer);
     }
 
     /**

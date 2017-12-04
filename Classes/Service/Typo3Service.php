@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * @package Aoe\AoeDbSequenzer
  */
-class TYPO3Service
+class Typo3Service
 {
     /**
      * @var Sequenzer
