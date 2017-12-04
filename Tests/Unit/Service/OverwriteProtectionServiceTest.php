@@ -40,7 +40,7 @@ use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
- * @covers \Aoe\AoeDbSequenzer\OverwriteProtectionService
+ * @covers \Aoe\AoeDbSequenzer\Service\OverwriteProtectionService
  */
 class OverwriteProtectionServiceTest extends UnitTestCase
 {
