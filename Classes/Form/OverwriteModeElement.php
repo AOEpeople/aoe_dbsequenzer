@@ -24,7 +24,7 @@ namespace Aoe\AoeDbSequenzer\Form;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Aoe\AoeDbSequenzer\OverwriteProtectionService;
+use Aoe\AoeDbSequenzer\Service\OverwriteProtectionService;
 use TYPO3\CMS\Backend\Form\Element\SelectSingleElement;
 
 /**

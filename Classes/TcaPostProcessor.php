@@ -25,6 +25,7 @@ namespace Aoe\AoeDbSequenzer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\Service\OverwriteProtectionService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**

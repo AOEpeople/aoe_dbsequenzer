@@ -1,5 +1,5 @@
 <?php
-namespace Aoe\AoeDbSequenzer\Tests\Unit;
+namespace Aoe\AoeDbSequenzer\Tests\Unit\Service;
 
 /***************************************************************
  *  Copyright notice
@@ -26,7 +26,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 
 use Aoe\AoeDbSequenzer\Domain\Model\OverwriteProtection;
 use Aoe\AoeDbSequenzer\Domain\Repository\OverwriteProtectionRepository;
-use Aoe\AoeDbSequenzer\OverwriteProtectionService;
+use Aoe\AoeDbSequenzer\Service\OverwriteProtectionService;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;

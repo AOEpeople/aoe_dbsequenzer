@@ -25,7 +25,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Sequenzer;
-use Aoe\AoeDbSequenzer\TYPO3Service;
+use Aoe\AoeDbSequenzer\Service\TYPO3Service;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**

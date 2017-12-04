@@ -1,5 +1,5 @@
 <?php
-namespace Aoe\AoeDbSequenzer;
+namespace Aoe\AoeDbSequenzer\Service;
 
 /***************************************************************
  *  Copyright notice
