@@ -36,7 +36,7 @@ class OverwriteProtectionTest extends UnitTestCase
     /**
      * @var OverwriteProtection
      */
-    protected $_overwriteProtectionObject = null;
+    protected $overwriteProtection = null;
 
     /**
      * Set up creates a test instance and database.
@@ -47,7 +47,7 @@ class OverwriteProtectionTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->_overwriteProtectionObject = new Overwriteprotection();
+        $this->overwriteProtection = new OverwriteProtection();
         parent::setUp();
     }
 
@@ -56,8 +56,8 @@ class OverwriteProtectionTest extends UnitTestCase
      */
     public function testDeleted()
     {
-        $this->_overwriteProtectionObject->setDeleted(1);
-        $this->assertEquals(1, $this->_overwriteProtectionObject->getDeleted());
+        $this->overwriteProtection->setDeleted(1);
+        $this->assertEquals(1, $this->overwriteProtection->getDeleted());
     }
 
     /**
@@ -65,8 +65,8 @@ class OverwriteProtectionTest extends UnitTestCase
      */
     public function testProtectedUid()
     {
-        $this->_overwriteProtectionObject->setProtectedUid(1);
-        $this->assertEquals(1, $this->_overwriteProtectionObject->getProtectedUid());
+        $this->overwriteProtection->setProtectedUid(1);
+        $this->assertEquals(1, $this->overwriteProtection->getProtectedUid());
     }
 
     /**
@@ -74,8 +74,8 @@ class OverwriteProtectionTest extends UnitTestCase
      */
     public function testProtectedTablename()
     {
-        $this->_overwriteProtectionObject->setProtectedTablename('testTable');
-        $this->assertEquals('testTable', $this->_overwriteProtectionObject->getProtectedTablename());
+        $this->overwriteProtection->setProtectedTablename('testTable');
+        $this->assertEquals('testTable', $this->overwriteProtection->getProtectedTablename());
     }
 
     /**
@@ -83,8 +83,8 @@ class OverwriteProtectionTest extends UnitTestCase
      */
     public function testProtectedTime()
     {
-        $this->_overwriteProtectionObject->setProtectedTime(1234567);
-        $this->assertEquals(1234567, $this->_overwriteProtectionObject->getProtectedTime());
+        $this->overwriteProtection->setProtectedTime(1234567);
+        $this->assertEquals(1234567, $this->overwriteProtection->getProtectedTime());
     }
 
     /**
@@ -92,7 +92,7 @@ class OverwriteProtectionTest extends UnitTestCase
      */
     public function testProtectedMode()
     {
-        $this->_overwriteProtectionObject->setProtectedMode(10);
-        $this->assertEquals(10, $this->_overwriteProtectionObject->getProtectedMode());
+        $this->overwriteProtection->setProtectedMode(10);
+        $this->assertEquals(10, $this->overwriteProtection->getProtectedMode());
     }
 }
