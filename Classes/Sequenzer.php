@@ -98,7 +98,6 @@ class Sequenzer
         }
 
         $result = $this->query('SELECT * FROM ' . self::SEQUENZER_TABLE . ' WHERE tablename=\'' . $this->escapeString($table) . '\'');
-        //echo 'SELECT * FROM '.self::SEQUENZER_TABLE.' WHERE tablename=\''.$this->escapeString($table).'\'';
         $row = mysqli_fetch_assoc($result);
 
         if (!isset ($row ['current'])) {
