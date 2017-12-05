@@ -26,7 +26,6 @@
   },
   "require-dev": {
     "typo3/cms": "7.6.*",
-    "typo3-ter/phpunit": "4.8.*",
     "squizlabs/php_codesniffer": "*",
     "sebastian/phpcpd": "*",
     "phpmd/phpmd": "*",
@@ -36,12 +35,6 @@
     "aoe_dbsequenzer":  "self.version",
     "aoe/aoe-dbsequenzer": "self.version"
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.typo3.org/"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Aoe\\AoeDbSequenzer\\": "Classes"
