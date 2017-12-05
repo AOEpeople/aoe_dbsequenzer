@@ -1,5 +1,29 @@
-
-# /
-/.settings
-/.buildpath
-/.project
+#########################
+# EXT:aoe_dbsequenzer
+# global ignore file
+########################
+#
+# Don't ignore .rej and .orig as we want to see/clean files after conflict resolution.
+#
+# For local exclude patterns please edit .git/info/exclude.
+#
+########################
+#
+# Ignore temporary files (left by editors)
+*~
+*.bak
+*.idea
+#
+# Ignore by common IDEs used directories/files
+nbproject
+*.idea
+*.project
+.buildpath
+.project
+.settings
+.TemporaryItems
+.webprj
+#
+# Ignore composer stuff
+.Build
+composer.lock
