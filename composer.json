@@ -1,12 +1,19 @@
 {
   "name": "aoe/aoe-dbsequenzer",
-  "description": "With this extension you can ensure different unique keys for the configured tables.",
   "type": "typo3-cms-extension",
+  "description": "With this extension you can ensure different unique keys for the configured tables.",
+  "homepage": "https://github.com/AOEpeople/aoe_dbsequenzer",
+  "support": {
+    "issues": "https://github.com/AOEpeople/aoe_dbsequenzer/issues"
+  },
+  "license": "GPL-3.0",
   "authors": [
-      {
-          "name": "AOE GmbH",
-          "email": "dev@aoe.com"
-      }
+    {
+      "name": "AOE GmbH",
+      "email": "dev@aoe.com",
+      "homepage": "https://www.aoe.com/",
+      "role": "Developer"
+    }
   ],
   "require": {
     "php": ">=5.5.0",
@@ -23,7 +30,11 @@
     "squizlabs/php_codesniffer": "*",
     "sebastian/phpcpd": "*",
     "phpmd/phpmd": "*",
-    "phpunit/phpunit": "4.*"
+    "phpunit/phpunit": "~4.8.0"
+  },
+  "replace": {
+    "aoe_dbsequenzer":  "self.version",
+    "aoe/aoe-dbsequenzer": "self.version"
   },
   "repositories": [
     {
@@ -38,7 +49,24 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Aoe\\AoeDbSequenzer\\Tests\\": "Tests"
+      "Aoe\\AoeDbSequenzer\\Tests\\": "Tests",
+      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+    }
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/Web/typo3conf/ext/",
+      "[ -L .Build/Web/typo3conf/ext/aoe_dbsequenzer ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/aoe_dbsequenzer"
+    ]
+  },
+  "extra": {
+    "typo3/cms": {
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": ".Build/Web"
     }
   }
 }
