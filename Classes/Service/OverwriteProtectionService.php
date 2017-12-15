@@ -107,9 +107,9 @@ class OverwriteProtectionService
      * @param array $incomingFieldArray
      * @param string $table
      * @param integer $id
-     * @param DataHandler $tcemain
+     * @param DataHandler $dataHandler
      */
-    public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, DataHandler &$tcemain)
+    public function processDatamap_preProcessFieldArray(&$incomingFieldArray, $table, $id, DataHandler &$dataHandler)
     {
         if (false === $this->needsOverWriteProtection($table)) {
             return;
@@ -123,20 +123,27 @@ class OverwriteProtectionService
             return;
         }
 
+        // Only handle overwrite protection if database record is not new
+        if (GeneralUtility::isFirstPartOfStr($id, 'NEW')) {
+            unset($incomingFieldArray [self::OVERWRITE_PROTECTION_TILL]);
+            unset($incomingFieldArray [self::OVERWRITE_PROTECTION_MODE]);
+            return;
+        }
+
         if (false === $this->hasOverWriteProtection($incomingFieldArray)) {
             $this->removeOverwriteProtection($id, $table);
         } else {
             $protectionTime = $incomingFieldArray [self::OVERWRITE_PROTECTION_TILL];
             $mode = $incomingFieldArray [self::OVERWRITE_PROTECTION_MODE];
 
-            $protectionTime = $this->convertClientTimestampToUTC($protectionTime, $table, $tcemain);
+            $protectionTime = $this->convertClientTimestampToUTC($protectionTime, $table, $dataHandler);
 
             $queryResult = $this->overwriteProtectionRepository->findByProtectedUidAndTableName($id, $table);
             if ($queryResult->count() === 0) {
                 /* @var $overwriteProtection OverwriteProtection */
                 $overwriteProtection = $this->objectManager->get(OverwriteProtection::class);
                 $overwriteProtection->setProtectedMode($mode);
-                $overwriteProtection->setPid($tcemain->getPID($table, $id));
+                $overwriteProtection->setPid($dataHandler->getPID($table, $id));
                 $overwriteProtection->setProtectedTablename($table);
                 $overwriteProtection->setProtectedUid($id);
                 $overwriteProtection->setProtectedTime($protectionTime);
@@ -150,8 +157,59 @@ class OverwriteProtectionService
             }
             $this->persistenceManager->persistAll();
         }
-        unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_TILL]);
-        unset ($incomingFieldArray [self::OVERWRITE_PROTECTION_MODE]);
+
+        unset($incomingFieldArray [self::OVERWRITE_PROTECTION_TILL]);
+        unset($incomingFieldArray [self::OVERWRITE_PROTECTION_MODE]);
+    }
+
+    /**
+     * @param string $status Status "new" or "update"
+     * @param string $table Table name
+     * @param string $id Record ID. If new record its a string pointing to index inside \TYPO3\CMS\Core\DataHandling\DataHandler::substNEWwithIDs
+     * @param array $fieldArray Field array of updated fields in the operation
+     * @param DataHandler $dataHandler tcemain calling object
+     * @return void
+     */
+    public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $dataHandler)
+    {
+        // check basic pre-conditions - only handle new database record
+        if ($status !== 'new' ||
+            false === GeneralUtility::isFirstPartOfStr($id, 'NEW') ||
+            false === $this->needsOverWriteProtection($table)
+        ) {
+            return;
+        }
+
+        // check if all required dataHandler fields are available
+        if (!isset($dataHandler->datamap[$table]) ||
+            !isset($dataHandler->datamap[$table][$id]) ||
+            !isset($dataHandler->datamap[$table][$id][self::OVERWRITE_PROTECTION_TILL]) ||
+            !isset($dataHandler->datamap[$table][$id][self::OVERWRITE_PROTECTION_MODE]) ||
+            !isset($dataHandler->substNEWwithIDs[$id])
+        ) {
+            return;
+        }
+
+        // check if overwrite protection fields are filled
+        if (false === $this->hasOverWriteProtection($dataHandler->datamap[$table][$id])) {
+            return;
+        }
+
+        $uid = $dataHandler->substNEWwithIDs[$id];
+        $protectionTime = $dataHandler->datamap[$table][$id][self::OVERWRITE_PROTECTION_TILL];
+        $mode = $dataHandler->datamap[$table][$id][self::OVERWRITE_PROTECTION_MODE];
+
+        $protectionTime = $this->convertClientTimestampToUTC($protectionTime, $table, $dataHandler);
+
+        $overwriteProtection = $this->objectManager->get(OverwriteProtection::class);
+        $overwriteProtection->setProtectedMode($mode);
+        $overwriteProtection->setPid($dataHandler->getPID($table, $uid));
+        $overwriteProtection->setProtectedTablename($table);
+        $overwriteProtection->setProtectedUid($uid);
+        $overwriteProtection->setProtectedTime($protectionTime);
+
+        $this->overwriteProtectionRepository->add($overwriteProtection);
+        $this->persistenceManager->persistAll();
     }
 
     /**

@@ -130,6 +130,25 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     /**
      * @test
      */
+    public function processDatamap_preProcessFieldArray_DoNotHandleNewDataRecord()
+    {
+        $incomingFieldArray = [
+            OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '1323',
+            OverwriteProtectionService::OVERWRITE_PROTECTION_MODE => '1'
+        ];
+
+        $this->overwriteProtectionRepository->expects($this->never())->method('findByProtectedUidAndTableName');
+
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $this->overwriteProtectionService->processDatamap_preProcessFieldArray($incomingFieldArray, 'table1', 'NEW12345', $dataHandlerMock);
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]));
+        $this->assertFalse(isset($incomingFieldArray[OverwriteProtectionService::OVERWRITE_PROTECTION_MODE]));
+    }
+
+    /**
+     * @test
+     */
     public function processDatamap_preProcessFieldArray_RemoveExistingOverwriteProtection()
     {
         $incomingFieldArray = [
@@ -243,6 +262,110 @@ class OverwriteProtectionServiceTest extends UnitTestCase
         $this->persistenceManager->expects($this->once())->method('persistAll');
 
         $this->overwriteProtectionService->processCmdmap_postProcess('delete', 'table1', 1);
+    }
+
+    /**
+     * @test
+     */
+    public function processDatamap_afterDatabaseOperations_AddNewOverwriteProtectionDataset()
+    {
+        $newId = 'NEW1234';
+        $realId = '86449849';
+
+        $datamap = [
+            'table1' => [
+                $newId => [
+                    OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '12344899',
+                    OverwriteProtectionService::OVERWRITE_PROTECTION_MODE => '0'
+                ]
+            ]
+        ];
+
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $dataHandlerMock->datamap = $datamap;
+        $dataHandlerMock->substNEWwithIDs = [
+            $newId => $realId
+        ];
+
+        $this->overwriteProtectionRepository->expects($this->once())->method('add');
+        $this->persistenceManager->expects($this->once())->method('persistAll');
+        $this->overwriteProtectionService->processDatamap_afterDatabaseOperations('new', 'table1', $newId, [], $dataHandlerMock);
+    }
+
+    /**
+     * @test
+     */
+    public function processDatamap_afterDatabaseOperations_InvalidStatusUpdate()
+    {
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+
+        $this->overwriteProtectionRepository->expects($this->never())->method('add');
+        $this->overwriteProtectionService->processDatamap_afterDatabaseOperations('update', 'table1', 1, [], $dataHandlerMock);
+    }
+
+    /**
+     * @test
+     */
+    public function processDatamap_afterDatabaseOperations_NotSupportedTable()
+    {
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+
+        $this->overwriteProtectionRepository->expects($this->never())->method('add');
+        $this->overwriteProtectionService->processDatamap_afterDatabaseOperations('new', 'tableXY', 'NEW1234', [], $dataHandlerMock);
+    }
+
+    /**
+     * @test
+     */
+    public function processDatamap_afterDatabaseOperations_NotAllRequiredDataHandlerFields()
+    {
+        $newId = 'NEW1234';
+
+        $datamap = [
+            'table1' => [
+                $newId => [
+                    OverwriteProtectionService::OVERWRITE_PROTECTION_TILL => '12344899',
+                    OverwriteProtectionService::OVERWRITE_PROTECTION_MODE => '1'
+                ]
+            ]
+        ];
+
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $dataHandlerMock->datamap = $datamap;
+
+        $this->overwriteProtectionRepository->expects($this->never())->method('add');
+        $this->overwriteProtectionService->processDatamap_afterDatabaseOperations('new', 'table1', $newId, [], $dataHandlerMock);
+    }
+
+    /**
+     * @test
+     */
+    public function processDatamap_afterDatabaseOperations_MandatoryOverwriteProtectionFieldsAreMissing()
+    {
+        $newId = 'NEW1234';
+        $realId = '86449849';
+
+        $datamap = [
+            'table1' => [
+                $newId => [
+                    OverwriteProtectionService::OVERWRITE_PROTECTION_MODE => '0'
+                ]
+            ]
+        ];
+
+        /** @var DataHandler|\PHPUnit_Framework_MockObject_MockObject $dataHandlerMock */
+        $dataHandlerMock = $this->getMockBuilder(DataHandler::class)->disableOriginalConstructor()->getMock();
+        $dataHandlerMock->datamap = $datamap;
+        $dataHandlerMock->substNEWwithIDs = [
+            $newId => $realId
+        ];
+
+        $this->overwriteProtectionRepository->expects($this->never())->method('add');
+        $this->overwriteProtectionService->processDatamap_afterDatabaseOperations('new', 'table1', $newId, [], $dataHandlerMock);
     }
 
     /**

@@ -43,9 +43,13 @@ abstract class AbstractOverwriteElement
      */
     protected function hasOverwriteProtection($protectedUid, $tableName)
     {
+        if (false === is_numeric($protectedUid)) {
+            return false;
+        }
+
         $countOverwriteProtections = $this->getOverwriteProtectionRepository()
             ->findByProtectedUidAndTableName($protectedUid, $tableName)
-            ->count() ;
+            ->count();
         return ($countOverwriteProtections > 0);
     }
 
