@@ -29,7 +29,8 @@
     "squizlabs/php_codesniffer": "*",
     "sebastian/phpcpd": "*",
     "phpmd/phpmd": "*",
-    "phpunit/phpunit": "~4.8.0"
+    "phpunit/phpunit": "~4.8.0",
+    "phpunit/php-timer": "~1.0.9"
   },
   "replace": {
     "aoe_dbsequenzer":  "self.version",
