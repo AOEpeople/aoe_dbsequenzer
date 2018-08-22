@@ -25,7 +25,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit\Domain\Model;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Domain\Model\OverwriteProtection;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit\Domain\Model
@@ -48,7 +48,6 @@ class OverwriteProtectionTest extends UnitTestCase
     public function setUp()
     {
         $this->overwriteProtection = new OverwriteProtection();
-        parent::setUp();
     }
 
     /**

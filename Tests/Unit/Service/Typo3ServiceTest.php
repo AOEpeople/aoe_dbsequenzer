@@ -26,7 +26,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
@@ -87,8 +87,7 @@ class Typo3ServiceTest extends UnitTestCase
      */
     protected function tearDown()
     {
-        unset($this->sequenzer);
-        unset($this->service);
+        parent::tearDown();
         unset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
     }
 }

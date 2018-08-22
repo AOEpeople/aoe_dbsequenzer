@@ -27,10 +27,10 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit\Service;
 use Aoe\AoeDbSequenzer\Domain\Model\OverwriteProtection;
 use Aoe\AoeDbSequenzer\Domain\Repository\OverwriteProtectionRepository;
 use Aoe\AoeDbSequenzer\Service\OverwriteProtectionService;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
@@ -374,7 +374,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
      */
     protected function tearDown()
     {
-        unset($this->overwriteProtectionService);
+        parent::tearDown();
         unset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
         unset($GLOBALS['TCA']['table1']['columns'][OverwriteProtectionService::OVERWRITE_PROTECTION_TILL]['config']['eval']);
     }
