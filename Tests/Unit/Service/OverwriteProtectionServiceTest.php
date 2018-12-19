@@ -157,7 +157,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
         ];
 
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
-        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult = $this->getMockBuilder(QueryResultInterface::class)->disableOriginalConstructor()->getMock();
         $mockQueryResult->expects($this->once())->method('count')->willReturn(1);
         $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
@@ -179,7 +179,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     public function processDatamap_preProcessFieldArray_WithProtection_AddNewOverwriteProtectionDataset()
     {
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
-        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult = $this->getMockBuilder(QueryResultInterface::class)->disableOriginalConstructor()->getMock();
         $mockQueryResult->expects($this->once())->method('count')->willReturn(0);
 
         $this->overwriteProtectionRepository->expects($this->once())->method('findByProtectedUidAndTableName')
@@ -206,7 +206,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     public function processDatamap_preProcessFieldArray_WithProtection_UpdateExistingOverwriteProtectionDataset()
     {
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
-        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult = $this->getMockBuilder(QueryResultInterface::class)->disableOriginalConstructor()->getMock();
         $mockQueryResult->expects($this->once())->method('count')->willReturn(1);
         $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
@@ -252,7 +252,7 @@ class OverwriteProtectionServiceTest extends UnitTestCase
     public function processCmdmap_postProcess_WithSupportedTableAndValidCommand()
     {
         /** @var QueryResultInterface|\PHPUnit_Framework_MockObject_MockObject $mockQueryResult */
-        $mockQueryResult = $this->getMock(QueryResultInterface::class);
+        $mockQueryResult = $this->getMockBuilder(QueryResultInterface::class)->disableOriginalConstructor()->getMock();
         $mockQueryResult->expects($this->once())->method('count')->willReturn(1);
         $mockQueryResult->expects($this->once())->method('getFirst')->willReturn(new OverwriteProtection());
 
