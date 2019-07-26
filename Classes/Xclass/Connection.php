@@ -36,9 +36,9 @@ class Connection extends CoreConnection
     public function insert($tableName, array $data, array $types = []): int
     {
         return parent::insert(
-            $this->quoteIdentifier($tableName),
-            $this->quoteColumnValuePairs($this->getTypo3Service()->modifyInsertFields($tableName, $data)),
-            $this->quoteColumnTypes($types)
+            $tableName,
+            $this->getTypo3Service()->modifyInsertFields($tableName, $data),
+            $types
         );
     }
 
@@ -85,10 +85,10 @@ class Connection extends CoreConnection
         }
 
         return parent::update(
-            $this->quoteIdentifier($tableName),
-            $this->quoteColumnValuePairs($data),
-            $this->quoteColumnValuePairs($identifier),
-            $this->quoteColumnTypes($types)
+            $tableName,
+            $data,
+            $identifier,
+            $types
         );
     }
 

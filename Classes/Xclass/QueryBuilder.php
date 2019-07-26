@@ -35,10 +35,7 @@ class QueryBuilder extends CoreQueryBuilder
             throw new \InvalidArgumentException('no uid allowed in update statement!', 1564122229);
         }
 
-        $this->concreteQueryBuilder->set(
-            $this->quoteIdentifier($key),
-            $createNamedParameter ? $this->createNamedParameter($value) : $value
-        );
+        parent::set($key, $value, $createNamedParameter);
 
         return $this;
     }
@@ -56,13 +53,7 @@ class QueryBuilder extends CoreQueryBuilder
     {
         $values = $this->getTypo3Service()->modifyInsertFields($this->concreteQueryBuilder->getQueryPart('from')['table'], $values);
 
-        if ($createNamedParameters === true) {
-            foreach ($values as &$value) {
-                $value = $this->createNamedParameter($value);
-            }
-        }
-
-        $this->concreteQueryBuilder->values($this->quoteColumnValuePairs($values));
+        parent::values($values, $createNamedParameters);
 
         return $this;
     }
