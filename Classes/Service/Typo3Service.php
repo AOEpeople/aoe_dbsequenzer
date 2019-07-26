@@ -103,6 +103,19 @@ class Typo3Service
     }
 
     /**
+     * @param string $tableName
+     * @param string $fieldName
+     * @param mixed  $fieldValue
+     *
+     * @return mixed
+     */
+    public function modifyField(string $tableName, string $fieldName, $fieldValue)
+    {
+        $data = $this->modifyInsertFields($tableName, [$fieldName => $fieldValue]);
+        return $data[$fieldName];
+    }
+
+    /**
      * If a table is configured to use the sequenzer
      *
      * @param string $tableName
