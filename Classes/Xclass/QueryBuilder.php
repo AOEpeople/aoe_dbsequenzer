@@ -32,34 +32,11 @@ class QueryBuilder extends CoreQueryBuilder
     public function set(string $key, $value, bool $createNamedParameter = true): CoreQueryBuilder
     {
         if ('uid' === $key && $this->getTypo3Service()->needsSequenzer($this->concreteQueryBuilder->getQueryPart('from')['table'])) {
-            throw new \InvalidArgumentException('no uid allowed in update statement!', 1512378277);
+            throw new \InvalidArgumentException('no uid allowed in update statement!', 1564122229);
         }
 
         $this->concreteQueryBuilder->set(
             $this->quoteIdentifier($key),
-            $createNamedParameter ? $this->createNamedParameter($value) : $value
-        );
-
-        return $this;
-    }
-
-    /**
-     * Sets a value for a column in an insert query.
-     *
-     * @param string $column The column into which the value should be inserted.
-     * @param string $value The value that should be inserted into the column.
-     * @param bool $createNamedParameter Automatically create a named parameter for the value
-     *
-     * @return QueryBuilder This QueryBuilder instance.
-     */
-    public function setValue(string $column, $value, bool $createNamedParameter = true): CoreQueryBuilder
-    {
-        if ('uid' === $column) {
-            $value = $this->getTypo3Service()->modifyField($this->concreteQueryBuilder->getQueryPart('from')['table'], $column, $value);
-        }
-
-        $this->concreteQueryBuilder->setValue(
-            $this->quoteIdentifier($column),
             $createNamedParameter ? $this->createNamedParameter($value) : $value
         );
 
