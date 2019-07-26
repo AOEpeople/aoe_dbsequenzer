@@ -1,8 +1,12 @@
 <?php
 defined('TYPO3_MODE') or die();
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Database\\DatabaseConnection'] = [
-    'className' => 'Aoe\\AoeDbSequenzer\\Xclass\\DatabaseConnection',
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Database\\Connection'] = [
+    'className' => 'Aoe\\AoeDbSequenzer\\Xclass\\Connection'
+];
+
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder'] = [
+    'className' => 'Aoe\\AoeDbSequenzer\\Xclass\\QueryBuilder'
 ];
 
 if (TYPO3_MODE === 'BE') {

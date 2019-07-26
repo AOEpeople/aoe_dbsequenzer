@@ -18,19 +18,19 @@
   "require": {
     "php": "^7.0",
     "ext-mysqli": "*",
-    "typo3/cms-core": ">=7.6.0",
-    "typo3/cms-extbase": ">=7.6.0",
-    "typo3/cms-sv": ">=7.6.0",
-    "typo3/cms-backend": ">=7.6.0",
-    "typo3/cms-reports": ">=7.6.0",
-    "typo3/cms-frontend": ">=7.6.0"
+    "typo3/cms-core": "^8.7.0",
+    "typo3/cms-extbase": "^8.7.0",
+    "typo3/cms-sv": "^8.7.0",
+    "typo3/cms-backend": "^8.7.0",
+    "typo3/cms-reports": "^8.7.0",
+    "typo3/cms-frontend": "^8.7.0"
   },
   "require-dev": {
-    "typo3/cms": "7.6.*",
-    "nimut/testing-framework": "^4.1"
+    "typo3/cms": "^8.7.0",
+    "nimut/testing-framework": "^4.1.0"
   },
   "replace": {
-    "aoe_dbsequenzer":  "self.version",
+    "aoe_dbsequenzer": "self.version",
     "aoe/aoe-dbsequenzer": "self.version"
   },
   "autoload": {
@@ -54,7 +54,7 @@
     ],
     "test:unit": [
       "[ -e .Build/bin/phpunit ] || composer update",
-      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit --debug --verbose"
+      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit"
     ]
   },
   "extra": {
