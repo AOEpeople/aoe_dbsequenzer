@@ -81,7 +81,7 @@ class Connection extends CoreConnection
     public function update($tableName, array $data, array $identifier, array $types = []): int
     {
         if (isset($data['uid']) && $this->getTypo3Service()->needsSequenzer($tableName)) {
-            throw new \InvalidArgumentException('no uid allowed in update statement!', 1512378277);
+            throw new \InvalidArgumentException('no uid allowed in update statement!', 1564122222);
         }
 
         return parent::update(
