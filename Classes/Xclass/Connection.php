@@ -1,5 +1,6 @@
 <?php
 declare(strict_types = 1);
+
 namespace Aoe\AoeDbSequenzer\Xclass;
 
 /*
@@ -9,6 +10,7 @@ namespace Aoe\AoeDbSequenzer\Xclass;
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use TYPO3\CMS\Core\Database\Connection as CoreConnection;
+use TYPO3\CMS\Core\Database\Query\BulkInsertQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,8 +30,8 @@ class Connection extends CoreConnection
      * Table expression and columns are not escaped and are not safe for user-input.
      *
      * @param string $tableName The name of the table to insert data into.
-     * @param array $data An associative array containing column-value pairs.
-     * @param array $types Types of the inserted data.
+     * @param array  $data      An associative array containing column-value pairs.
+     * @param array  $types     Types of the inserted data.
      *
      * @return int The number of affected rows.
      */
@@ -49,15 +51,15 @@ class Connection extends CoreConnection
      * Table expression and columns are not escaped and are not safe for user-input.
      *
      * @param string $tableName The name of the table to insert data into.
-     * @param array $data An array containing associative arrays of column-value pairs.
-     * @param array $columns An array containing associative arrays of column-value pairs.
-     * @param array $types Types of the inserted data.
+     * @param array  $data      An array containing associative arrays of column-value pairs.
+     * @param array  $columns   An array containing associative arrays of column-value pairs.
+     * @param array  $types     Types of the inserted data.
      *
      * @return int The number of affected rows.
      */
     public function bulkInsert(string $tableName, array $data, array $columns = [], array $types = []): int
     {
-        $query = GeneralUtility::makeInstance(Query\BulkInsertQuery::class, $this, $tableName, $columns);
+        $query = GeneralUtility::makeInstance(BulkInsertQuery::class, $this, $tableName, $columns);
         foreach ($data as $values) {
             $query->addValues($this->getTypo3Service()->modifyInsertFields($tableName, $values), $types);
         }
@@ -71,10 +73,10 @@ class Connection extends CoreConnection
      * All SQL identifiers are expected to be unquoted and will be quoted when building the query.
      * Table expression and columns are not escaped and are not safe for user-input.
      *
-     * @param string $tableName The name of the table to update.
-     * @param array $data An associative array containing column-value pairs.
-     * @param array $identifier The update criteria. An associative array containing column-value pairs.
-     * @param array $types Types of the merged $data and $identifier arrays in that order.
+     * @param string $tableName  The name of the table to update.
+     * @param array  $data       An associative array containing column-value pairs.
+     * @param array  $identifier The update criteria. An associative array containing column-value pairs.
+     * @param array  $types      Types of the merged $data and $identifier arrays in that order.
      *
      * @return int The number of affected rows.
      */
@@ -107,6 +109,7 @@ class Connection extends CoreConnection
         if (false === isset($this->typo3Service)) {
             $this->typo3Service = new Typo3Service(new Sequenzer());
         }
+
         return $this->typo3Service;
     }
 }
