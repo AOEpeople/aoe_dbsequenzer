@@ -1,5 +1,10 @@
 <?php
+
 namespace Aoe\AoeDbSequenzer;
+
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /***************************************************************
  *  Copyright notice
@@ -26,6 +31,7 @@ namespace Aoe\AoeDbSequenzer;
 
 /**
  * Sequenzer is used to generate system wide independent IDs
+ *
  * @package Aoe\AoeDbSequenzer
  */
 class Sequenzer
@@ -34,11 +40,6 @@ class Sequenzer
      * @var string
      */
     const SEQUENZER_TABLE = 'tx_aoedbsequenzer_sequenz';
-
-    /**
-     * @var \mysqli
-     */
-    private $dbLink;
 
     /**
      * @var integer
@@ -72,22 +73,11 @@ class Sequenzer
     }
 
     /**
-     * sets mysql dblink with DB connection
-     * @param null $dbLink
-     */
-    public function setDbLink($dbLink = null)
-    {
-        if (is_null($dbLink)) {
-            $this->dbLink = $GLOBALS['TYPO3_DB']->getDatabaseHandle();
-        } else {
-            $this->dbLink = $dbLink;
-        }
-    }
-
-    /**
      * returns next free id in the sequenz of the table
-     * @param $table
+     *
+     * @param     $table
      * @param int $depth
+     *
      * @return int
      * @throws \Exception
      */
@@ -99,28 +89,33 @@ class Sequenzer
                 1512378158
             );
         }
+        /** @var Connection $databaseConnection */
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::SEQUENZER_TABLE);
+        $row = $databaseConnection->select(['*'], self::SEQUENZER_TABLE, ['tablename' => $table])->fetch();
 
-        $result = $this->query('SELECT * FROM ' . self::SEQUENZER_TABLE . ' WHERE tablename=\'' . $this->escapeString($table) . '\'');
-        $row = mysqli_fetch_assoc($result);
-
-        if (!isset ($row ['current'])) {
+        if (!isset($row['current'])) {
             $this->initSequenzerForTable($table);
+
             return $this->getNextIdForTable($table, ++$depth);
-            //throw new Exception('The sequenzer cannot return IDs for this table -'.$table.'- its not configured!');
-        } elseif ($row ['timestamp'] + $this->checkInterval < $GLOBALS ['EXEC_TIME']) {
+        } elseif ($row['timestamp'] + $this->checkInterval < $GLOBALS['EXEC_TIME']) {
             $defaultStartValue = $this->getDefaultStartValue($table);
-            $isValueOutdated = ($row ['current'] < $defaultStartValue);
-            $isOffsetChanged = ($row ['offset'] != $this->defaultOffset);
-            $isStartChanged = ($row ['current'] % $this->defaultOffset != $this->defaultStart);
+            $isValueOutdated = ($row['current'] < $defaultStartValue);
+            $isOffsetChanged = ($row['offset'] != $this->defaultOffset);
+            $isStartChanged = ($row['current'] % $this->defaultOffset != $this->defaultStart);
             if ($isValueOutdated || $isOffsetChanged || $isStartChanged) {
-                $row ['current'] = $defaultStartValue;
+                $row['current'] = $defaultStartValue;
             }
         }
 
-        $new = $row ['current'] + $row ['offset'];
-        $updateTimeStamp = $GLOBALS ['EXEC_TIME'];
-        $res2 = $this->query('UPDATE ' . self::SEQUENZER_TABLE . ' SET current=' . $new . ', timestamp=' . $updateTimeStamp . ' WHERE timestamp=' . $row ['timestamp'] . ' AND tablename=\'' . $this->escapeString($table) . '\'');
-        if ($res2 && mysqli_affected_rows($this->dbLink) > 0) {
+        $new = $row['current'] + $row['offset'];
+        $updateTimeStamp = $GLOBALS['EXEC_TIME'];
+        $updateResult = $databaseConnection->update(
+            self::SEQUENZER_TABLE,
+            ['current' => $new, 'timestamp' => $updateTimeStamp],
+            ['timestamp' => $row['timestamp'], 'tablename' => $table]
+        );
+
+        if ($updateResult > 0) {
             return $new;
         } else {
             return $this->getNextIdForTable($table, ++$depth);
@@ -129,56 +124,41 @@ class Sequenzer
 
     /**
      * Gets the default start value for a given table.
+     *
      * @param $table
+     *
      * @return int
      * @throws \Exception
      */
     private function getDefaultStartValue($table)
     {
-        $result = $this->query('SELECT max(uid) as max FROM ' . $table);
-        $row = mysqli_fetch_assoc($result);
-        $currentMax = $row ['max'] + 1;
+        /** @var Connection $databaseConnection */
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::SEQUENZER_TABLE);
+        $row = $databaseConnection->select(['uid'], $table, [], [], ['uid' => 'DESC'], 1)->fetch();
+        $currentMax = $row['uid'] + 1;
         $start = $this->defaultStart + ($this->defaultOffset * ceil($currentMax / $this->defaultOffset));
 
         return $start;
     }
 
     /**
-     * if no sehduler entry for the table yet exists, this method initialises the sequenzer to fit offest and start and current max value in the table
+     * if no scheduler entry for the table yet exists, this method initialises the sequenzer to fit offest and start and current max value
+     * in the table
      *
      * @param string $table
+     *
+     * @throws \Exception
      */
     private function initSequenzerForTable($table)
     {
         $start = $this->getDefaultStartValue($table);
-        $insert = 'INSERT INTO ' . self::SEQUENZER_TABLE . ' ( tablename, current, offset, timestamp ) VALUES ( \'' . $this->escapeString($table) . '\', ' . $start . ',' . intval($this->defaultOffset) . ',' . $GLOBALS ['EXEC_TIME'] . ' )';
-        $this->query($insert);
-    }
 
-    /**
-     * @param $string
-     * @return string
-     */
-    private function escapeString($string)
-    {
-        return mysqli_escape_string($this->dbLink, $string);
+        /** @var Connection $databaseConnection */
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::SEQUENZER_TABLE);
+        $databaseConnection->insert(
+            self::SEQUENZER_TABLE,
+            ['tablename' => $table, 'current' => $start, 'offset' => $this->defaultOffset, 'timestamp' => $GLOBALS['EXEC_TIME']],
+            ['s', 'i', 'i', 's']
+        );
     }
-
-    /**
-     * @param $sql
-     * @return bool|\mysqli_result
-     * @throws \Exception
-     */
-    private function query($sql)
-    {
-        $result = mysqli_query($this->dbLink, $sql);
-        if (mysqli_error($this->dbLink)) {
-            throw new \Exception(
-                mysqli_error($this->dbLink), mysqli_errno($this->dbLink),
-                1512378208
-            );
-        }
-        return $result;
-    }
-
 }

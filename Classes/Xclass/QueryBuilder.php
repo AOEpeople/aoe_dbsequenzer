@@ -1,5 +1,6 @@
 <?php
 declare(strict_types = 1);
+
 namespace Aoe\AoeDbSequenzer\Xclass;
 
 /*
@@ -23,15 +24,15 @@ class QueryBuilder extends CoreQueryBuilder
     /**
      * Sets a new value for a column in a bulk update query.
      *
-     * @param string $key The column to set.
-     * @param string $value The value, expression, placeholder, etc.
-     * @param bool $createNamedParameter Automatically create a named parameter for the value
+     * @param string $key                  The column to set.
+     * @param string $value                The value, expression, placeholder, etc.
+     * @param bool   $createNamedParameter Automatically create a named parameter for the value
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
     public function set(string $key, $value, bool $createNamedParameter = true): CoreQueryBuilder
     {
-        if ('uid' === $key && $this->getTypo3Service()->needsSequenzer($this->concreteQueryBuilder->getQueryPart('from')['table'])) {
+        if ('uid' === $key && $this->getTypo3Service()->needsSequenzer($this->getTableName())) {
             throw new \InvalidArgumentException('no uid allowed in update statement!', 1564122229);
         }
 
@@ -44,16 +45,17 @@ class QueryBuilder extends CoreQueryBuilder
      * Specifies values for an insert query indexed by column names.
      * Replaces any previous values, if any.
      *
-     * @param array $values The values to specify for the insert query indexed by column names.
-     * @param bool $createNamedParameters Automatically create named parameters for all values
+     * @param array $values                The values to specify for the insert query indexed by column names.
+     * @param bool  $createNamedParameters Automatically create named parameters for all values
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
     public function values(array $values, bool $createNamedParameters = true): CoreQueryBuilder
     {
-        $values = $this->getTypo3Service()->modifyInsertFields($this->concreteQueryBuilder->getQueryPart('from')['table'], $values);
-
-        parent::values($values, $createNamedParameters);
+        parent::values(
+            $this->getTypo3Service()->modifyInsertFields($this->getTableName(), $values),
+            $createNamedParameters
+        );
 
         return $this;
     }
@@ -73,6 +75,23 @@ class QueryBuilder extends CoreQueryBuilder
         if (false === isset($this->typo3Service)) {
             $this->typo3Service = new Typo3Service(new Sequenzer());
         }
+
         return $this->typo3Service;
+    }
+
+    /**
+     * Determines the defined table name without quotation marks (`).
+     *
+     * @return string
+     */
+    protected function getTableName()
+    {
+        $mark = '`';
+        $tableName = $this->concreteQueryBuilder->getQueryPart('from')['table'];
+        if (!empty($tableName) && $tableName[0] === $mark && $tableName[strlen($tableName) - 1] === $mark) {
+            return str_replace($mark, '', $tableName);
+        }
+
+        return $tableName;
     }
 }

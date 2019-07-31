@@ -65,20 +65,11 @@ class Typo3Service
     }
 
     /**
-     * sets the db link
-     *
-     * @param \mysqli|NULL $link
-     */
-    public function setDbLink($link)
-    {
-        $this->sequenzer->setDbLink($link);
-    }
-
-    /**
      * Modify a TYPO3 insert array (key -> value) , and adds the uid that should be forced during INSERT
      *
      * @param string $tableName
-     * @param array $fields_values
+     * @param array  $fields_values
+     *
      * @return array
      */
     public function modifyInsertFields($tableName, array $fields_values)
