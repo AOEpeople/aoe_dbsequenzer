@@ -52,7 +52,7 @@ class Sequenzer
     private $defaultOffset = 1;
 
     /**
-     * @var integer
+     * @var integer in seconds
      */
     private $checkInterval = 120;
 
