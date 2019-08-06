@@ -101,9 +101,6 @@ class Typo3Service
      */
     public function needsSequenzer($tableName)
     {
-        if (in_array($tableName, $this->supportedTables)) {
-            return true;
-        }
-        return false;
+        return in_array($tableName, $this->supportedTables);
     }
 }
