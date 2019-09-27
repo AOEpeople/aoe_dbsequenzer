@@ -17,7 +17,7 @@ return array(
     'columns' => array(
         'pid' => array(
             'exclude' => 0,
-            'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.pid',
+            'label'   => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xml:LGL.pid',
             'config'  => array(
                 'type' => 'passthrough'
             )
