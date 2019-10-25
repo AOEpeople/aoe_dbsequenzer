@@ -139,7 +139,7 @@ class Sequenzer
         $currentMax = $row['uid'] + 1;
         $start = $this->defaultStart + ($this->defaultOffset * ceil($currentMax / $this->defaultOffset));
 
-        return $start;
+        return (int)$start;
     }
 
     /**
