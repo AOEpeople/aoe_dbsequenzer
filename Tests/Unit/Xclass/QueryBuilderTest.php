@@ -42,6 +42,10 @@ class QueryBuilderTest extends UnitTestCase
             'tableName with back quotes' => [
                 'tableName' => '`sys_log`',
                 'expected' => 'sys_log'
+            ],
+            'empty tableName' => [
+                'tableName' => '',
+                'expected' => ''
             ]
         ];
     }
