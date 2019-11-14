@@ -27,6 +27,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit

@@ -4,7 +4,7 @@ namespace Aoe\AoeDbSequenzer\Form;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2017 AOE GmbH (dev@aoe.com)
+ *  (c) 2019 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -67,6 +67,7 @@ abstract class AbstractOverwriteElement
 
     /**
      * @return LanguageService
+     * @codeCoverageIgnore
      */
     protected function getLanguageService()
     {
@@ -75,6 +76,7 @@ abstract class AbstractOverwriteElement
 
     /**
      * @return NodeFactory
+     * @codeCoverageIgnore
      */
     protected function getNodeFactory()
     {
@@ -83,6 +85,7 @@ abstract class AbstractOverwriteElement
 
     /**
      * @return OverwriteProtectionRepository
+     * @codeCoverageIgnore
      */
     protected function getOverwriteProtectionRepository()
     {

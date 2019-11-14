@@ -28,6 +28,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
  * @package Aoe\AoeDbSequenzer\Domain\Model
+ * @codeCoverageIgnore
  */
 class OverwriteProtection extends AbstractEntity
 {

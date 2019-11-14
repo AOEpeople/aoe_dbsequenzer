@@ -1,6 +1,5 @@
 <?php
 declare(strict_types = 1);
-
 namespace Aoe\AoeDbSequenzer\Xclass;
 
 /*
@@ -10,6 +9,7 @@ namespace Aoe\AoeDbSequenzer\Xclass;
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use TYPO3\CMS\Core\Database\Connection as CoreConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\BulkInsertQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -94,7 +94,6 @@ class Connection extends CoreConnection
         );
     }
 
-
     /**
      * create instance of Typo3Service by lazy-loading
      *
@@ -107,7 +106,7 @@ class Connection extends CoreConnection
     protected function getTypo3Service()
     {
         if (false === isset($this->typo3Service)) {
-            $this->typo3Service = new Typo3Service(new Sequenzer());
+            $this->typo3Service = GeneralUtility::makeInstance(Typo3Service::class, new Sequenzer());
         }
 
         return $this->typo3Service;

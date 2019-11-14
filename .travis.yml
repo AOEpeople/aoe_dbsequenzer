@@ -4,20 +4,38 @@ php:
   - 7.0
   - 7.1
   - 7.2
+  - 7.3
 
 env:
-  - TYPO3_VERSION=^8.7 COVERAGE=0
-  - TYPO3_VERSION=dev-master COVERAGE=0
+  - TYPO3_VERSION=^8.7 COVERAGE=0 FUNCTIONAL=0
+  - TYPO3_VERSION=^9.5 COVERAGE=0 FUNCTIONAL=0
+  - TYPO3_VERSION=^10 COVERAGE=0 FUNCTIONAL=0
+  - TYPO3_VERSION=dev-master COVERAGE=0 FUNCTIONAL=0
 
 matrix:
+  include:
+    - env: TYPO3_VERSION=^8.7 COVERAGE=1 FUNCTIONAL=1
+    - env: TYPO3_VERSION=^9.5 COVERAGE=1 FUNCTIONAL=1
+      php: 7.2
+    - env: TYPO3_VERSION=^10 COVERAGE=1 FUNCTIONAL=1
+      php: 7.2
   exclude:
-    - env: TYPO3_VERSION=dev-master COVERAGE=0
+    - env: TYPO3_VERSION=^9.5 COVERAGE=0 FUNCTIONAL=0
       php: 7.0
-    - env: TYPO3_VERSION=dev-master COVERAGE=0
+    - env: TYPO3_VERSION=^9.5 COVERAGE=0 FUNCTIONAL=0
+      php: 7.1
+    - env: TYPO3_VERSION=^10 COVERAGE=0 FUNCTIONAL=0
+      php: 7.0
+    - env: TYPO3_VERSION=^10 COVERAGE=0 FUNCTIONAL=0
+      php: 7.1
+    - env: TYPO3_VERSION=dev-master COVERAGE=0 FUNCTIONAL=0
+      php: 7.0
+    - env: TYPO3_VERSION=dev-master COVERAGE=0 FUNCTIONAL=0
       php: 7.1
   allow_failures:
-    - env: TYPO3_VERSION=dev-master COVERAGE=0
-    - php: 7.2
+    - env: TYPO3_VERSION=^10 COVERAGE=0 FUNCTIONAL=0
+    - env: TYPO3_VERSION=^10 COVERAGE=1 FUNCTIONAL=1
+    - env: TYPO3_VERSION=dev-master COVERAGE=0 FUNCTIONAL=0
 
 notifications:
   email:
@@ -34,6 +52,9 @@ addons:
     packages:
       - parallel
 
+services:
+  - mysql
+
 cache:
   directories:
     - $HOME/.composer/cache
@@ -43,13 +64,18 @@ before_install:
   - composer --version
 
 before_script:
+  # Enables us to test dev-master
+  - composer config minimum-stability dev
+  - composer config prefer-stable true
   # Installs TYPO3
-  - composer require typo3/cms=$TYPO3_VERSION
+  - composer require typo3/cms-core=$TYPO3_VERSION
   # Restore composer.json
   - git checkout composer.json
   - export "TYPO3_PATH_WEB"=$PWD/.Build/Web;
   # Locating UnitTests.xml
   - export "UNIT_XML"='.Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml'
+  # Location FunctionalTests.xml
+  - export "FUNCTIONAL_XML"='.Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml'
   - ln -nfs .Build/vendor/typo3/cms/typo3 typo3
 
 script:
@@ -66,11 +92,22 @@ script:
       .Build/bin/phpunit --coverage-clover=unittest-coverage.clover --colors -c $UNIT_XML Tests/Unit
     fi
   - >
+    if [[ "$FUNCTIONAL" == "1" ]]; then
+      echo;
+      echo "Running functional tests";
+      export typo3DatabaseName="typo3";
+      export typo3DatabaseHost="localhost";
+      export typo3DatabaseUsername="root";
+      export typo3DatabasePassword="";
+      .Build/bin/phpunit --whitelist Classes/ --coverage-clover=functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests/Functional
+    fi
+  - >
     if [[ "$COVERAGE" == "1" ]]; then
       echo;
       echo "Uploading code coverage results";
       wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover unittest-coverage.clover
+      php ocular.phar code-coverage:upload --format=php-clover functional-coverage.clover
     fi
   - >
     echo;

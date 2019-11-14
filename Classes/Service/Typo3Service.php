@@ -25,12 +25,13 @@ namespace Aoe\AoeDbSequenzer\Service;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Sequenzer;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package Aoe\AoeDbSequenzer
  */
-class Typo3Service
+class Typo3Service implements SingletonInterface
 {
     /**
      * @var Sequenzer
@@ -72,12 +73,13 @@ class Typo3Service
      *
      * @return array
      */
-    public function modifyInsertFields($tableName, array $fields_values)
+    public function modifyInsertFields($tableName, array $fields_values): array
     {
         if (false === $this->needsSequenzer($tableName)) {
             return $fields_values;
         }
 
+        // How to test this when no exception is thrown ?
         if (isset($fields_values['uid'])) {
             $e = new \Exception('', 1512378232);
             GeneralUtility::devLog(

@@ -96,7 +96,6 @@ class Sequenzer
 
         if (!isset($row['current'])) {
             $this->initSequenzerForTable($table);
-
             return $this->getNextIdForTable($table, ++$depth);
         } elseif ($row['timestamp'] + $this->checkInterval < $GLOBALS['EXEC_TIME']) {
             $defaultStartValue = $this->getDefaultStartValue($table);
@@ -139,7 +138,7 @@ class Sequenzer
         $currentMax = $row['uid'] + 1;
         $start = $this->defaultStart + ($this->defaultOffset * ceil($currentMax / $this->defaultOffset));
 
-        return $start;
+        return (int)$start;
     }
 
     /**

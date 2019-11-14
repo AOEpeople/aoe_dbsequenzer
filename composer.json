@@ -18,20 +18,19 @@
   "require": {
     "php": "^7.0",
     "ext-mysqli": "*",
-    "typo3/cms-core": "^8.7.0",
-    "typo3/cms-extbase": "^8.7.0",
-    "typo3/cms-sv": "^8.7.0",
-    "typo3/cms-backend": "^8.7.0",
-    "typo3/cms-reports": "^8.7.0",
-    "typo3/cms-frontend": "^8.7.0"
+    "typo3/cms-core": "^8.7 || ^9.5 || ^10",
+    "typo3/cms-extbase": "^8.7 || ^9.5 || ^10",
+    "typo3/cms-sv": "^8.7 || ^9.5 || ^10",
+    "typo3/cms-backend": "^8.7 || ^9.5 || ^10",
+    "typo3/cms-reports": "^8.7 || ^9.5 || ^10",
+    "typo3/cms-frontend": "^8.7 || ^9.5 || ^10"
   },
   "require-dev": {
-    "typo3/cms": "^8.7.0",
-    "nimut/testing-framework": "^4.1.0"
+    "nimut/testing-framework": "^4.1"
   },
   "replace": {
     "aoe_dbsequenzer": "self.version",
-    "aoe/aoe-dbsequenzer": "self.version"
+    "typo3-ter/aoe-dbsequenzer": "self.version"
   },
   "autoload": {
     "psr-4": {
@@ -55,6 +54,17 @@
     "test:unit": [
       "[ -e .Build/bin/phpunit ] || composer update",
       "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit"
+    ],
+    "test:functional": [
+      "[ -e .Build/bin/phpunit ] || composer update",
+      "TYPO3_PATH_WEB=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional"
+    ],
+    "test:coverage": [
+      "[ -e .Build/bin/phpunit ] || composer update",
+      "mkdir -p reports && rm -rf reports/*",
+      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit --whitelist=Classes --coverage-php=reports/unit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit",
+      "TYPO3_PATH_WEB=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit --whitelist=Classes --coverage-php=reports/functional -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional",
+      "$PWD/.Build/bin/phpunit-merger coverage reports/ --html=reports/ test.html"
     ]
   },
   "extra": {

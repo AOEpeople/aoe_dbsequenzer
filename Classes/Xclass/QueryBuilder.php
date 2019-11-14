@@ -10,6 +10,7 @@ namespace Aoe\AoeDbSequenzer\Xclass;
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder as CoreQueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package Aoe\AoeDbSequenzer\Xclass
@@ -32,7 +33,7 @@ class QueryBuilder extends CoreQueryBuilder
      */
     public function set(string $key, $value, bool $createNamedParameter = true): CoreQueryBuilder
     {
-        if ('uid' === $key && $this->getTypo3Service()->needsSequenzer($this->getTableName())) {
+        if ('uid' === $key && $this->shouldTableBeSequenced()) {
             throw new \InvalidArgumentException('no uid allowed in update statement!', 1564122229);
         }
 
@@ -53,13 +54,12 @@ class QueryBuilder extends CoreQueryBuilder
     public function values(array $values, bool $createNamedParameters = true): CoreQueryBuilder
     {
         parent::values(
-            $this->getTypo3Service()->modifyInsertFields($this->getTableName(), $values),
+            $this->getTypo3Service()->modifyInsertFields($this->sanitizeTableName($this->concreteQueryBuilder->getQueryPart('from')['table']), $values),
             $createNamedParameters
         );
 
         return $this;
     }
-
 
     /**
      * create instance of Typo3Service by lazy-loading
@@ -73,7 +73,7 @@ class QueryBuilder extends CoreQueryBuilder
     protected function getTypo3Service()
     {
         if (false === isset($this->typo3Service)) {
-            $this->typo3Service = new Typo3Service(new Sequenzer());
+            $this->typo3Service = GeneralUtility::makeInstance(Typo3Service::class, new Sequenzer());
         }
 
         return $this->typo3Service;
@@ -82,16 +82,24 @@ class QueryBuilder extends CoreQueryBuilder
     /**
      * Determines the defined table name without quotation marks (`).
      *
+     * @param string $tableName
      * @return string
      */
-    protected function getTableName()
+    protected function sanitizeTableName(string $tableName): string
     {
         $mark = '`';
-        $tableName = $this->concreteQueryBuilder->getQueryPart('from')['table'];
         if (!empty($tableName) && $tableName[0] === $mark && $tableName[strlen($tableName) - 1] === $mark) {
             return str_replace($mark, '', $tableName);
         }
 
         return $tableName;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function shouldTableBeSequenced(): bool
+    {
+        return $this->getTypo3Service()->needsSequenzer($this->sanitizeTableName($this->concreteQueryBuilder->getQueryPart('from')['table']));
     }
 }
