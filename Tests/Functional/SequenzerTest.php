@@ -61,6 +61,36 @@ class SequenzerTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function getNextIdForTable_NoPagesAdded()
+    {
+        $this->subject->setDefaultOffset(10);
+        $this->subject->setDefaultStart(4);
+
+        $this->assertSame(
+            24,
+            $this->subject->getNextIdForTable('pages')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getNextIdForTable_OutDatedSequencerInformation()
+    {
+        // Offset is set in Fixture (20)
+        // Current is set in Fixture (5)
+        $this->importDataSet(__DIR__ . '/Fixtures/tx_aoedbsequenzer_seqeunz.xml');
+        $this->importDataSet('ntf://Database/pages.xml');
+
+        $this->assertSame(
+            28,
+            $this->subject->getNextIdForTable('pages')
+        );
+    }
+
+    /**
+     * @test
+     */
     public function getDefaultStartValue_withoutOffsetConfigured()
     {
         // Imports 7 pages, therefor the expected StartValue should be 8
