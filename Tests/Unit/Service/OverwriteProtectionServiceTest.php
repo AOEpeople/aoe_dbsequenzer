@@ -72,8 +72,6 @@ class OverwriteProtectionServiceTest extends UnitTestCase
         $GLOBALS['BE_USER'] = $this->getMockBuilder(BackendUserAuthentication::class)
             ->disableOriginalConstructor()->getMock();
         $GLOBALS['BE_USER']->user = ['uid' => uniqid()];
-        $GLOBALS['TYPO3_DB'] = $this->getMockBuilder(DatabaseConnection::class)
-            ->disableOriginalConstructor()->getMock();
         $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)
             ->disableOriginalConstructor()->getMock();
 
