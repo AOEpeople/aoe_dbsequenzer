@@ -29,7 +29,6 @@
     "nimut/testing-framework": "^4.1 || ^5.0"
   },
   "replace": {
-    "aoe_dbsequenzer": "self.version",
     "typo3-ter/aoe-dbsequenzer": "self.version"
   },
   "autoload": {
