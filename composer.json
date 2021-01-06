@@ -33,7 +33,6 @@
     "phpunit/php-timer": "~1.0.9"
   },
   "replace": {
-    "aoe_dbsequenzer":  "self.version",
     "aoe/aoe-dbsequenzer": "self.version"
   },
   "autoload": {
