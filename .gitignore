@@ -12,9 +12,9 @@
 # Ignore temporary files (left by editors)
 *~
 *.bak
-*.idea
 #
 # Ignore by common IDEs used directories/files
+.DS_Store
 nbproject
 *.idea
 *.project
@@ -27,3 +27,6 @@ nbproject
 # Ignore composer stuff
 .Build
 composer.lock
+#
+# PHPUnit Reports
+/reports
