@@ -11,6 +11,12 @@ With this extension you can ensure different unique keys for the configured tabl
 
 You can download and install this extension from the [TER (TYPO3 Extension Repository)][1].
 
+Or use composer
+
+```shell
+$ composer require aoe/aoe-dbsequenzer
+```
+
 ## Documentation
 
 The documentation is available online at [docs.typo3.org][2].
