@@ -9,6 +9,7 @@ namespace Aoe\AoeDbSequenzer\Xclass;
 
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
+use PDO;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder as CoreQueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -31,7 +32,7 @@ class QueryBuilder extends CoreQueryBuilder
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
-    public function set(string $key, $value, bool $createNamedParameter = true): CoreQueryBuilder
+    public function set(string $key, $value, bool $createNamedParameter = true, int $type = PDO::PARAM_STR): CoreQueryBuilder
     {
         if ('uid' === $key && $this->shouldTableBeSequenced()) {
             throw new \InvalidArgumentException('no uid allowed in update statement!', 1564122229);
