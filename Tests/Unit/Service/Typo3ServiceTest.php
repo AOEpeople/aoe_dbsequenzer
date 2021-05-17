@@ -27,7 +27,6 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
@@ -54,7 +53,7 @@ class Typo3ServiceTest extends UnitTestCase
         $testConfiguration['offset'] = '1';
         $testConfiguration['system'] = 'testa';
         $testConfiguration['tables'] = 'table1,table2';
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer'] = serialize($testConfiguration);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aoe_dbsequenzer'] = $testConfiguration;
 
         $this->sequenzer = $this->getMockBuilder(Sequenzer::class)
             ->disableOriginalConstructor()

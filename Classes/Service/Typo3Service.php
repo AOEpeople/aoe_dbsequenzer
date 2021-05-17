@@ -55,11 +55,11 @@ class Typo3Service implements SingletonInterface
      */
     public function __construct(Sequenzer $sequenzer)
     {
-        $this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
+        $this->conf = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aoe_dbsequenzer'];
 
         $this->sequenzer = $sequenzer;
-        $this->sequenzer->setDefaultOffset(intval($this->conf['offset']));
-        $this->sequenzer->setDefaultStart(intval($this->conf['system']));
+        $this->sequenzer->setDefaultOffset((int)$this->conf['offset']);
+        $this->sequenzer->setDefaultStart((int)$this->conf['system']);
 
         $explodedValues = explode(',', $this->conf['tables']);
         $this->supportedTables = array_map('trim', $explodedValues);
