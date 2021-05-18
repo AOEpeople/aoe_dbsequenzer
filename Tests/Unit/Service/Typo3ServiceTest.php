@@ -51,6 +51,7 @@ class Typo3ServiceTest extends UnitTestCase
      */
     public function setUp()
     {
+
         $testConfiguration = [];
         $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
         $testConfiguration['aoe_dbsequenzer']['system'] = 'testa';
@@ -83,13 +84,4 @@ class Typo3ServiceTest extends UnitTestCase
         $this->assertTrue(isset($modifiedFields['uid']));
         $this->assertEquals(1, $modifiedFields['uid']);
     }
-
-    /**
-     * @see PHPUnit_Framework_TestCase::tearDown()
-     */
-    /*protected function tearDown()
-    {
-        parent::tearDown();
-        unset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
-    }*/
 }

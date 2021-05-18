@@ -14,6 +14,8 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Aoe\AoeDbSequenzer\Xclass\Connection;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConnectionTest extends UnitTestCase
 {
@@ -24,6 +26,12 @@ class ConnectionTest extends UnitTestCase
 
     public function setUp()
     {
+        $testConfiguration = [];
+        $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
+        $testConfiguration['aoe_dbsequenzer']['system'] = 'testa';
+        $testConfiguration['aoe_dbsequenzer']['tables'] = 'table1,table2';
+        GeneralUtility::makeInstance(ExtensionConfiguration::class)->setAll($testConfiguration);
+
         $this->subject = $this->createPartialMock(Connection::class, ['dummy']);
     }
 
