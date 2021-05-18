@@ -27,6 +27,8 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
@@ -50,10 +52,10 @@ class Typo3ServiceTest extends UnitTestCase
     public function setUp()
     {
         $testConfiguration = [];
-        $testConfiguration['offset'] = '1';
-        $testConfiguration['system'] = 'testa';
-        $testConfiguration['tables'] = 'table1,table2';
-        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aoe_dbsequenzer'] = $testConfiguration;
+        $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
+        $testConfiguration['aoe_dbsequenzer']['system'] = 'testa';
+        $testConfiguration['aoe_dbsequenzer']['tables'] = 'table1,table2';
+        GeneralUtility::makeInstance(ExtensionConfiguration::class)->setAll($testConfiguration);
 
         $this->sequenzer = $this->getMockBuilder(Sequenzer::class)
             ->disableOriginalConstructor()
@@ -85,9 +87,9 @@ class Typo3ServiceTest extends UnitTestCase
     /**
      * @see PHPUnit_Framework_TestCase::tearDown()
      */
-    protected function tearDown()
+    /*protected function tearDown()
     {
         parent::tearDown();
         unset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
-    }
+    }*/
 }
