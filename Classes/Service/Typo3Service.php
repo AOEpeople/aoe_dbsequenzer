@@ -25,6 +25,9 @@ namespace Aoe\AoeDbSequenzer\Service;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Sequenzer;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -44,6 +47,11 @@ class Typo3Service implements SingletonInterface
     private $conf;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * array of configured tables that should call the sequenzer
      *
      * @var array
@@ -55,11 +63,14 @@ class Typo3Service implements SingletonInterface
      */
     public function __construct(Sequenzer $sequenzer)
     {
-        $this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aoe_dbsequenzer']);
+        //$this->conf = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aoe_dbsequenzer'];
+        $this->conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('aoe_dbsequenzer');
+
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
         $this->sequenzer = $sequenzer;
-        $this->sequenzer->setDefaultOffset(intval($this->conf['offset']));
-        $this->sequenzer->setDefaultStart(intval($this->conf['system']));
+        $this->sequenzer->setDefaultOffset((int)$this->conf['offset']);
+        $this->sequenzer->setDefaultStart((int)$this->conf['system']);
 
         $explodedValues = explode(',', $this->conf['tables']);
         $this->supportedTables = array_map('trim', $explodedValues);
@@ -82,11 +93,13 @@ class Typo3Service implements SingletonInterface
         // How to test this when no exception is thrown ?
         if (isset($fields_values['uid'])) {
             $e = new \Exception('', 1512378232);
-            GeneralUtility::devLog(
+            $this->logger->debug(
                 'UID ' . $fields_values['uid'] . ' is already set for table "' . $tableName . '"',
-                'aoe_dbsequenzer',
-                2,
-                $e->getTraceAsString()
+                [
+                    'aoe_dbsequenzer',
+                    2,
+                    $e->getTraceAsString()
+                ]
             );
         } else {
             $fields_values['uid'] = $this->sequenzer->getNextIdForTable($tableName);

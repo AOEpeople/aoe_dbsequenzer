@@ -18,15 +18,15 @@
   "require": {
     "php": "^7.2",
     "ext-mysqli": "*",
-    "typo3/cms-core": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-extbase": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-sv": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-backend": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-reports": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-frontend": "^8.7 || ^9.5 || ^10.4"
+    "typo3/cms-core": "^9.5 || ^10.4",
+    "typo3/cms-extbase": "^9.5 || ^10.4",
+    "typo3/cms-sv": "^9.5 || ^10.4",
+    "typo3/cms-backend": "^9.5 || ^10.4",
+    "typo3/cms-reports": "^9.5 || ^10.4",
+    "typo3/cms-frontend": "^9.5 || ^10.4"
   },
   "require-dev": {
-    "nimut/testing-framework": "^4.1 || ^5.0"
+    "nimut/testing-framework": "^5.2"
   },
   "replace": {
     "typo3-ter/aoe-dbsequenzer": "self.version"
@@ -52,7 +52,9 @@
     ],
     "test:unit": [
       "[ -e .Build/bin/phpunit ] || composer update",
-      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit"
+      "cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
+      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit",
+      "rm .Build/Web/typo3conf/LocalConfiguration.php"
     ],
     "test:functional": [
       "[ -e .Build/bin/phpunit ] || composer update",
