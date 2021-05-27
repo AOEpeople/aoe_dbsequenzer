@@ -26,7 +26,7 @@
     "typo3/cms-frontend": "^9.5 || ^10.4"
   },
   "require-dev": {
-    "nimut/testing-framework": "^4.1 || ^5.0"
+    "nimut/testing-framework": "^5.2"
   },
   "replace": {
     "typo3-ter/aoe-dbsequenzer": "self.version"
