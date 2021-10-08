@@ -2,21 +2,21 @@
 declare(strict_types=1);
 namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
 
-use Aoe\AoeDbSequenzer\Service\Typo3Service;
-use Aoe\AoeDbSequenzer\Xclass\Connection;
-use Doctrine\DBAL\Driver\PDOMySql\Driver;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2019 AOE GmbH <dev@aoe.com>
+ *  (c) 2021 AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Aoe\AoeDbSequenzer\Service\Typo3Service;
+use Aoe\AoeDbSequenzer\Xclass\Connection;
+use Doctrine\DBAL\Driver\PDOMySql\Driver;
+use InvalidArgumentException;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConnectionTest extends FunctionalTestCase
 {
@@ -25,10 +25,7 @@ class ConnectionTest extends FunctionalTestCase
      */
     protected $subject;
 
-    protected $testExtensionsToLoad = ['typo3conf/ext/aoe_dbsequenzer'];
-    protected $coreExtensionsToLoad = ['core', 'cms', 'extensionmanager'];
-
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $params = [];
@@ -48,16 +45,16 @@ class ConnectionTest extends FunctionalTestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1564122222
      */
     public function updateThrowsExceptionWhenUidInFieldArray()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(1564122222);
+
         $tableName = 'pages';
         $data = ['uid' => 123];
         $identifier = ['identifier' => 'abcd'];
 
         $this->subject->update($tableName, $data, $identifier);
     }
-
 }

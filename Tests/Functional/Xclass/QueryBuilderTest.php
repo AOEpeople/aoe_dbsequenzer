@@ -5,7 +5,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2019 AOE GmbH <dev@aoe.com>
+ *  (c) 2021 AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
@@ -15,6 +15,7 @@ use Aoe\AoeDbSequenzer\Xclass\QueryBuilder;
 
 
 use Doctrine\DBAL\Driver\PDOSqlite\Driver;
+use InvalidArgumentException;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -26,7 +27,7 @@ class QueryBuilderTest extends FunctionalTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $params = [];
@@ -39,11 +40,12 @@ class QueryBuilderTest extends FunctionalTestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1564122229
      */
     public function QueryBuilderSetThrowsExceptionWhenUidIsKey()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(1564122229);
+
         $this->subject->set('uid', 124, true);
     }
 }

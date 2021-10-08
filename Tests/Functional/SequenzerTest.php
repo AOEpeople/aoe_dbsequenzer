@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
+
 namespace Aoe\AoeDbSequenzer\Tests\Functional;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2019 AOE GmbH <dev@aoe.com>
+ *  (c) 2021 AOE GmbH <dev@aoe.com>
  *
  *  All rights reserved
  *
@@ -27,13 +28,15 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Sequenzer;
+use Exception;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use ReflectionException;
+use ReflectionMethod;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SequenzerTest extends FunctionalTestCase
 {
-
     /**
      * @var Sequenzer
      */
@@ -41,7 +44,7 @@ class SequenzerTest extends FunctionalTestCase
 
     protected $testExtensionsToLoad = ['typo3conf/ext/aoe_dbsequenzer'];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->subject = new Sequenzer();
@@ -49,12 +52,13 @@ class SequenzerTest extends FunctionalTestCase
 
     /**
      * @test
-     * @expectedException \Exception
-     * @expectedExceptionCode 1512378158
-     * @throws \Exception
+     * @throws Exception
      */
     public function getNextIdForTable_throwsExceptionDepthToHigh()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionCode(1512378158);
+
         $this->subject->getNextIdForTable('tableName', 1000);
     }
 
@@ -156,8 +160,9 @@ class SequenzerTest extends FunctionalTestCase
     /**
      * @param $className
      * @param $methodName
-     * @return \ReflectionMethod
-     * @throws \ReflectionException
+     *
+     * @return ReflectionMethod
+     * @throws ReflectionException
      */
     public function getPrivateMethod($className, $methodName)
     {

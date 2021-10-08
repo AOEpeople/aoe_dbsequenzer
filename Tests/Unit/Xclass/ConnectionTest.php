@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 
 /***************************************************************
@@ -24,7 +25,7 @@ class ConnectionTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $testConfiguration = [];
         $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
@@ -32,7 +33,9 @@ class ConnectionTest extends UnitTestCase
         $testConfiguration['aoe_dbsequenzer']['tables'] = 'table1,table2';
         GeneralUtility::makeInstance(ExtensionConfiguration::class)->setAll($testConfiguration);
 
-        $this->subject = $this->createPartialMock(Connection::class, ['dummy']);
+        $this->subject = $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     /**
@@ -40,13 +43,11 @@ class ConnectionTest extends UnitTestCase
      */
     public function expectsTypo3ServiceIsInitiated()
     {
-        $this->callInaccessibleMethod($this->subject, 'getTypo3Service');
+        $typo3Service = $this->callInaccessibleMethod($this->subject, 'getTypo3Service');
 
         $this->assertInstanceOf(
             Typo3Service::class,
-            $this->readAttribute($this->subject, 'typo3Service')
+            $typo3Service
         );
-
     }
-
 }

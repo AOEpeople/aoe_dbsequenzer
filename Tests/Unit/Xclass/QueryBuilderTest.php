@@ -12,7 +12,7 @@ class QueryBuilderTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = $this->getAccessibleMock(QueryBuilder::class, ['dummy'], [], '', false);
     }
