@@ -16,7 +16,7 @@
     }
   ],
   "require": {
-    "php": "^7.2",
+    "php": "^7.2 || ^8.0",
     "ext-mysqli": "*",
     "typo3/cms-core": "^9.5 || ^10.4 || ^11.5",
     "typo3/cms-extbase": "^9.5 || ^10.4 || ^11.5",
@@ -26,7 +26,12 @@
     "typo3/cms-frontend": "^9.5 || ^10.4 || ^11.5"
   },
   "require-dev": {
-    "nimut/testing-framework": "6.x-dev"
+    "nimut/testing-framework": "6.x-dev",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "phpstan/phpstan": "0.12.88",
+    "rector/rector": "0.11.20",
+    "symplify/easy-coding-standard": "9.3.26",
+    "symplify/phpstan-rules": "9.3.26"
   },
   "replace": {
     "typo3-ter/aoe-dbsequenzer": "self.version"
@@ -55,6 +60,14 @@
       "mkdir -p .Build/Web/typo3conf/ext/",
       "[ -L .Build/Web/typo3conf/ext/aoe_dbsequenzer ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/aoe_dbsequenzer"
     ],
+    "test": [
+      "[ -e .Build/bin/phpunit ] || composer update",
+      "mkdir -p reports && rm -rf reports/*",
+      "cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
+      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit",
+      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional",
+      "rm .Build/Web/typo3conf/LocalConfiguration.php"
+    ],
     "test:unit": [
       "[ -e .Build/bin/phpunit ] || composer update",
       "cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
@@ -70,13 +83,32 @@
       "mkdir -p reports && rm -rf reports/*",
       "TYPO3_PATH_WEB=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit --whitelist=Classes --coverage-html=reports -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests"
     ],
+    "code-style": [
+      "[ -e ./.Build/bin/rector ] || composer install",
+      "./.Build/bin/ecs check --config code-quality/ecs.php",
+      "./.Build/bin/rector process --dry-run --config code-quality/rector.php"
+    ],
+    "code-analysis": [
+      "./.Build/bin/phpstan analyse -c code-quality/phpstan.neon --memory-limit=1G"
+    ],
+    "code-analysis--baseline": [
+      "./.Build/bin/phpstan analyse -c code-quality/phpstan.neon --memory-limit=1G --generate-baseline"
+    ],
+    "code-compatibility": [
+      "[ -e ./.Build/vendor/symplify/easy-coding-standard/vendor/squizlabs/php_codesniffer/bin/phpcs ] || composer install",
+      "[ -d ./reports/php_checkstyle ] || mkdir -p reports/php_checkstyle/",
+      "./code-quality/configure-checkstyle.sh",
+      "./.Build/vendor/symplify/easy-coding-standard/vendor/squizlabs/php_codesniffer/bin/phpcs -d memory_limit=1G --standard=PHPCompatibility --colors --ignore=*/.Build/* -p . --runtime-set testVersion 7.4",
+      "./.Build/vendor/symplify/easy-coding-standard/vendor/squizlabs/php_codesniffer/bin/phpcs -d memory_limit=1G --standard=PHPCompatibility --colors --ignore=*/.Build/* -p . --runtime-set testVersion 8.0"
+    ],
+    "code-check-pipeline": [
+      "@composer code-style",
+      "@composer code-analysis",
+      "@composer code-compatibility"
+    ],
     "extension-release": [
       "@composer install --no-dev",
-      "rm -rf .github",
-      "rm -rf Tests/",
-      "rm .gitignore",
-      "rm .scrutinizer.yml",
-      "rm disabled.travis.yml"
+      "rm -rf .github .Build code-quality Tests .gitignore scrutinizer.yml disabled.travis.yml"
     ]
   },
   "extra": {

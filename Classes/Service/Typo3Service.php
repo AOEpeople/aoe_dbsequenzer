@@ -1,4 +1,5 @@
 <?php
+
 namespace Aoe\AoeDbSequenzer\Service;
 
 /***************************************************************
@@ -44,7 +45,7 @@ class Typo3Service implements SingletonInterface
     /**
      * @var array
      */
-    private $conf;
+    private $conf = [];
 
     /**
      * @var Logger
@@ -56,21 +57,17 @@ class Typo3Service implements SingletonInterface
      *
      * @var array
      */
-    private $supportedTables;
+    private $supportedTables = [];
 
-    /**
-     * @param Sequenzer $sequenzer
-     */
     public function __construct(Sequenzer $sequenzer)
     {
-        //$this->conf = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aoe_dbsequenzer'];
         $this->conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('aoe_dbsequenzer');
 
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
         $this->sequenzer = $sequenzer;
-        $this->sequenzer->setDefaultOffset((int)$this->conf['offset']);
-        $this->sequenzer->setDefaultStart((int)$this->conf['system']);
+        $this->sequenzer->setDefaultOffset((int) $this->conf['offset']);
+        $this->sequenzer->setDefaultStart((int) $this->conf['system']);
 
         $explodedValues = explode(',', $this->conf['tables']);
         $this->supportedTables = array_map('trim', $explodedValues);
@@ -80,13 +77,10 @@ class Typo3Service implements SingletonInterface
      * Modify a TYPO3 insert array (key -> value) , and adds the uid that should be forced during INSERT
      *
      * @param string $tableName
-     * @param array  $fields_values
-     *
-     * @return array
      */
     public function modifyInsertFields($tableName, array $fields_values): array
     {
-        if (false === $this->needsSequenzer($tableName)) {
+        if (!$this->needsSequenzer($tableName)) {
             return $fields_values;
         }
 
@@ -98,7 +92,7 @@ class Typo3Service implements SingletonInterface
                 [
                     'aoe_dbsequenzer',
                     2,
-                    $e->getTraceAsString()
+                    $e->getTraceAsString(),
                 ]
             );
         } else {

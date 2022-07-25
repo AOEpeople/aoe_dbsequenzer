@@ -40,7 +40,7 @@ class Sequenzer
     /**
      * @var string
      */
-    const SEQUENZER_TABLE = 'tx_aoedbsequenzer_sequenz';
+    public const SEQUENZER_TABLE = 'tx_aoedbsequenzer_sequenz';
 
     /**
      * @var integer
@@ -60,7 +60,7 @@ class Sequenzer
     /**
      * @param integer $defaultStart to set
      */
-    public function setDefaultStart($defaultStart)
+    public function setDefaultStart($defaultStart): void
     {
         $this->defaultStart = $defaultStart;
     }
@@ -68,7 +68,7 @@ class Sequenzer
     /**
      * @param integer $defaultOffset to set
      */
-    public function setDefaultOffset($defaultOffset)
+    public function setDefaultOffset($defaultOffset): void
     {
         $this->defaultOffset = $defaultOffset;
     }
@@ -76,7 +76,7 @@ class Sequenzer
     /**
      * returns next free id in the sequenz of the table
      *
-     * @param     $table
+     * @param string $table
      * @param int $depth
      *
      * @return int
@@ -97,11 +97,13 @@ class Sequenzer
         if (!isset($row['current'])) {
             $this->initSequenzerForTable($table);
             return $this->getNextIdForTable($table, ++$depth);
-        } elseif ($row['timestamp'] + $this->checkInterval < $GLOBALS['EXEC_TIME']) {
+        }
+
+        if ($row['timestamp'] + $this->checkInterval < $GLOBALS['EXEC_TIME']) {
             $defaultStartValue = $this->getDefaultStartValue($table);
             $isValueOutdated = ($row['current'] < $defaultStartValue);
             $isOffsetChanged = ($row['offset'] != $this->defaultOffset);
-            $isStartChanged = ($row['current'] % $this->defaultOffset != $this->defaultStart);
+            $isStartChanged = ($this->defaultStart != $row['current'] % $this->defaultOffset);
             if ($isValueOutdated || $isOffsetChanged || $isStartChanged) {
                 $row['current'] = $defaultStartValue;
             }
@@ -117,15 +119,15 @@ class Sequenzer
 
         if ($updateResult > 0) {
             return $new;
-        } else {
-            return $this->getNextIdForTable($table, ++$depth);
         }
+
+        return $this->getNextIdForTable($table, ++$depth);
     }
 
     /**
      * Gets the default start value for a given table.
      *
-     * @param $table
+     * @param string $table
      *
      * @return int
      * @throws \Exception
@@ -138,7 +140,7 @@ class Sequenzer
         $currentMax = $row['uid'] + 1;
         $start = $this->defaultStart + ($this->defaultOffset * ceil($currentMax / $this->defaultOffset));
 
-        return (int)$start;
+        return (int) $start;
     }
 
     /**
@@ -149,7 +151,7 @@ class Sequenzer
      *
      * @throws \Exception
      */
-    private function initSequenzerForTable($table)
+    private function initSequenzerForTable($table): void
     {
         $start = $this->getDefaultStartValue($table);
 
