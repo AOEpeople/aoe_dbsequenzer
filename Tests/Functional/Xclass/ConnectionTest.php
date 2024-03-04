@@ -15,7 +15,7 @@ use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Aoe\AoeDbSequenzer\Xclass\Connection;
 use Doctrine\DBAL\Driver\PDOMySql\Driver;
 use InvalidArgumentException;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConnectionTest extends FunctionalTestCase
@@ -25,7 +25,7 @@ class ConnectionTest extends FunctionalTestCase
      */
     protected $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $params = [];
@@ -35,18 +35,15 @@ class ConnectionTest extends FunctionalTestCase
 
         $typo3Service = $this->getMockBuilder(Typo3Service::class)
             ->disableOriginalConstructor()
-            ->setMethods(['needsSequenzer'])
+            ->onlyMethods(['needsSequenzer'])
             ->getMock();
 
-        $typo3Service->expects($this->any())->method('needsSequenzer')->willReturn($this->returnValue(true));
+        $typo3Service->method('needsSequenzer')->willReturn(true);
 
-        $this->inject($this->subject, 'typo3Service', $typo3Service);
+        GeneralUtility::setSingletonInstance(Typo3Service::class, $typo3Service);
     }
 
-    /**
-     * @test
-     */
-    public function updateThrowsExceptionWhenUidInFieldArray()
+    public function testUpdateThrowsExceptionWhenUidInFieldArray(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(1564122222);

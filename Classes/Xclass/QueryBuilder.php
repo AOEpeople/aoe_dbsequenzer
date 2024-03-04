@@ -10,13 +10,11 @@ namespace Aoe\AoeDbSequenzer\Xclass;
 
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
+use mysql_xdevapi\Table;
 use PDO;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder as CoreQueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @package Aoe\AoeDbSequenzer\Xclass
- */
 class QueryBuilder extends CoreQueryBuilder
 {
     /**
@@ -88,7 +86,7 @@ class QueryBuilder extends CoreQueryBuilder
     protected function sanitizeTableName(string $tableName): string
     {
         $mark = '`';
-        if (!empty($tableName) && $tableName[0] === $mark && $tableName[strlen($tableName) - 1] === $mark) {
+        if ($tableName !== '' && $tableName !== '0' && $tableName[0] === $mark && $tableName[strlen($tableName) - 1] === $mark) {
             return str_replace($mark, '', $tableName);
         }
 

@@ -26,9 +26,10 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
@@ -36,20 +37,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Typo3ServiceTest extends UnitTestCase
 {
-    /**
-     * @var Typo3Service
-     */
-    private $service;
+    private Typo3Service $service;
 
     /**
-     * @var Sequenzer|\PHPUnit_Framework_MockObject_MockObject
+     * @var Sequenzer|MockObject
      */
-    private $sequenzer;
+    private MockObject $sequenzer;
 
     /**
      * @see PHPUnit_Framework_TestCase::setUp()
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $testConfiguration = [];
         $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
@@ -63,24 +61,20 @@ class Typo3ServiceTest extends UnitTestCase
         $this->service = new Typo3Service($this->sequenzer);
     }
 
-    /**
-     * @test
-     */
-    public function modifyInsertFields_NotSupportedTable()
+    public function testModifyInsertFields_NotSupportedTable(): void
     {
+        $this->resetSingletonInstances = true;
         $this->sequenzer->expects($this->never())->method('getNextIdForTable');
         $modifiedFields = $this->service->modifyInsertFields('tableXY', ['field1' => 'a']);
-        $this->assertFalse(isset($modifiedFields['uid']));
+        $this->assertArrayNotHasKey('uid', $modifiedFields);
     }
 
-    /**
-     * @test
-     */
-    public function modifyInsertFields_GetNextIdForTable()
+    public function testModifyInsertFields_GetNextIdForTable(): void
     {
+        $this->resetSingletonInstances = true;
         $this->sequenzer->expects($this->once())->method('getNextIdForTable')->willReturn(1);
         $modifiedFields = $this->service->modifyInsertFields('table1', ['field1' => 'a']);
-        $this->assertTrue(isset($modifiedFields['uid']));
-        $this->assertEquals(1, $modifiedFields['uid']);
+        $this->assertArrayHasKey('uid', $modifiedFields);
+        $this->assertSame(1, $modifiedFields['uid']);
     }
 }

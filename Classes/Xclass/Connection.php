@@ -14,15 +14,9 @@ use TYPO3\CMS\Core\Database\Connection as CoreConnection;
 use TYPO3\CMS\Core\Database\Query\BulkInsertQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @package Aoe\AoeDbSequenzer\Xclass
- */
 class Connection extends CoreConnection
 {
-    /**
-     * @var Typo3Service
-     */
-    private $typo3Service;
+    private ?Typo3Service $typo3Service = null;
 
     /**
      * Inserts a table row with specified data.
@@ -102,10 +96,8 @@ class Connection extends CoreConnection
      * Why we do this?
      * Because some unittests backup the variable $GLOBALS (and so, also the variable $GLOBALS['TYPO3_DB']), which means, that this
      * object/class will be serialized/unserialized, so the instance of Typo3Service will be null after unserialization!
-     *
-     * @return Typo3Service
      */
-    protected function getTypo3Service()
+    protected function getTypo3Service(): Typo3Service
     {
         if (!isset($this->typo3Service)) {
             $this->typo3Service = GeneralUtility::makeInstance(Typo3Service::class, new Sequenzer());

@@ -14,9 +14,9 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Aoe\AoeDbSequenzer\Xclass\Connection;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ConnectionTest extends UnitTestCase
 {
@@ -25,25 +25,20 @@ class ConnectionTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $testConfiguration = [];
         $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
         $testConfiguration['aoe_dbsequenzer']['system'] = 'testa';
         $testConfiguration['aoe_dbsequenzer']['tables'] = 'table1,table2';
         GeneralUtility::makeInstance(ExtensionConfiguration::class)->setAll($testConfiguration);
-
-        $this->subject = $this->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 
-    /**
-     * @test
-     */
-    public function expectsTypo3ServiceIsInitiated()
+    public function testExpectsTypo3ServiceIsInitiated(): void
     {
-        $typo3Service = $this->callInaccessibleMethod($this->subject, 'getTypo3Service');
+        // $typo3Service = $this->callInaccessibleMethod($this->subject, 'getTypo3Service');
+        $this->subject = $this->getAccessibleMock(Connection::class, ['getTypo3Service'], [], '', false);
+        $typo3Service = $this->subject->_call('getTypo3Service');
 
         $this->assertInstanceOf(
             Typo3Service::class,

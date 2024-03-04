@@ -1,9 +1,10 @@
 <?php
+
 namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 
 
 use Aoe\AoeDbSequenzer\Xclass\QueryBuilder;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class QueryBuilderTest extends UnitTestCase
 {
@@ -12,43 +13,35 @@ class QueryBuilderTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->subject = $this->getAccessibleMock(QueryBuilder::class, ['dummy'], [], '', false);
+        $this->subject = $this->getAccessibleMock(QueryBuilder::class, null, [], '', false);
     }
 
     /**
-     * @test
      * @dataProvider sanitizeTableNameDataProvider
      */
-    public function sanitizeTableName($tableName, $expected)
+    public function testSanitizeTableName(string $tableName, string $expected): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             $expected,
             $this->subject->_call('sanitizeTableName', $tableName)
         );
     }
 
-    /**
-     * @return array
-     */
-    public function sanitizeTableNameDataProvider()
+    public static function sanitizeTableNameDataProvider(): \Iterator
     {
-        return [
-            'tableName with out quotes' => [
-                'tableName' => 'sys_log',
-                'expected' => 'sys_log'
-            ],
-            'tableName with back quotes' => [
-                'tableName' => '`sys_log`',
-                'expected' => 'sys_log'
-            ],
-            'empty tableName' => [
-                'tableName' => '',
-                'expected' => ''
-            ]
+        yield 'tableName with out quotes' => [
+            'tableName' => 'sys_log',
+            'expected' => 'sys_log'
+        ];
+        yield 'tableName with back quotes' => [
+            'tableName' => '`sys_log`',
+            'expected' => 'sys_log'
+        ];
+        yield 'empty tableName' => [
+            'tableName' => '',
+            'expected' => ''
         ];
     }
-
-
 }
