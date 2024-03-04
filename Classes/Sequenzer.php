@@ -73,7 +73,7 @@ class Sequenzer
 
         /** @var Connection $databaseConnection */
         $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::SEQUENZER_TABLE);
-        $row = $databaseConnection->select(['*'], self::SEQUENZER_TABLE, ['tablename' => $table])->fetch();
+        $row = $databaseConnection->select(['*'], self::SEQUENZER_TABLE, ['tablename' => $table])->fetchAssociative();
 
         if (!isset($row['current'])) {
             $this->initSequenzerForTable($table);
@@ -112,7 +112,11 @@ class Sequenzer
     {
         /** @var Connection $databaseConnection */
         $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::SEQUENZER_TABLE);
-        $row = $databaseConnection->select(['uid'], $table, [], [], ['uid' => 'DESC'], 1)->fetch();
+        $row = $databaseConnection->select(['uid'], $table, [], [], ['uid' => 'DESC'], 1)->fetchAssociative();
+
+        if (!isset($row['uid'])) {
+            return $this->defaultStart + $this->defaultOffset;
+        }
         $currentMax = $row['uid'] + 1;
         $start = $this->defaultStart + ($this->defaultOffset * ceil($currentMax / $this->defaultOffset));
 
