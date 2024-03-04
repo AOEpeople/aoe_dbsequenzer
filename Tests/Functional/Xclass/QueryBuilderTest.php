@@ -13,10 +13,9 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
 
 use Aoe\AoeDbSequenzer\Xclass\QueryBuilder;
 
-
-use Doctrine\DBAL\Driver\PDOSqlite\Driver;
+use Doctrine\DBAL\Driver\PDO\SQLite\Driver;
 use InvalidArgumentException;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,7 +26,7 @@ class QueryBuilderTest extends FunctionalTestCase
      */
     protected $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $params = [];
@@ -38,10 +37,7 @@ class QueryBuilderTest extends FunctionalTestCase
         $this->subject->expects($this->once())->method('shouldTableBeSequenced')->willReturn(true);
     }
 
-    /**
-     * @test
-     */
-    public function QueryBuilderSetThrowsExceptionWhenUidIsKey()
+    public function testQueryBuilderSetThrowsExceptionWhenUidIsKey(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(1564122229);

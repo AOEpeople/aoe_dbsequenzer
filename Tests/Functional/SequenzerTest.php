@@ -29,7 +29,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional;
 
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Exception;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -42,19 +42,18 @@ class SequenzerTest extends FunctionalTestCase
      */
     protected $subject;
 
-    protected $testExtensionsToLoad = ['typo3conf/ext/aoe_dbsequenzer'];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/aoe_dbsequenzer'];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->subject = new Sequenzer();
     }
 
     /**
-     * @test
      * @throws Exception
      */
-    public function getNextIdForTable_throwsExceptionDepthToHigh()
+    public function testGetNextIdForTable_throwsExceptionDepthToHigh(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionCode(1512378158);
@@ -62,10 +61,7 @@ class SequenzerTest extends FunctionalTestCase
         $this->subject->getNextIdForTable('tableName', 1000);
     }
 
-    /**
-     * @test
-     */
-    public function getNextIdForTable_NoPagesAdded()
+    public function testGetNextIdForTable_NoPagesAdded(): void
     {
         $this->subject->setDefaultOffset(10);
         $this->subject->setDefaultStart(4);
@@ -76,15 +72,12 @@ class SequenzerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function getNextIdForTable_OutDatedSequencerInformation()
+    public function testGetNextIdForTable_OutDatedSequencerInformation(): void
     {
         // Offset is set in Fixture (20)
         // Current is set in Fixture (5)
         $this->importDataSet(__DIR__ . '/Fixtures/tx_aoedbsequenzer_seqeunz.xml');
-        $this->importDataSet('ntf://Database/pages.xml');
+        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
 
         $this->assertSame(
             28,
@@ -92,26 +85,20 @@ class SequenzerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function getDefaultStartValue_withoutOffsetConfigured()
+    public function testGetDefaultStartValue_withoutOffsetConfigured(): void
     {
         // Imports 7 pages, therefor the expected StartValue should be 8
-        $this->importDataSet('ntf://Database/pages.xml');
+        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
 
         $result = $method->invokeArgs($this->subject, ['pages']);
         $this->assertSame(8, $result);
     }
 
-    /**
-     * @test
-     */
-    public function getDefaultStartValue_withOffsetConfigured()
+    public function testGetDefaultStartValue_withOffsetConfigured(): void
     {
         $this->subject->setDefaultOffset(6);
-        $this->importDataSet('ntf://Database/pages.xml');
+        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
         $result = $method->invokeArgs($this->subject, ['pages']);
 
@@ -119,14 +106,11 @@ class SequenzerTest extends FunctionalTestCase
         $this->assertSame(12, $result);
     }
 
-    /**
-     * @test
-     */
-    public function getDefaultStartValue_withOffsetAndDefaultStartValueConfigured()
+    public function testGetDefaultStartValue_withOffsetAndDefaultStartValueConfigured(): void
     {
         $this->subject->setDefaultOffset(14);
         $this->subject->setDefaultStart(20);
-        $this->importDataSet('ntf://Database/pages.xml');
+        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
         $result = $method->invokeArgs($this->subject, ['pages']);
 
@@ -134,15 +118,12 @@ class SequenzerTest extends FunctionalTestCase
         $this->assertSame(34, $result);
     }
 
-    /**
-     * @test
-     */
-    public function initSequenzerForTable_isDataInsert()
+    public function testInitSequenzerForTable_isDataInsert(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(Sequenzer::SEQUENZER_TABLE);
 
         // Before Init
-        $this->assertEquals(
+        $this->assertSame(
             0,
             $queryBuilder->count('*', Sequenzer::SEQUENZER_TABLE, ['tablename' => 'pages'])
         );
@@ -151,7 +132,7 @@ class SequenzerTest extends FunctionalTestCase
         $method->invokeArgs($this->subject, ['pages']);
 
         // After Init
-        $this->assertEquals(
+        $this->assertSame(
             1,
             $queryBuilder->count('*', Sequenzer::SEQUENZER_TABLE, ['tablename' => 'pages'])
         );

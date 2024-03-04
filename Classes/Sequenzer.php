@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Sequenzer is used to generate system wide independent IDs
- *
- * @package Aoe\AoeDbSequenzer
  */
 class Sequenzer
 {
@@ -42,47 +40,29 @@ class Sequenzer
      */
     public const SEQUENZER_TABLE = 'tx_aoedbsequenzer_sequenz';
 
-    /**
-     * @var integer
-     */
-    private $defaultStart = 0;
+    private int $defaultStart = 0;
+
+    private int $defaultOffset = 1;
 
     /**
-     * @var integer
+     * @var int in seconds
      */
-    private $defaultOffset = 1;
+    private int $checkInterval = 120;
 
-    /**
-     * @var integer in seconds
-     */
-    private $checkInterval = 120;
-
-    /**
-     * @param integer $defaultStart to set
-     */
-    public function setDefaultStart($defaultStart): void
+    public function setDefaultStart(int $defaultStart): void
     {
         $this->defaultStart = $defaultStart;
     }
 
-    /**
-     * @param integer $defaultOffset to set
-     */
-    public function setDefaultOffset($defaultOffset): void
+    public function setDefaultOffset(int $defaultOffset): void
     {
         $this->defaultOffset = $defaultOffset;
     }
 
     /**
      * returns next free id in the sequenz of the table
-     *
-     * @param string $table
-     * @param int $depth
-     *
-     * @return int
-     * @throws \Exception
      */
-    public function getNextIdForTable($table, $depth = 0)
+    public function getNextIdForTable(string $table, int $depth = 0): int
     {
         if ($depth > 99) {
             throw new \Exception(
@@ -90,9 +70,10 @@ class Sequenzer
                 1512378158
             );
         }
+
         /** @var Connection $databaseConnection */
         $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::SEQUENZER_TABLE);
-        $row = $databaseConnection->select(['*'], self::SEQUENZER_TABLE, ['tablename' => $table])->fetch();
+        $row = $databaseConnection->select(['*'], self::SEQUENZER_TABLE, ['tablename' => $table])->fetchAssociative();
 
         if (!isset($row['current'])) {
             $this->initSequenzerForTable($table);
@@ -126,17 +107,17 @@ class Sequenzer
 
     /**
      * Gets the default start value for a given table.
-     *
-     * @param string $table
-     *
-     * @return int
-     * @throws \Exception
      */
-    private function getDefaultStartValue($table)
+    private function getDefaultStartValue(string $table): int
     {
         /** @var Connection $databaseConnection */
         $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(self::SEQUENZER_TABLE);
-        $row = $databaseConnection->select(['uid'], $table, [], [], ['uid' => 'DESC'], 1)->fetch();
+        $row = $databaseConnection->select(['uid'], $table, [], [], ['uid' => 'DESC'], 1)->fetchAssociative();
+
+        if (!isset($row['uid'])) {
+            return $this->defaultStart + $this->defaultOffset;
+        }
+
         $currentMax = $row['uid'] + 1;
         $start = $this->defaultStart + ($this->defaultOffset * ceil($currentMax / $this->defaultOffset));
 
@@ -146,12 +127,8 @@ class Sequenzer
     /**
      * if no scheduler entry for the table yet exists, this method initialises the sequenzer to fit offest and start and current max value
      * in the table
-     *
-     * @param string $table
-     *
-     * @throws \Exception
      */
-    private function initSequenzerForTable($table): void
+    private function initSequenzerForTable(string $table): void
     {
         $start = $this->getDefaultStartValue($table);
 

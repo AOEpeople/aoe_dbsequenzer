@@ -1,24 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Result\\:\\:fetch\\(\\)\\.$#"
-			path: ../Classes/Sequenzer.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getConnectionForTable\\(\\)\\.$#"
-			path: ../Classes/Sequenzer.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:(get|getLogger)\\(\\)\\.$#"
-			path: ../Classes/Service/Typo3Service.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:(addValues|execute)\\(\\)\\.$#"
-			path: ../Classes/Xclass/Connection.php
-
-		-
-			message: "#^Property Aoe\\\\AoeDbSequenzer\\\\Xclass\\\\(QueryBuilder|Connection)\\:\\:\\$typo3Service \\(Aoe\\\\AoeDbSequenzer\\\\Service\\\\Typo3Service\\) does not accept object\\.$#"
-			paths:
-				- ../Classes/Xclass/Connection.php
-				- ../Classes/Xclass/QueryBuilder.php
-
+			message: "#^Property Aoe\\\\AoeDbSequenzer\\\\Xclass\\\\QueryBuilder\\:\\:\\$typo3Service \\(Aoe\\\\AoeDbSequenzer\\\\Service\\\\Typo3Service\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: ../Classes/Xclass/QueryBuilder.php

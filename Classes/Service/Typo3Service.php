@@ -32,15 +32,9 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * @package Aoe\AoeDbSequenzer
- */
 class Typo3Service implements SingletonInterface
 {
-    /**
-     * @var Sequenzer
-     */
-    private $sequenzer;
+    private Sequenzer $sequenzer;
 
     /**
      * @var array
@@ -54,16 +48,14 @@ class Typo3Service implements SingletonInterface
 
     /**
      * array of configured tables that should call the sequenzer
-     *
-     * @var array
      */
-    private $supportedTables = [];
+    private array $supportedTables;
 
     public function __construct(Sequenzer $sequenzer)
     {
         $this->conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('aoe_dbsequenzer');
 
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(self::class);
 
         $this->sequenzer = $sequenzer;
         $this->sequenzer->setDefaultOffset((int) $this->conf['offset']);
@@ -75,10 +67,8 @@ class Typo3Service implements SingletonInterface
 
     /**
      * Modify a TYPO3 insert array (key -> value) , and adds the uid that should be forced during INSERT
-     *
-     * @param string $tableName
      */
-    public function modifyInsertFields($tableName, array $fields_values): array
+    public function modifyInsertFields(string $tableName, array $fields_values): array
     {
         if (!$this->needsSequenzer($tableName)) {
             return $fields_values;
@@ -104,11 +94,8 @@ class Typo3Service implements SingletonInterface
 
     /**
      * If a table is configured to use the sequenzer
-     *
-     * @param string $tableName
-     * @return boolean
      */
-    public function needsSequenzer($tableName)
+    public function needsSequenzer(string $tableName): bool
     {
         return in_array($tableName, $this->supportedTables);
     }
