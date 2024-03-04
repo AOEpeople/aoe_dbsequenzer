@@ -1,9 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Result\\:\\:fetch\\(\\)\\.$#"
-			path: ../Classes/Sequenzer.php
-		-
 			message: "#^Property Aoe\\\\AoeDbSequenzer\\\\Xclass\\\\QueryBuilder\\:\\:\\$typo3Service \\(Aoe\\\\AoeDbSequenzer\\\\Service\\\\Typo3Service\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
 			path: ../Classes/Xclass/QueryBuilder.php
