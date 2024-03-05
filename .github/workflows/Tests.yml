@@ -78,6 +78,9 @@ jobs:
         if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
         run: |
           composer require --dev nimut/phpunit-merger
+          ls -la
+          ls -la .Build
+          ls -la .Build/vendor
           .Build/vendor/bin/phpunit-merger coverage coverage coverage.clover
 
       - name: Upload functional coverage results to Scrutinizer
