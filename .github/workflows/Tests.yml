@@ -63,27 +63,19 @@ jobs:
         if: matrix.typo3 != '^11.5' && matrix.php != '8.3'
         run: composer test:functional
 
-      - name: Functional Tests with coverage
+      - name: Tests with coverage
         if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
         run: |
           export "FUNCTIONAL_XML"=.Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml
-          .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests/Functional
+          .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests
         env:
           typo3DatabaseHost: 127.0.0.1
           typo3DatabaseName: typo3
           typo3DatabasePassword: root
           typo3DatabaseUsername: root
 
-      - name: merge coverage files
-        if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
-        run: |
-          composer require --dev nimut/phpunit-merger
-          ls -la
-          ls -la .Build/bin
-          .Build/bin/phpunit-merger coverage coverage coverage.clover
-
       - name: Upload functional coverage results to Scrutinizer
         uses: sudo-bot/action-scrutinizer@latest
         if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
         with:
-          cli-args: "--format=php-clover coverage.clover --revision=${{ github.event.pull_request.head.sha || github.sha }}"
+          cli-args: "--format=php-clover functional-coverage.clover --revision=${{ github.event.pull_request.head.sha || github.sha }}"
