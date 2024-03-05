@@ -57,7 +57,7 @@ jobs:
         run: |
           cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php
           export "UNIT_XML"=.Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml
-          .Build/bin/phpunit --whitelist Classes --coverage-clover=unittest-coverage.clover --colors -c $UNIT_XML Tests/Unit
+          .Build/bin/phpunit --coverage-filter Classes --coverage-clover=unittest-coverage.clover --colors -c $UNIT_XML Tests/Unit
 
       - name: Functional Tests without coverage
         if: matrix.typo3 != '^11.5' && matrix.php != '8.3'
@@ -67,7 +67,7 @@ jobs:
         if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
         run: |
           export "FUNCTIONAL_XML"=.Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml
-          .Build/bin/phpunit --whitelist Classes --coverage-clover=functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests/Functional
+          .Build/bin/phpunit --coverage-filter Classes --coverage-clover=functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests/Functional
         env:
           typo3DatabaseHost: 127.0.0.1
           typo3DatabaseName: typo3
