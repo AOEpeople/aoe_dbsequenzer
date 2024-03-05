@@ -79,9 +79,8 @@ jobs:
         run: |
           composer require --dev nimut/phpunit-merger
           ls -la
-          ls -la .Build
-          ls -la .Build/vendor
-          .Build/vendor/bin/phpunit-merger coverage coverage coverage.clover
+          ls -la .Build/bin
+          .Build/bin/phpunit-merger coverage coverage coverage.clover
 
       - name: Upload functional coverage results to Scrutinizer
         uses: sudo-bot/action-scrutinizer@latest
