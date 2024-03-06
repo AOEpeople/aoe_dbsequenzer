@@ -29,8 +29,8 @@ return RectorConfig::configure()
         __DIR__ . '/../code-quality',
     ])
     ->withPhpSets(
-        false,
-        true
+        true,
+        false
     )
     ->withSets([
         SetList::CODE_QUALITY,
@@ -39,10 +39,10 @@ return RectorConfig::configure()
         SetList::EARLY_RETURN,
         SetList::PRIVATIZATION,
         SetList::TYPE_DECLARATION,
-        SetList::PHP_74,
         SetList::PHP_80,
         SetList::PHP_81,
         SetList::PHP_82,
+        SetList::PHP_83,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     ])
     ->withRules([
