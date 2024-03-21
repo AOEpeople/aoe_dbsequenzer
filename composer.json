@@ -71,7 +71,7 @@
     "test:unit": [
       "[ -e .Build/bin/phpunit ] || composer update",
       "cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
-      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit --display-warnings --display-deprecations",
+      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit",
       "rm .Build/Web/typo3conf/LocalConfiguration.php"
     ],
     "test:functional": [
