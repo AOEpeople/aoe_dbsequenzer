@@ -51,7 +51,7 @@ jobs:
           composer code-check-pipeline
 
       - name: Unit Tests without coverage
-        if: matrix.typo3 != '^11.5' && matrix.php != '8.3'
+        if: matrix.typo3 != '^11.5' || matrix.php != '8.3'
         run: composer test:unit
 
       - name: Unit Tests with coverage
@@ -62,7 +62,7 @@ jobs:
           .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/unittest-coverage.clover --colors -c $UNIT_XML Tests/Unit
 
       - name: Functional Tests without coverage
-        if: matrix.typo3 != '^11.5' && matrix.php != '8.3'
+        if: matrix.typo3 != '^11.5' || matrix.php != '8.3'
         run: composer test:functional
 
       - name: Tests with coverage
