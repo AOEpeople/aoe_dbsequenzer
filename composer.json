@@ -26,7 +26,7 @@
     "typo3/cms-frontend": "^11.5 || ^12.4"
   },
   "require-dev": {
-    "typo3/testing-framework": "^7.0",
+    "typo3/testing-framework": "^7.0 || ^8.0",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpstan/phpstan": "^1.10",
     "rector/rector": "^1.0",
@@ -63,16 +63,22 @@
     "test": [
       "[ -e .Build/bin/phpunit ] || composer update",
       "mkdir -p reports && rm -rf reports/*",
-      "cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
+      "mkdir .Build/Web/config/system && cp Tests/Unit/Fixtures/settings.php .Build/Web/config/system/settings.php",
       "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests-v10.xml Tests/Unit",
       "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional",
-      "rm .Build/Web/typo3conf/LocalConfiguration.php"
+      "rm .Build/Web/config/system/settings.php"
     ],
     "test:unit": [
       "[ -e .Build/bin/phpunit ] || composer update",
-      "cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
-      "TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit",
-      "rm .Build/Web/typo3conf/LocalConfiguration.php"
+      "mkdir -p .Build/Web/config/system/settings.php && cp Tests/Unit/Fixtures/settings.php .Build/Web/config/system/settings.php",
+      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit",
+      "rm .Build/Web/config/system/settings.php"
+    ],
+    "test:unit-filter": [
+      "[ -e .Build/bin/phpunit ] || composer update",
+      "mkdir -p .Build/Web/config/system && cp Tests/Unit/Fixtures/settings.php .Build/Web/config/system/settings.php",
+      "XDEBUG_MODE=coverage TYPO3_PATH_ROOT=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit --filter Typo3ServiceTest",
+      "rm .Build/Web/config/system/settings.php"
     ],
     "test:functional": [
       "[ -e .Build/bin/phpunit ] || composer update",

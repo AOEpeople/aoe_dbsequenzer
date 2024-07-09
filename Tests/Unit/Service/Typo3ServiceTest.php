@@ -28,6 +28,8 @@ use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\ApplicationContext;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -44,11 +46,24 @@ class Typo3ServiceTest extends UnitTestCase
      */
     private MockObject $sequenzer;
 
-    /**
-     * @see PHPUnit_Framework_TestCase::setUp()
-     */
+    protected bool $backupEnvironment = true;
+
     protected function setUp(): void
     {
+        parent::setUp();
+
+        Environment::initialize(
+            new ApplicationContext('Testing'),
+            Environment::isCli(),
+            Environment::isComposerMode(),
+            Environment::getProjectPath(),
+            Environment::getPublicPath(),
+            Environment::getVarPath(),
+            __DIR__ . '/../../../.Build/Web/config',
+            Environment::getCurrentScript(),
+            'UNIX',
+        );
+
         $testConfiguration = [];
         $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
         $testConfiguration['aoe_dbsequenzer']['system'] = 'testa';
