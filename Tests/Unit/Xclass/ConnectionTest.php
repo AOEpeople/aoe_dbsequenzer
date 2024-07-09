@@ -6,7 +6,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2019 AOE GmbH <dev@aoe.com>
+ *  (c) 2024 AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
@@ -15,6 +15,8 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Aoe\AoeDbSequenzer\Xclass\Connection;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\ApplicationContext;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -25,8 +27,24 @@ class ConnectionTest extends UnitTestCase
      */
     protected $subject;
 
+    protected bool $backupEnvironment = true;
+
     protected function setUp(): void
     {
+        parent::setUp();
+
+        Environment::initialize(
+            new ApplicationContext('Testing'),
+            Environment::isCli(),
+            Environment::isComposerMode(),
+            Environment::getProjectPath(),
+            Environment::getPublicPath(),
+            Environment::getVarPath(),
+            __DIR__ . '/../../../.Build/Web/config',
+            Environment::getCurrentScript(),
+            'UNIX',
+        );
+
         $testConfiguration = [];
         $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
         $testConfiguration['aoe_dbsequenzer']['system'] = 'testa';

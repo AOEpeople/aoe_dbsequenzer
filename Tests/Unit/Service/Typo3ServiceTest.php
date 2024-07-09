@@ -4,7 +4,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2017 AOE GmbH (dev@aoe.com)
+ *  (c) 2024 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is

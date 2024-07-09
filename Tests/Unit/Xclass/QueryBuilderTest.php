@@ -15,6 +15,7 @@ class QueryBuilderTest extends UnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->subject = $this->getAccessibleMock(QueryBuilder::class, null, [], '', false);
     }
 
