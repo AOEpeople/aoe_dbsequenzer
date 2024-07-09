@@ -1,7 +1,7 @@
 # DBSequenzer
 
 ## Build information
-[![Build Status](https://travis-ci.org/AOEpeople/aoe_dbsequenzer.svg)](https://travis-ci.org/AOEpeople/aoe_dbsequenzer)
+[![Build Status](https://github.com/AOEpeople/aoe_dbsequenzer/actions/workflows/Tests.yml/badge.svg)](https://github.com/AOEpeople/aoe_dbsequenzer/actions)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/AOEpeople/aoe_dbsequenzer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/AOEpeople/aoe_dbsequenzer/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/AOEpeople/aoe_dbsequenzer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/AOEpeople/aoe_dbsequenzer/?branch=master)
 
