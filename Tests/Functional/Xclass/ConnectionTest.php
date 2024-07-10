@@ -5,7 +5,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2021 AOE GmbH <dev@aoe.com>
+ *  (c) 2024 AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
@@ -13,7 +13,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
 
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Aoe\AoeDbSequenzer\Xclass\Connection;
-use Doctrine\DBAL\Driver\PDOMySql\Driver;
+use Doctrine\DBAL\Driver\Mysqli\Driver;
 use InvalidArgumentException;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
