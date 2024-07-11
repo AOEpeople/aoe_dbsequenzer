@@ -35,16 +35,13 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
- * @covers \Aoe\AoeDbSequenzer\Service\Typo3Service
+ * #[CoversDefaultClass(Typo3Service::class)]
  */
 class Typo3ServiceTest extends UnitTestCase
 {
     private Typo3Service $service;
 
-    /**
-     * @var Sequenzer|MockObject
-     */
-    private MockObject $sequenzer;
+    private Sequenzer|MockObject $sequenzer;
 
     protected bool $backupEnvironment = true;
 
