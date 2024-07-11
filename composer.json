@@ -23,8 +23,7 @@
     "typo3/cms-sv": "^11.5 || ^12.4",
     "typo3/cms-backend": "^11.5 || ^12.4",
     "typo3/cms-reports": "^11.5 || ^12.4",
-    "typo3/cms-frontend": "^11.5 || ^12.4",
-    "doctrine/dbal": "^3.8"
+    "typo3/cms-frontend": "^11.5 || ^12.4"
   },
   "require-dev": {
     "typo3/testing-framework": "^7.0 || ^8.0",
@@ -32,7 +31,7 @@
     "phpstan/phpstan": "^1.10",
     "rector/rector": "^1.0",
     "symplify/easy-coding-standard": "12.1.14",
-    "symplify/phpstan-rules": "12.4.8"
+    "symplify/phpstan-rules": "13.0.0"
   },
   "replace": {
     "typo3-ter/aoe-dbsequenzer": "self.version"
@@ -84,6 +83,10 @@
     "test:functional": [
       "[ -e .Build/bin/phpunit ] || composer update",
       "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit -c Tests/Functional/FunctionalTests.xml Tests/Functional"
+    ],
+    "test:functional-filter": [
+      "[ -e .Build/bin/phpunit ] || composer update",
+      "XDEBUG_MODE=coverage TYPO3_PATH_ROOT=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit -c Tests/Functional/FunctionalTests.xml Tests/Functional --filter SequenzerTest::testGetNextIdForTable_NoPagesAdded"
     ],
     "test:coverage": [
       "[ -e .Build/bin/phpunit ] || composer update",

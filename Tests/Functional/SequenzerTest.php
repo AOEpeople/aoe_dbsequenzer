@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Aoe\AoeDbSequenzer\Tests\Functional;
@@ -37,13 +38,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SequenzerTest extends FunctionalTestCase
 {
-    /**
-     * @var Sequenzer
-     */
-    protected $subject;
+    protected Sequenzer $subject;
 
     protected array $testExtensionsToLoad = ['typo3conf/ext/aoe_dbsequenzer'];
-    #protected array $testExtensionsToLoad = ['vendor/aoe/aoe-dbsequenzer'];
 
     protected function setUp(): void
     {
@@ -51,9 +48,6 @@ class SequenzerTest extends FunctionalTestCase
         $this->subject = new Sequenzer();
     }
 
-    /**
-     * @throws Exception
-     */
     public function testGetNextIdForTable_throwsExceptionDepthToHigh(): void
     {
         $this->expectException(Exception::class);
@@ -78,7 +72,7 @@ class SequenzerTest extends FunctionalTestCase
         // Offset is set in Fixture (20)
         // Current is set in Fixture (5)
         $this->importCSVDataSet(__DIR__ . '/Fixtures/tx_aoedbsequenzer_seqeunz.csv');
-        $this->importCSVDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
 
         $this->assertSame(
             28,
@@ -89,7 +83,7 @@ class SequenzerTest extends FunctionalTestCase
     public function testGetDefaultStartValue_withoutOffsetConfigured(): void
     {
         // Imports 7 pages, therefor the expected StartValue should be 8
-        $this->importCSVDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
 
         $result = $method->invokeArgs($this->subject, ['pages']);
@@ -99,7 +93,7 @@ class SequenzerTest extends FunctionalTestCase
     public function testGetDefaultStartValue_withOffsetConfigured(): void
     {
         $this->subject->setDefaultOffset(6);
-        $this->importCSVDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
         $result = $method->invokeArgs($this->subject, ['pages']);
 
@@ -111,7 +105,7 @@ class SequenzerTest extends FunctionalTestCase
     {
         $this->subject->setDefaultOffset(14);
         $this->subject->setDefaultStart(20);
-        $this->importCSVDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
         $result = $method->invokeArgs($this->subject, ['pages']);
 
@@ -150,7 +144,6 @@ class SequenzerTest extends FunctionalTestCase
     {
         $reflector = new \ReflectionClass($className);
         $method = $reflector->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method;
     }
