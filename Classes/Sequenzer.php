@@ -2,7 +2,7 @@
 
 namespace Aoe\AoeDbSequenzer;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -137,7 +137,7 @@ class Sequenzer
         $databaseConnection->insert(
             self::SEQUENZER_TABLE,
             ['tablename' => $table, 'current' => $start, 'offset' => $this->defaultOffset, 'timestamp' => $GLOBALS['EXEC_TIME']],
-            [Type::STRING, Type::INTEGER, Type::INTEGER, Type::STRING]
+            [Types::STRING, Types::INTEGER, Types::INTEGER, Types::STRING]
         );
     }
 }

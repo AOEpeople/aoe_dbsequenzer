@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') or die();
+defined('TYPO3') or die();
 
 if (empty($GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['wrapperClass'])) {
     $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['wrapperClass'] = \Aoe\AoeDbSequenzer\Xclass\Connection::class;
