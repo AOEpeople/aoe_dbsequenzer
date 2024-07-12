@@ -8,18 +8,12 @@ use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
-use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
-use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
-use Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector;
-use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
-use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
@@ -50,14 +44,8 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         RecastingRemovalRector::class,
-        PostIncDecToPreIncDecRector::class,
-        FinalizeClassesWithoutChildrenRector::class,
-        ChangeAndIfToEarlyReturnRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
-        RenameVariableToMatchNewTypeRector::class,
-        AddLiteralSeparatorToNumberRector::class,
-        RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
 
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__ . '/../Classes/Service/Typo3Service.php',

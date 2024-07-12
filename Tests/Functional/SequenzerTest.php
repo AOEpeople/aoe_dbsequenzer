@@ -137,14 +137,11 @@ class SequenzerTest extends FunctionalTestCase
      * @param $className
      * @param $methodName
      *
-     * @return ReflectionMethod
      * @throws ReflectionException
      */
-    public function getPrivateMethod($className, $methodName)
+    public function getPrivateMethod($className, $methodName): ReflectionMethod
     {
         $reflector = new \ReflectionClass($className);
-        $method = $reflector->getMethod($methodName);
-
-        return $method;
+        return $reflector->getMethod($methodName);
     }
 }

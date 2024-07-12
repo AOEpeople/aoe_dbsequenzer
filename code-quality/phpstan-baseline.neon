@@ -1,6 +1,2 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Property Aoe\\\\AoeDbSequenzer\\\\Xclass\\\\QueryBuilder\\:\\:\\$typo3Service \\(Aoe\\\\AoeDbSequenzer\\\\Service\\\\Typo3Service\\) in isset\\(\\) is not nullable\\.$#"
-			count: 1
-			path: ../Classes/Xclass/QueryBuilder.php

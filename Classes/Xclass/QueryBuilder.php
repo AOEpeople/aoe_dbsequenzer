@@ -17,10 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class QueryBuilder extends CoreQueryBuilder
 {
-    /**
-     * @var Typo3Service
-     */
-    private $typo3Service;
+    private Typo3Service $typo3Service;
 
     /**
      * Sets a new value for a column in a bulk update query.
@@ -68,10 +65,8 @@ class QueryBuilder extends CoreQueryBuilder
      * Why we do this?
      * Because some unittests backup the variable $GLOBALS (and so, also the variable $GLOBALS['TYPO3_DB']), which means, that this
      * object/class will be serialized/unserialized, so the instance of Typo3Service will be null after unserialization!
-     *
-     * @return Typo3Service
      */
-    protected function getTypo3Service()
+    protected function getTypo3Service(): Typo3Service
     {
         if (!isset($this->typo3Service)) {
             $this->typo3Service = GeneralUtility::makeInstance(Typo3Service::class, new Sequenzer());
