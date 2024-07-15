@@ -57,8 +57,8 @@ jobs:
       - name: Unit Tests with coverage
         if: matrix.typo3 == '^12.4' && matrix.php == '8.3'
         run: |
-          mkdir -p .Build/config/system/
-          cp Tests/Unit/Fixtures/settings.php .Build/config/system/settings.php
+          mkdir -p .Build/config/system/ && cp Tests/Unit/Fixtures/settings.php .Build/config/system/settings.php
+          mkdir -p .Build/Web/typo3conf/ && cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php
           export "UNIT_XML"=.Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml
           .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/unittest-coverage.clover --colors -c $UNIT_XML Tests/Unit
 
