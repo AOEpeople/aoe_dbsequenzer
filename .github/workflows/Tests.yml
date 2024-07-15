@@ -46,27 +46,27 @@ jobs:
         run: find . -name \*.php ! -path "./.Build/*" ! -path "./scripts/*" ! -path "./typo3_src/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
 
       - name: check code-style
-        if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
+        if: matrix.typo3 == '^12.4' && matrix.php == '8.3'
         run: |
           composer code-check-pipeline
 
       - name: Unit Tests without coverage
-        if: matrix.typo3 != '^11.5' || matrix.php != '8.3'
+        if: matrix.typo3 != '^12.4' || matrix.php != '8.3'
         run: composer test:unit
 
       - name: Unit Tests with coverage
-        if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
+        if: matrix.typo3 == '^12.4' && matrix.php == '8.3'
         run: |
-          cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php
+          cp Tests/Unit/Fixtures/settings.php .Build/config/system/settings.php
           export "UNIT_XML"=.Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml
           .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/unittest-coverage.clover --colors -c $UNIT_XML Tests/Unit
 
       - name: Functional Tests without coverage
-        if: matrix.typo3 != '^11.5' || matrix.php != '8.3'
+        if: matrix.typo3 != '^12.4' || matrix.php != '8.3'
         run: composer test:functional
 
       - name: Tests with coverage
-        if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
+        if: matrix.typo3 == '^12.4' && matrix.php == '8.3'
         run: |
           export "FUNCTIONAL_XML"=.Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml
           .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests
@@ -78,6 +78,6 @@ jobs:
 
       - name: Upload functional coverage results to Scrutinizer
         uses: sudo-bot/action-scrutinizer@latest
-        if: matrix.typo3 == '^11.5' && matrix.php == '8.3'
+        if: matrix.typo3 == '^12.4' && matrix.php == '8.3'
         with:
           cli-args: "--format=php-clover functional-coverage.clover --revision=${{ github.event.pull_request.head.sha || github.sha }}"
