@@ -66,11 +66,11 @@ jobs:
         if: matrix.typo3 != '^12.4' || matrix.php != '8.3'
         run: composer test:functional
 
-      - name: Tests with coverage
+      - name: Functional Tests with coverage
         if: matrix.typo3 == '^12.4' && matrix.php == '8.3'
         run: |
           export "FUNCTIONAL_XML"=Tests/Functional/FunctionalTests.xml
-          .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests
+          .Build/bin/phpunit --coverage-filter Classes --coverage-clover=coverage/functional-coverage.clover --colors -c $FUNCTIONAL_XML Tests/Functional
         env:
           typo3DatabaseHost: 127.0.0.1
           typo3DatabaseName: typo3
