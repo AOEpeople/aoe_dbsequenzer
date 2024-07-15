@@ -65,7 +65,7 @@
       "mkdir -p reports && rm -rf reports/*",
       "mkdir -p .Build/Web/config/system && cp Tests/Unit/Fixtures/settings.php .Build/Web/config/system/settings.php",
       "mkdir -p .Build/Web/typo3conf/ && cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
-      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit",
+      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c Tests/Unit/UnitTests.xml Tests/Unit",
       "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web typo3DatabaseName=sequenzer typo3DatabaseHost=127.0.0.1 typo3DatabaseUsername=root typo3DatabasePassword=root .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional",
       "rm .Build/Web/config/system/settings.php",
       "rm .Build/Web/typo3conf/LocalConfiguration.php"
@@ -74,7 +74,7 @@
       "[ -e .Build/bin/phpunit ] || composer update",
       "mkdir -p .Build/Web/config/system && cp Tests/Unit/Fixtures/settings.php .Build/Web/config/system/settings.php",
       "mkdir -p .Build/Web/typo3conf/ && cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
-      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit",
+      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c Tests/Unit/UnitTests.xml Tests/Unit",
       "rm .Build/Web/config/system/settings.php",
       "rm .Build/Web/typo3conf/LocalConfiguration.php"
     ],
@@ -82,7 +82,7 @@
       "[ -e .Build/bin/phpunit ] || composer update",
       "mkdir -p .Build/Web/config/system && cp Tests/Unit/Fixtures/settings.php .Build/Web/config/system/settings.php",
       "mkdir -p .Build/Web/typo3conf/ && cp Tests/Unit/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php",
-      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml Tests/Unit --filter Typo3ServiceTest",
+      "XDEBUG_MODE=coverage TYPO3_PATH_WEB=$PWD/.Build/Web .Build/bin/phpunit -c Tests/Unit/UnitTests.xml Tests/Unit --filter Typo3ServiceTest",
       "rm .Build/Web/config/system/settings.php",
       "rm .Build/Web/typo3conf/LocalConfiguration.php"
     ],
