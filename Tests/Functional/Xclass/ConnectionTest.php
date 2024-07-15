@@ -15,6 +15,7 @@ use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Aoe\AoeDbSequenzer\Xclass\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use InvalidArgumentException;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,6 +28,12 @@ class ConnectionTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
+
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000)
+        {
+            restore_error_handler();
+        }
+
         parent::setUp();
         $params = [];
         $driver = new Driver();
