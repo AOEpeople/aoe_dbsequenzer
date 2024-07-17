@@ -5,6 +5,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 
 use Aoe\AoeDbSequenzer\Xclass\QueryBuilder;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class QueryBuilderTest extends UnitTestCase
 {
@@ -15,12 +16,11 @@ class QueryBuilderTest extends UnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->subject = $this->getAccessibleMock(QueryBuilder::class, null, [], '', false);
     }
 
-    /**
-     * @dataProvider sanitizeTableNameDataProvider
-     */
+    #[DataProvider('sanitizeTableNameDataProvider')]
     public function testSanitizeTableName(string $tableName, string $expected): void
     {
         $this->assertSame(

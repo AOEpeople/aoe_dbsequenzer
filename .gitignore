@@ -29,4 +29,8 @@ nbproject
 composer.lock
 #
 # PHPUnit Reports
-/reports
+Tests/reports
+reports
+.cache
+.phpunit.cache
+.phpunit.result.cache
