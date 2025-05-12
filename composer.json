@@ -20,7 +20,7 @@
     "ext-mysqli": "*",
     "typo3/cms-core": "^12.4 || ^13.4",
     "typo3/cms-extbase": "^12.4 || ^13.4",
-    "typo3/cms-sv": "^12.4 || || ^13.4",
+    "typo3/cms-sv": "^12.4 || ^13.4",
     "typo3/cms-backend": "^12.4 || ^13.4",
     "typo3/cms-reports": "^12.4 || ^13.4",
     "typo3/cms-frontend": "^12.4 || ^13.4"
