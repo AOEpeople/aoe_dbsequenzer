@@ -7,9 +7,6 @@ use PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer;
 use PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer;
 use PhpCsFixer\Fixer\Strict\StrictComparisonFixer;
 use PhpCsFixer\Fixer\Strict\StrictParamFixer;
-use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
-use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
-use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Symplify\CodingStandard\Fixer\ArrayNotation\ArrayListItemNewlineFixer;
 use Symplify\CodingStandard\Fixer\ArrayNotation\ArrayOpenerAndCloserNewlineFixer;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
@@ -49,7 +46,4 @@ return ECSConfig::configure()
         DeclareStrictTypesFixer::class => null,
         StrictComparisonFixer::class => null,
         StrictParamFixer::class => null,
-        NullToStrictStringFuncCallArgRector::class => null,
-        ReadOnlyPropertyRector::class => null,
-        AddOverrideAttributeToOverriddenMethodsRector::class => null,
     ]);
