@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Aoe\AoeDbSequenzer\Tests\Functional;
@@ -6,7 +7,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2021 AOE GmbH <dev@aoe.com>
+ *  (c) 2024 AOE GmbH <dev@aoe.com>
  *
  *  All rights reserved
  *
@@ -29,6 +30,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional;
 
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Exception;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use ReflectionException;
 use ReflectionMethod;
@@ -37,22 +39,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SequenzerTest extends FunctionalTestCase
 {
-    /**
-     * @var Sequenzer
-     */
-    protected $subject;
+    protected Sequenzer $subject;
 
     protected array $testExtensionsToLoad = ['typo3conf/ext/aoe_dbsequenzer'];
 
     protected function setUp(): void
     {
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000)
+        {
+            restore_error_handler();
+        }
+
         parent::setUp();
         $this->subject = new Sequenzer();
     }
 
-    /**
-     * @throws Exception
-     */
     public function testGetNextIdForTable_throwsExceptionDepthToHigh(): void
     {
         $this->expectException(Exception::class);
@@ -76,8 +77,8 @@ class SequenzerTest extends FunctionalTestCase
     {
         // Offset is set in Fixture (20)
         // Current is set in Fixture (5)
-        $this->importDataSet(__DIR__ . '/Fixtures/tx_aoedbsequenzer_seqeunz.xml');
-        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/tx_aoedbsequenzer_seqeunz.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
 
         $this->assertSame(
             28,
@@ -88,7 +89,7 @@ class SequenzerTest extends FunctionalTestCase
     public function testGetDefaultStartValue_withoutOffsetConfigured(): void
     {
         // Imports 7 pages, therefor the expected StartValue should be 8
-        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
 
         $result = $method->invokeArgs($this->subject, ['pages']);
@@ -98,7 +99,7 @@ class SequenzerTest extends FunctionalTestCase
     public function testGetDefaultStartValue_withOffsetConfigured(): void
     {
         $this->subject->setDefaultOffset(6);
-        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
         $result = $method->invokeArgs($this->subject, ['pages']);
 
@@ -110,7 +111,7 @@ class SequenzerTest extends FunctionalTestCase
     {
         $this->subject->setDefaultOffset(14);
         $this->subject->setDefaultStart(20);
-        $this->importDataSet('PACKAGE:typo3/testing-framework/Resources/Core/Functional/Fixtures/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
         $method = $this->getPrivateMethod($this->subject, 'getDefaultStartValue');
         $result = $method->invokeArgs($this->subject, ['pages']);
 
@@ -142,15 +143,11 @@ class SequenzerTest extends FunctionalTestCase
      * @param $className
      * @param $methodName
      *
-     * @return ReflectionMethod
      * @throws ReflectionException
      */
-    public function getPrivateMethod($className, $methodName)
+    public function getPrivateMethod($className, $methodName): ReflectionMethod
     {
         $reflector = new \ReflectionClass($className);
-        $method = $reflector->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method;
+        return $reflector->getMethod($methodName);
     }
 }

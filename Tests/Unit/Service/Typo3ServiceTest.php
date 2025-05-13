@@ -4,7 +4,7 @@ namespace Aoe\AoeDbSequenzer\Tests\Unit;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2017 AOE GmbH (dev@aoe.com)
+ *  (c) 2024 AOE GmbH (dev@aoe.com)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,27 +28,39 @@ use Aoe\AoeDbSequenzer\Sequenzer;
 use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\ApplicationContext;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * @package Aoe\AoeDbSequenzer\Tests\Unit
- * @covers \Aoe\AoeDbSequenzer\Service\Typo3Service
+ * #[CoversDefaultClass(Typo3Service::class)]
  */
 class Typo3ServiceTest extends UnitTestCase
 {
     private Typo3Service $service;
 
-    /**
-     * @var Sequenzer|MockObject
-     */
-    private MockObject $sequenzer;
+    private Sequenzer|MockObject $sequenzer;
 
-    /**
-     * @see PHPUnit_Framework_TestCase::setUp()
-     */
+    protected bool $backupEnvironment = true;
+
     protected function setUp(): void
     {
+        parent::setUp();
+
+        Environment::initialize(
+            new ApplicationContext('Testing'),
+            Environment::isCli(),
+            Environment::isComposerMode(),
+            Environment::getProjectPath(),
+            Environment::getPublicPath(),
+            Environment::getVarPath(),
+            __DIR__ . '/../../../.Build/Web/config',
+            Environment::getCurrentScript(),
+            'UNIX',
+        );
+
         $testConfiguration = [];
         $testConfiguration['aoe_dbsequenzer']['offset'] = '1';
         $testConfiguration['aoe_dbsequenzer']['system'] = 'testa';
