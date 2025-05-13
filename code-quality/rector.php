@@ -13,6 +13,9 @@ use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
 
@@ -57,6 +60,9 @@ return RectorConfig::configure()
         EncapsedStringsToSprintfRector::class,
         WrapEncapsedVariableInCurlyBracesRector::class,
         UseIdenticalOverEqualWithSameTypeRector::class,
+        NullToStrictStringFuncCallArgRector::class,
+        ReadOnlyPropertyRector::class,
+        AddOverrideAttributeToOverriddenMethodsRector::class,
     ])
     ->withAutoloadPaths([__DIR__ . '/../Classes'])
     ->withCache('.cache/rector/default')

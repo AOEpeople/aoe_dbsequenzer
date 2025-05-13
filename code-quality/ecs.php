@@ -9,7 +9,6 @@ use PhpCsFixer\Fixer\Strict\StrictComparisonFixer;
 use PhpCsFixer\Fixer\Strict\StrictParamFixer;
 use Symplify\CodingStandard\Fixer\ArrayNotation\ArrayListItemNewlineFixer;
 use Symplify\CodingStandard\Fixer\ArrayNotation\ArrayOpenerAndCloserNewlineFixer;
-use Symplify\CodingStandard\Fixer\LineLength\DocBlockLineLengthFixer;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
@@ -35,7 +34,6 @@ return ECSConfig::configure()
     ->withSkip([
         // Default Skips
         NotOperatorWithSuccessorSpaceFixer::class => null,
-        DocBlockLineLengthFixer::class => null,
         ArrayListItemNewlineFixer::class => null,
         ArrayOpenerAndCloserNewlineFixer::class => null,
 
