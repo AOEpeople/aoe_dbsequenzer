@@ -1,4 +1,5 @@
 <?php
+
 namespace Aoe\AoeDbSequenzer\Tests\Unit;
 
 /***************************************************************
@@ -33,17 +34,13 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * @package Aoe\AoeDbSequenzer\Tests\Unit
- * #[CoversDefaultClass(Typo3Service::class)]
- */
 class Typo3ServiceTest extends UnitTestCase
 {
+    protected bool $backupEnvironment = true;
+
     private Typo3Service $service;
 
     private Sequenzer|MockObject $sequenzer;
-
-    protected bool $backupEnvironment = true;
 
     protected function setUp(): void
     {
@@ -73,18 +70,21 @@ class Typo3ServiceTest extends UnitTestCase
         $this->service = new Typo3Service($this->sequenzer);
     }
 
-    public function testModifyInsertFields_NotSupportedTable(): void
+    public function testModifyInsertFieldsNotSupportedTable(): void
     {
         $this->resetSingletonInstances = true;
-        $this->sequenzer->expects($this->never())->method('getNextIdForTable');
+        $this->sequenzer->expects($this->never())
+            ->method('getNextIdForTable');
         $modifiedFields = $this->service->modifyInsertFields('tableXY', ['field1' => 'a']);
         $this->assertArrayNotHasKey('uid', $modifiedFields);
     }
 
-    public function testModifyInsertFields_GetNextIdForTable(): void
+    public function testModifyInsertFieldsGetNextIdForTable(): void
     {
         $this->resetSingletonInstances = true;
-        $this->sequenzer->expects($this->once())->method('getNextIdForTable')->willReturn(1);
+        $this->sequenzer->expects($this->once())
+            ->method('getNextIdForTable')
+            ->willReturn(1);
         $modifiedFields = $this->service->modifyInsertFields('table1', ['field1' => 'a']);
         $this->assertArrayHasKey('uid', $modifiedFields);
         $this->assertSame(1, $modifiedFields['uid']);

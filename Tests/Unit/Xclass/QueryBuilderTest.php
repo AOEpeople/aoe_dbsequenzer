@@ -2,17 +2,13 @@
 
 namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 
-
 use Aoe\AoeDbSequenzer\Xclass\QueryBuilder;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class QueryBuilderTest extends UnitTestCase
 {
-    /**
-     * @var QueryBuilder
-     */
-    protected $subject;
+    protected QueryBuilder $subject;
 
     protected function setUp(): void
     {
@@ -32,16 +28,16 @@ class QueryBuilderTest extends UnitTestCase
     public static function sanitizeTableNameDataProvider(): \Iterator
     {
         yield 'tableName with out quotes' => [
-            'tableName' => 'sys_log',
-            'expected' => 'sys_log'
+            'sys_log',
+            'sys_log',
         ];
         yield 'tableName with back quotes' => [
-            'tableName' => '`sys_log`',
-            'expected' => 'sys_log'
+            '`sys_log`',
+            'sys_log',
         ];
         yield 'empty tableName' => [
-            'tableName' => '',
-            'expected' => ''
+            '',
+            '',
         ];
     }
 }

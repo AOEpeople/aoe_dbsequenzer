@@ -30,12 +30,11 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional;
 
 use Aoe\AoeDbSequenzer\Sequenzer;
 use Exception;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
-use ReflectionException;
 use ReflectionMethod;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class SequenzerTest extends FunctionalTestCase
 {
@@ -45,8 +44,7 @@ class SequenzerTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000)
-        {
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000) {
             restore_error_handler();
         }
 
@@ -54,7 +52,7 @@ class SequenzerTest extends FunctionalTestCase
         $this->subject = new Sequenzer();
     }
 
-    public function testGetNextIdForTable_throwsExceptionDepthToHigh(): void
+    public function testGetNextIdForTableThrowsExceptionDepthToHigh(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionCode(1512378158);
@@ -62,7 +60,7 @@ class SequenzerTest extends FunctionalTestCase
         $this->subject->getNextIdForTable('tableName', 1000);
     }
 
-    public function testGetNextIdForTable_NoPagesAdded(): void
+    public function testGetNextIdForTableNoPagesAdded(): void
     {
         $this->subject->setDefaultOffset(10);
         $this->subject->setDefaultStart(4);
@@ -73,7 +71,7 @@ class SequenzerTest extends FunctionalTestCase
         );
     }
 
-    public function testGetNextIdForTable_OutDatedSequencerInformation(): void
+    public function testGetNextIdForTableOutDatedSequencerInformation(): void
     {
         // Offset is set in Fixture (20)
         // Current is set in Fixture (5)
@@ -86,7 +84,7 @@ class SequenzerTest extends FunctionalTestCase
         );
     }
 
-    public function testGetDefaultStartValue_withoutOffsetConfigured(): void
+    public function testGetDefaultStartValueWithoutOffsetConfigured(): void
     {
         // Imports 7 pages, therefor the expected StartValue should be 8
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
@@ -96,7 +94,7 @@ class SequenzerTest extends FunctionalTestCase
         $this->assertSame(8, $result);
     }
 
-    public function testGetDefaultStartValue_withOffsetConfigured(): void
+    public function testGetDefaultStartValueWithOffsetConfigured(): void
     {
         $this->subject->setDefaultOffset(6);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
@@ -107,7 +105,7 @@ class SequenzerTest extends FunctionalTestCase
         $this->assertSame(12, $result);
     }
 
-    public function testGetDefaultStartValue_withOffsetAndDefaultStartValueConfigured(): void
+    public function testGetDefaultStartValueWithOffsetAndDefaultStartValueConfigured(): void
     {
         $this->subject->setDefaultOffset(14);
         $this->subject->setDefaultStart(20);
@@ -119,7 +117,7 @@ class SequenzerTest extends FunctionalTestCase
         $this->assertSame(34, $result);
     }
 
-    public function testInitSequenzerForTable_isDataInsert(): void
+    public function testInitSequenzerForTableIsDataInsert(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(Sequenzer::SEQUENZER_TABLE);
 
@@ -139,13 +137,7 @@ class SequenzerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @param $className
-     * @param $methodName
-     *
-     * @throws ReflectionException
-     */
-    public function getPrivateMethod($className, $methodName): ReflectionMethod
+    public function getPrivateMethod(object $className, string $methodName): ReflectionMethod
     {
         $reflector = new \ReflectionClass($className);
         return $reflector->getMethod($methodName);

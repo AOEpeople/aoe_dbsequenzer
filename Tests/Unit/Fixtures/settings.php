@@ -1,4 +1,5 @@
 <?php
+
 return [
     'EXTENSIONS' => [
         'aoe_dbsequenzer' => [

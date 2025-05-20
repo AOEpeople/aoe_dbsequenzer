@@ -10,7 +10,6 @@ use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
-use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
@@ -18,10 +17,12 @@ use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector;
 
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/../Classes',
+        __DIR__ . '/../Resources',
         __DIR__ . '/../Tests',
         __DIR__ . '/../code-quality',
     ])
@@ -42,9 +43,6 @@ return RectorConfig::configure()
         SetList::PHP_83,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     ])
-    ->withRules([
-        RemoveUnusedPrivatePropertyRector::class,
-    ])
     ->withSkip([
         RecastingRemovalRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
@@ -53,6 +51,8 @@ return RectorConfig::configure()
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__ . '/../Classes/Service/Typo3Service.php',
         ],
+
+        TypedPropertyFromCreateMockAssignRector::class,
 
         // @todo strict php
         ArgumentAdderRector::class,

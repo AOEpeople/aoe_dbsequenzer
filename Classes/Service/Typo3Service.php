@@ -36,15 +36,9 @@ class Typo3Service implements SingletonInterface
 {
     private Sequenzer $sequenzer;
 
-    /**
-     * @var array
-     */
-    private $conf = [];
+    private array $conf = [];
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private Logger $logger;
 
     /**
      * array of configured tables that should call the sequenzer
@@ -61,7 +55,7 @@ class Typo3Service implements SingletonInterface
         $this->sequenzer->setDefaultOffset((int) $this->conf['offset']);
         $this->sequenzer->setDefaultStart((int) $this->conf['system']);
 
-        $explodedValues = explode(',', $this->conf['tables']);
+        $explodedValues = explode(',', (string) $this->conf['tables']);
         $this->supportedTables = array_map('trim', $explodedValues);
     }
 

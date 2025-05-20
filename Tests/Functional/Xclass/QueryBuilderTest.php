@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
 
 /***************************************************************
@@ -12,13 +14,12 @@ namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
  ***************************************************************/
 
 use Aoe\AoeDbSequenzer\Xclass\QueryBuilder;
-
 use Doctrine\DBAL\Driver\PDO\SQLite\Driver;
 use InvalidArgumentException;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class QueryBuilderTest extends FunctionalTestCase
 {
@@ -29,8 +30,7 @@ class QueryBuilderTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000)
-        {
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000) {
             restore_error_handler();
         }
 
@@ -40,7 +40,9 @@ class QueryBuilderTest extends FunctionalTestCase
         $connection = GeneralUtility::makeInstance(Connection::class, $params, $driver);
 
         $this->subject = $this->getAccessibleMock(QueryBuilder::class, ['shouldTableBeSequenced'], [$connection], '', false);
-        $this->subject->expects($this->once())->method('shouldTableBeSequenced')->willReturn(true);
+        $this->subject->expects($this->once())
+            ->method('shouldTableBeSequenced')
+            ->willReturn(true);
     }
 
     public function testQueryBuilderSetThrowsExceptionWhenUidIsKey(): void
@@ -48,6 +50,6 @@ class QueryBuilderTest extends FunctionalTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(1564122229);
 
-        $this->subject->set('uid', 124, true);
+        $this->subject->set('uid', '124', true);
     }
 }

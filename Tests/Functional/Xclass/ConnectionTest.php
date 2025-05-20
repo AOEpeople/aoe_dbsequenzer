@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Aoe\AoeDbSequenzer\Tests\Functional\Xclass;
 
 /***************************************************************
@@ -15,9 +17,9 @@ use Aoe\AoeDbSequenzer\Service\Typo3Service;
 use Aoe\AoeDbSequenzer\Xclass\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use InvalidArgumentException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConnectionTest extends FunctionalTestCase
 {
@@ -28,9 +30,7 @@ class ConnectionTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-
-        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000)
-        {
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) < 12000000) {
             restore_error_handler();
         }
 
@@ -45,7 +45,8 @@ class ConnectionTest extends FunctionalTestCase
             ->onlyMethods(['needsSequenzer'])
             ->getMock();
 
-        $typo3Service->method('needsSequenzer')->willReturn(true);
+        $typo3Service->method('needsSequenzer')
+            ->willReturn(true);
 
         GeneralUtility::setSingletonInstance(Typo3Service::class, $typo3Service);
     }
