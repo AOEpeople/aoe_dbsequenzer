@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aoe\AoeDbSequenzer\Tests\Unit;
 
 /***************************************************************
@@ -34,7 +36,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class Typo3ServiceTest extends UnitTestCase
+final class Typo3ServiceTest extends UnitTestCase
 {
     protected bool $backupEnvironment = true;
 
@@ -64,9 +66,7 @@ class Typo3ServiceTest extends UnitTestCase
         $testConfiguration['aoe_dbsequenzer']['tables'] = 'table1,table2';
         GeneralUtility::makeInstance(ExtensionConfiguration::class)->setAll($testConfiguration);
 
-        $this->sequenzer = $this->getMockBuilder(Sequenzer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->sequenzer = $this->createMock(Sequenzer::class);
         $this->service = new Typo3Service($this->sequenzer);
     }
 

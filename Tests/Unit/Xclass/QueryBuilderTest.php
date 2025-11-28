@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aoe\AoeDbSequenzer\Tests\Unit\Xclass;
 
 use Aoe\AoeDbSequenzer\Xclass\QueryBuilder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class QueryBuilderTest extends UnitTestCase
+final class QueryBuilderTest extends UnitTestCase
 {
-    protected QueryBuilder $subject;
+    private QueryBuilder $subject;
 
     protected function setUp(): void
     {

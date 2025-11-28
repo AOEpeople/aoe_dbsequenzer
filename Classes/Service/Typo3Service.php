@@ -56,7 +56,7 @@ class Typo3Service implements SingletonInterface
         $this->sequenzer->setDefaultStart((int) $this->conf['system']);
 
         $explodedValues = explode(',', (string) $this->conf['tables']);
-        $this->supportedTables = array_map('trim', $explodedValues);
+        $this->supportedTables = array_map(trim(...), $explodedValues);
     }
 
     /**

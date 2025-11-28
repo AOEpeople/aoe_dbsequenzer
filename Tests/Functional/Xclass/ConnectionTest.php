@@ -21,12 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class ConnectionTest extends FunctionalTestCase
+final class ConnectionTest extends FunctionalTestCase
 {
-    /**
-     * @var Connection
-     */
-    protected $subject;
+    private Connection $subject;
 
     protected function setUp(): void
     {

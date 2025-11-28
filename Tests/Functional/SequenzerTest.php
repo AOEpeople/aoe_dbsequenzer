@@ -36,11 +36,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class SequenzerTest extends FunctionalTestCase
+final class SequenzerTest extends FunctionalTestCase
 {
-    protected Sequenzer $subject;
-
     protected array $testExtensionsToLoad = ['typo3conf/ext/aoe_dbsequenzer'];
+
+    private Sequenzer $subject;
 
     protected function setUp(): void
     {

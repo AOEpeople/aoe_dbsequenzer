@@ -21,14 +21,11 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class ConnectionTest extends UnitTestCase
+final class ConnectionTest extends UnitTestCase
 {
-    /**
-     * @var Connection
-     */
-    protected $subject;
-
     protected bool $backupEnvironment = true;
+
+    private Connection $subject;
 
     protected function setUp(): void
     {

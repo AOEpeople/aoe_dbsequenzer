@@ -21,12 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class QueryBuilderTest extends FunctionalTestCase
+final class QueryBuilderTest extends FunctionalTestCase
 {
-    /**
-     * @var QueryBuilder
-     */
-    protected $subject;
+    private QueryBuilder $subject;
 
     protected function setUp(): void
     {
